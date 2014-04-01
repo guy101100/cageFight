@@ -4,6 +4,7 @@ public class Player {
 	private int health;
 	private int id;
 	private String name;
+	private int experience;
 	
 	public Player(String name, int id){
 		this.id = id;
