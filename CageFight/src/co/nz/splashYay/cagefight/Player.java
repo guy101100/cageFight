@@ -6,9 +6,15 @@ public class Player {
 	private String name;
 	private int experience;
 	
-	public Player(String name, int id){
+	public Player(String name, int id, int health){
 		this.id = id;
 		
+		
+	}
+	
+	public String getName()
+	{
+		return name;
 	}
 	
 }
