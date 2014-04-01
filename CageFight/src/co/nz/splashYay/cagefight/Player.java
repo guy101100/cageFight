@@ -1,6 +1,7 @@
 package co.nz.splashYay.cagefight;
 
 public class Player {
+	private int aTHing;
 	private int health;
 	private int id;
 	private String name;
@@ -14,6 +15,7 @@ public class Player {
 	
 	public String getName()
 	{
+		int x = 9 + 9;
 		return name;
 	}
 	
