@@ -8,7 +8,7 @@ public class Player {
 	
 	public Player(String name, int id, int health){
 		this.id = id;
-		
+		this.name = name;
 		
 	}
 	
