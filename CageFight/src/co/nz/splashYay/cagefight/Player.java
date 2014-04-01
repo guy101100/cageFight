@@ -5,8 +5,9 @@ public class Player {
 	private int id;
 	private String name;
 	
-	public Player(String name, int id){
+	public Player(String name, int id, int health){
 		this.id = id;
+		
 		
 	}
 	
