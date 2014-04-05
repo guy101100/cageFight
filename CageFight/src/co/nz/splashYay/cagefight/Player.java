@@ -1,10 +1,18 @@
 package co.nz.splashYay.cagefight;
 
-public class Player extends Entity{
+import java.io.Serializable;
 
+public class Player extends Entity implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int id;
 	private String name;
 	private int experience;
+	private float movementX = 0;
+	private float movementY = 0;
 	
 	public Player(String name, int id, int maxhealth, int currenthealth, int xpos, int ypos) {
 		super(xpos, ypos, maxhealth, currenthealth);
@@ -36,4 +44,24 @@ public class Player extends Entity{
 	public void setId(int id) {
 		this.id = id;
 	}
+
+	public float getMovementX() {
+		return movementX;
+	}
+
+	public void setMovementX(float movementX) {
+		this.movementX = movementX;
+	}
+
+	public float getMovementY() {
+		return movementY;
+	}
+
+	public void setMovementY(float movementY) {
+		this.movementY = movementY;
+	}
+	
+	
+	
+	
 }
