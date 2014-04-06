@@ -113,7 +113,7 @@ public class ClientGameScene extends Scene {
 		
 
 		oNC = new ClientOutNetCom(ipAddress, sceneManager);
-		iNC = new ClientInNetCom(ipAddress);
+		iNC = new ClientInNetCom(ipAddress, gameData);
 
 		this.setBackground(new Background(0, 125, 58));
 		this.phyWorld = new FixedStepPhysicsWorld(30, 30, new Vector2(0, 0), false); //Gravity! //sensorManager.Gavity_earth

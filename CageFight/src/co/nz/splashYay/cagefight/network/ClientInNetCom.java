@@ -14,10 +14,10 @@ public class ClientInNetCom extends Thread {
 
 	private String ipAddress;
 	private Socket clientSocket;
-	// private SceneManager sceneManager;
+	private GameData gameData;
 	private ObjectInputStream inFromServer;
 
-	public ClientInNetCom(String ipAddress) {
+	public ClientInNetCom(String ipAddress, GameData gameData) {
 		this.ipAddress = ipAddress;
 
 	}
@@ -32,8 +32,8 @@ public class ClientInNetCom extends Thread {
 			while (!interrupted()) {
 
 				try {
-					GameData coords = (GameData) inFromServer.readUnshared();
-					
+					GameData gameDataIn = (GameData) inFromServer.readUnshared();
+					gameData = gameDataIn;
 
 				} catch (ClassNotFoundException e) {
 					// TODO Auto-generated catch block
