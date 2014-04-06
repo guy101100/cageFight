@@ -37,6 +37,7 @@ import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.Player;
 import co.nz.splashYay.cagefight.SceneManager;
 import co.nz.splashYay.cagefight.network.InFromClientListener;
+import co.nz.splashYay.cagefight.network.OutToClientListener;
 
 public class ServerGameScene extends Scene {
 	private BaseGameActivity activity;

@@ -1,9 +1,11 @@
-package scenes;
+package co.nz.splashYay.cagefight.network;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+
+import scenes.ServerGameScene;
 
 import co.nz.splashYay.cagefight.GameData;
 

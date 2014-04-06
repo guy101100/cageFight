@@ -1,4 +1,4 @@
-package scenes;
+package co.nz.splashYay.cagefight.network;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -6,6 +6,8 @@ import java.net.Socket;
 import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import scenes.ServerGameScene;
 
 import co.nz.splashYay.cagefight.GameData;
 
