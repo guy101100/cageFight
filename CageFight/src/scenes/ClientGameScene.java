@@ -197,7 +197,7 @@ public class ClientGameScene extends Scene {
 				}
 			}
 		};
-		timer.scheduleAtFixedRate(task, 5000, 30);
+		timer.scheduleAtFixedRate(task, 2000, 30);
 		//end game loop
 
 		return this;

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 
 import scenes.ServerGameScene;
 
@@ -32,18 +33,21 @@ public class OutToClientNetCom extends Thread {
 	@Override
 	public void run() {
 
-		try {
-			welcomeSocket.setTcpNoDelay(true);
-			String returnSentance;
-			String clientSentenceArray[];
-			outToClient = new ObjectOutputStream(welcomeSocket.getOutputStream());
-			inFromCLient = new ObjectInputStream(welcomeSocket.getInputStream());
-			oTCL.addClient(this);
+		
+			try {
+				welcomeSocket.setTcpNoDelay(true);
+				outToClient = new ObjectOutputStream(welcomeSocket.getOutputStream());			
+				oTCL.addClient(this);
+			} catch (SocketException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}			
+			
 
-		} catch (IOException ex) {
-			System.err.println("==================== OutToClient Error");
-
-		}
+		
 
 	}
 
@@ -53,10 +57,8 @@ public class OutToClientNetCom extends Thread {
 
 	public void updateClient() {
 
-		try {
-			GameData temp = gameData;
-
-			outToClient.writeObject(temp);
+		try {			
+			outToClient.writeObject(gameData);
 			outToClient.reset();
 			System.out.println(" [" + System.currentTimeMillis() + "] Sent : data..... ??");
 		} catch (IOException ex) {

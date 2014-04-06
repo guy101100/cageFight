@@ -59,6 +59,8 @@ public class InFromClientNetCom extends Thread {
 					}
 					this.player = tempPlayer; //the player this is connection is to
 					
+				} else {
+					System.err.println("error reciveving");
 				}
 
 			}
