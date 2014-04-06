@@ -19,7 +19,7 @@ public class OutToClientListener extends Thread {
 	private ServerGameScene serverScene;
 
 	public OutToClientListener(GameData gameData, ServerGameScene serverScene) {
-		clients = new HashSet<>();
+		clients = new HashSet<OutToClientNetCom>();
 		this.gameData = gameData;
 		this.serverScene = serverScene;
 
