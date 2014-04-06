@@ -52,7 +52,7 @@ public class SceneManager {
 			engine.setScene(clientGameScene);
 			break;
 		case GAME_SERVER:
-			engine.setScene(splashScene);
+			engine.setScene(serverGameScene);
 			break;
 		default:
 			break;
