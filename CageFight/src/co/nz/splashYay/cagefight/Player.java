@@ -63,7 +63,7 @@ public class Player extends Entity implements Serializable{
 	}
 	
 	/*
-	 * Used by the ClientInNetCom to update this players data
+	 * Used by the ClientInNetCom to update the players data
 	 */
 	public void updatePlayerInfoFromOtherPlayerData(Player player){
 		this.experience = player.getExperience();

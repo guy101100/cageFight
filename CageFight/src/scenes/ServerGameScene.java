@@ -109,13 +109,17 @@ public class ServerGameScene extends Scene {
 				while (it.hasNext()) {
 					Map.Entry pairs = (Map.Entry) it.next();
 					Player player = (Player) pairs.getValue();
-
+					
 					player.getPhyHandler().setVelocity(player.getMovementX() * player.getSpeed(), player.getMovementY() * player.getSpeed()); // moves player
+					player.setXPos(player.getSprite().getX());//set player position to the sprites position.
+					player.setYpos(player.getSprite().getX());
+					
+					
 					if (player.getMovementX() != 0 && player.getMovementY() != 0) {
 						player.getSprite().setRotation(MathUtils.radToDeg((float) Math.atan2(player.getMovementX(), -player.getMovementY())));
 					}
 				}
-
+				
 				oTCL.updateClients();
 			}
 

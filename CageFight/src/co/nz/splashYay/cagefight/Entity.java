@@ -12,8 +12,8 @@ public class Entity implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	protected int xpos;
-	protected int ypos;
+	protected float xpos;
+	protected float ypos;
 	protected float direction;
 	protected int currenthealth;
 	protected int maxhealth;
@@ -36,19 +36,19 @@ public class Entity implements Serializable{
 	}
 
 
-	public int getXPos() {
+	public float getXPos() {
 		return xpos;
 	}
 	
-	public void setXPos(int xpos) {
+	public void setXPos(float xpos) {
 		this.xpos = xpos;
 	}
 	
-	public int getYpos() {
+	public float getYpos() {
 		return ypos;
 	}
 	
-	public void setYpos(int ypos) {
+	public void setYpos(float ypos) {
 		this.ypos = ypos;
 	}
 
