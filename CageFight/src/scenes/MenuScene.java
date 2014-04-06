@@ -40,7 +40,7 @@ public class MenuScene extends Scene {
 
 		mHandler.post(new Runnable() {
 			public void run() {
-				getServerIp(activity);
+				startServerOrClient(activity);
 			}
 		});
 
