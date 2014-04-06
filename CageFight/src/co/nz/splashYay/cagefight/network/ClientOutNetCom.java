@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import co.nz.splashYay.cagefight.Player;
+import co.nz.splashYay.cagefight.PlayerControlCommands;
 import co.nz.splashYay.cagefight.SceneManager;
 
 public class ClientOutNetCom extends Thread{
@@ -49,10 +50,10 @@ public class ClientOutNetCom extends Thread{
 
 	}
 	
-	public void sendToServer(Object obj){
+	public void sendToServer(PlayerControlCommands cmds){
 		try {
 			outToServer.flush();
-			outToServer.writeObject(obj);
+			outToServer.writeObject(cmds);
 			outToServer.reset();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

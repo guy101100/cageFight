@@ -14,6 +14,7 @@ public class Entity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private int xpos;
 	private int ypos;
+	private float direction;
 	private int currenthealth;
 	private int maxhealth;
 	private int speed;
@@ -31,6 +32,7 @@ public class Entity implements Serializable{
 		this.maxhealth = maxhealth;
 		this.currenthealth = currenthealth;
 		this.speed = 300;
+		this.direction = 0;
 	}
 
 
@@ -100,6 +102,18 @@ public class Entity implements Serializable{
 	public void setSpeed(int speed) {
 		this.speed = speed;
 	}
+
+
+	public float getDirection() {
+		return direction;
+	}
+
+
+	public void setDirection(float direction) {
+		this.direction = direction;
+	}
+	
+	
 	
 	
 	

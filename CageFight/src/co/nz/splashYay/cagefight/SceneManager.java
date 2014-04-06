@@ -34,7 +34,7 @@ public class SceneManager {
 	
 	//scene management
 	public enum AllScenes {
-		SPLASH, MENU, GAME_CLIENT
+		SPLASH, MENU, GAME_CLIENT, GAME_SERVER
 	}
 	
 	public void setCurrentScene(AllScenes currentScene) {
@@ -48,6 +48,9 @@ public class SceneManager {
 			break;
 		case GAME_CLIENT:
 			engine.setScene(clientGameScene);
+			break;
+		case GAME_SERVER:
+			engine.setScene(splashScene);
 			break;
 		default:
 			break;

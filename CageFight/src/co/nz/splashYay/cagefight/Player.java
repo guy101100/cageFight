@@ -14,6 +14,7 @@ public class Player extends Entity implements Serializable{
 	private float movementX = 0;
 	private float movementY = 0;
 	
+	
 	public Player(String name, int id, int maxhealth, int currenthealth, int xpos, int ypos) {
 		super(xpos, ypos, maxhealth, currenthealth);
 		this.id = id;

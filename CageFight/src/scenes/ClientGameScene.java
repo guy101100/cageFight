@@ -38,6 +38,7 @@ import android.opengl.GLES20;
 
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.Player;
+import co.nz.splashYay.cagefight.PlayerControlCommands;
 import co.nz.splashYay.cagefight.SceneManager;
 import co.nz.splashYay.cagefight.network.ClientInNetCom;
 import co.nz.splashYay.cagefight.network.ClientOutNetCom;
@@ -73,7 +74,7 @@ public class ClientGameScene extends Scene {
 	private TMXTiledMap mTMXTiledMap;
 	
 	//control values
-	float[] controlValues = new float[5];
+	PlayerControlCommands playerCommands = new PlayerControlCommands();
 	
 	
 
@@ -124,14 +125,12 @@ public class ClientGameScene extends Scene {
 			@Override
 			public void onControlChange(final BaseOnScreenControl pBaseOnScreenControl, final float pValueX, final float pValueY) {
 
-				controlValues[0] = pValueX;
-				controlValues[1] = pValueY;
-				controlValues[2] = MathUtils.radToDeg((float) Math.atan2(pValueX, -pValueY));
-
+				playerCommands.setMovementX(pValueX);
+				playerCommands.setMovementX(pValueY);
+				playerCommands.setDirection(MathUtils.radToDeg((float) Math.atan2(pValueX, -pValueY)));
 				if (sPlayer != null) {
-					controlValues[3] = sPlayer.getX();
-					controlValues[4] = sPlayer.getY();
-
+					playerCommands.setClientPosX(sPlayer.getX());
+					playerCommands.setClientPosY(sPlayer.getY());
 				}
 
 			}
@@ -189,10 +188,11 @@ public class ClientGameScene extends Scene {
 						}	
 				        
 				    }
+				    
 					
 					
 					
-					
+					oNC.sendToServer(playerCommands);
 				}
 			}
 		};
@@ -223,7 +223,7 @@ public class ClientGameScene extends Scene {
 
 	}
 	
-	public void addPlayerToCoordsObj(Player newPlayer) {
+	public void addPlayerToGameDataObj(Player newPlayer) {
 		if (newPlayer != null) {
 			gameData.addPlayer(newPlayer);
 			Sprite tempS = new Sprite(camera.getWidth() / 2, camera.getHeight() / 2, playerTextureRegion, this.engine.getVertexBufferObjectManager());			
