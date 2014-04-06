@@ -12,12 +12,12 @@ public class Entity implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private int xpos;
-	private int ypos;
-	private float direction;
-	private int currenthealth;
-	private int maxhealth;
-	private int speed;
+	protected int xpos;
+	protected int ypos;
+	protected float direction;
+	protected int currenthealth;
+	protected int maxhealth;
+	protected int speed;
 	
 	
 	

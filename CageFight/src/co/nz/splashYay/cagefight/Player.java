@@ -62,6 +62,24 @@ public class Player extends Entity implements Serializable{
 		this.movementY = movementY;
 	}
 	
+	/*
+	 * Used by the ClientInNetCom to update this players data
+	 */
+	public void updatePlayerInfoFromOtherPlayerData(Player player){
+		this.experience = player.getExperience();
+		this.movementX = player.getMovementX();
+		this.movementY = player.getMovementY();
+		this.currenthealth = player.getCurrenthealth();
+		this.direction = player.getDirection();
+		this.maxhealth = player.getMaxhealth();
+		this.xpos = player.getXPos();
+		this.ypos  = player.getYpos();
+		this.speed = player.getSpeed();
+		
+		
+		
+	}
+	
 	
 	
 	

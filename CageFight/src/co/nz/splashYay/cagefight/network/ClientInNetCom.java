@@ -48,8 +48,8 @@ public class ClientInNetCom extends Thread {
 						if (!gameData.getPlayers().containsKey(entry.getKey())) {
 					        clientGameScene.addPlayerToGameDataObj(playerIn);
 					    } else {
-					    	gameData.getPlayers().put(entry.getKey(), playerIn);
-					    	
+					    	Player actual = gameData.getPlayerWithID(playerIn.getId());
+					    	actual.updatePlayerInfoFromOtherPlayerData(playerIn);
 					    }
 					}
 					
