@@ -166,7 +166,12 @@ public class ClientGameScene extends Scene {
 				    while (it.hasNext()) {
 				        Map.Entry pairs = (Map.Entry)it.next();
 				        Player player = (Player) pairs.getValue();
+				        player.getPhyHandler().setVelocity(player.getMovementX() * player.getSpeed(), player.getMovementY() * player.getSpeed()); // moves player
+						if (player.getMovementX() != 0 && player.getMovementY() != 0) {
+							player.getSprite().setRotation(MathUtils.radToDeg((float) Math.atan2(player.getMovementX(), -player.getMovementY())));
+						}
 				        
+				        /*
 				        if (player.getMovementX() == 0 && player.getMovementY() == 0) { // if player is not inputing controls
 							if ((player.getXPos() - player.getSprite().getX() > 50 || player.getXPos() - player.getSprite().getX() < -50) || //if player is more than 50pixels away from actual coords
 									(player.getYpos() - player.getSprite().getY() > 50 || player.getYpos() - player.getSprite().getY() < -50)) { 
@@ -187,6 +192,7 @@ public class ClientGameScene extends Scene {
 								player.getSprite().setRotation(MathUtils.radToDeg((float) Math.atan2(player.getMovementX(), -player.getMovementY())));
 							}
 						}	
+						*/
 				        
 				    }
 				    

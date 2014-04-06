@@ -51,6 +51,7 @@ public class ClientOutNetCom extends Thread{
 		try {
 			outToServer.flush();
 			outToServer.writeObject(cmds);
+			System.out.println("Send : " + cmds.getMovementX() + " " + cmds.getMovementY() + " " + cmds.getDirection());
 			outToServer.reset();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
