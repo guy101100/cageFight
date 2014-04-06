@@ -63,7 +63,7 @@ public class ClientGameScene extends Scene {
 	private ITextureRegion playerTextureRegion;
 	private FixedStepPhysicsWorld phyWorld;
 	private Sprite sPlayer; //the actual Players sprite
-	private Player player; // client player
+	//private Player player; // client player
 	//control (joystick)
 	private BitmapTextureAtlas mOnScreenControlTexture;
 	private ITextureRegion mOnScreenControlBaseTextureRegion;
@@ -161,7 +161,7 @@ public class ClientGameScene extends Scene {
 		TimerTask task = new TimerTask() {
 			public void run() {
 				
-				if (gameData.getPlayerWithID(player.getId()) != null) {
+				if (gameData.getPlayerWithID(sceneManager.getPlayer().getId()) != null) {
 					Iterator it = gameData.getPlayers().entrySet().iterator();
 				    while (it.hasNext()) {
 				        Map.Entry pairs = (Map.Entry)it.next();
@@ -234,7 +234,7 @@ public class ClientGameScene extends Scene {
 			newPlayer.setSprite(tempS);
 			newPlayer.setPhyHandler(tempPhyHandler);
 			tempS.setPosition(newPlayer.getXPos(), newPlayer.getYpos());
-			if (newPlayer.getId() == this.player.getId()) {
+			if (newPlayer.getId() == sceneManager.getPlayer().getId()) {
 				camera.setChaseEntity(tempS);
 				sPlayer = tempS;
 			}
