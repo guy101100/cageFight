@@ -7,6 +7,7 @@ import org.andengine.ui.activity.BaseGameActivity;
 
 import scenes.ClientGameScene;
 import scenes.MenuScene;
+import scenes.ServerGameScene;
 import scenes.SplashScene;
 
 public class SceneManager {
@@ -15,6 +16,7 @@ public class SceneManager {
 	private SplashScene splashScene;
 	private ClientGameScene clientGameScene;
 	private MenuScene menuScene;
+	private ServerGameScene serverGameScene;
 
 	private BaseGameActivity activity;
 	private Engine engine;
@@ -77,6 +79,11 @@ public class SceneManager {
 		clientGameScene.loadGameRes();
 
 	}
+	public void loadServerGameRes() {
+		serverGameScene = new ServerGameScene(activity, engine, camera, ipAddress, this);
+		serverGameScene.loadServerGameRes();
+
+	}
 	
 	//Create Scenes
 
@@ -87,18 +94,21 @@ public class SceneManager {
 
 	public Scene createMenuScene() {
 		menuScene.createMenuScene();
-		return menuScene;
-
-		
+		return menuScene;		
 	}
 
 	public Scene createClientGameScene() {
 		clientGameScene.createGameScene();
-		return menuScene;
+		return clientGameScene;
+	}
+	public Scene createServerGameScene() {
+		serverGameScene.createServerGameScene();
+		return serverGameScene;
 	}
 	
+	
 	//setters	
-	public void createPlayer(int id) {		
+	public void createPlayerAndStartGame(int id) {		
 		this.player = new Player((id + " "), id, 1, 1, 0, 0);
 		loadClientGameRes();
 		createClientGameScene();

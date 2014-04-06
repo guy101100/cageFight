@@ -40,16 +40,43 @@ public class MenuScene extends Scene {
 
 		mHandler.post(new Runnable() {
 			public void run() {
-				getInput(activity);
+				getServerIp(activity);
 			}
 		});
 
 		return this;
 
 	}
+	
+	public void startServerOrClient(Context context) {
+
+		final AlertDialog.Builder alert = new AlertDialog.Builder(context);
+		final EditText input = new EditText(context);
+
+		alert.setView(input);
+		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				String string = input.getText().toString().trim();
+				if (string.equalsIgnoreCase("1")) {
+					sceneManager.loadServerGameRes();
+					sceneManager.createServerGameScene();
+					sceneManager.setCurrentScene(AllScenes.GAME_SERVER);
+				} else {
+					getServerIp(activity);
+				}
+			}
+		});
+
+		alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				dialog.cancel();
+			}
+		});
+		alert.show();
+	}
 
 	//really bad temporary input for server ip and player id methods
-	public void getInput(Context context) {
+	public void getServerIp(Context context) {
 
 		final AlertDialog.Builder alert = new AlertDialog.Builder(context);
 		final EditText input = new EditText(context);
@@ -81,7 +108,7 @@ public class MenuScene extends Scene {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				String id = input.getText().toString().trim();
 				int idInt = Integer.parseInt(id);
-				sceneManager.createPlayer(idInt);
+				sceneManager.createPlayerAndStartGame(idInt);
 			}
 		});
 
