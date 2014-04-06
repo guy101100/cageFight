@@ -57,7 +57,7 @@ public class ClientGameScene extends Scene {
 	private ClientInNetCom iNC;
 	private String ipAddress;
 	
-	GameData gameData = new GameData();
+	GameData gameData;
 	
 	private BitmapTextureAtlas playerTexture;
 	private ITextureRegion playerTextureRegion;
@@ -86,6 +86,7 @@ public class ClientGameScene extends Scene {
 		this.camera = cam;
 		this.ipAddress = ipAddress;
 		this.sceneManager = sceneManager;
+		gameData = new GameData();
 	}
 	
 	public void loadGameRes() {
@@ -159,7 +160,7 @@ public class ClientGameScene extends Scene {
 		Timer timer = new Timer();
 		TimerTask task = new TimerTask() {
 			public void run() {
-
+				
 				if (gameData.getPlayerWithID(player.getId()) != null) {
 					Iterator it = gameData.getPlayers().entrySet().iterator();
 				    while (it.hasNext()) {
@@ -196,7 +197,7 @@ public class ClientGameScene extends Scene {
 				}
 			}
 		};
-		timer.scheduleAtFixedRate(task, 2000, 30);
+		timer.scheduleAtFixedRate(task, 5000, 30);
 		//end game loop
 
 		return this;
