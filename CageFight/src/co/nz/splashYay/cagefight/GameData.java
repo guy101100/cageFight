@@ -8,7 +8,7 @@ public class GameData implements Serializable{
 	
 	
 	private static final long serialVersionUID = 1L;
-	//public HashSet<Player> players;
+	
 	private HashMap<Integer, Player> players = new HashMap<Integer, Player>();
 
 	public GameData(){
@@ -24,7 +24,7 @@ public class GameData implements Serializable{
 		return (Player) players.get(id);
 	}
 	
-	public void addPlayer(Player player){
+	public void addPlayer(Player player){ // causes concurrent modification errors
 		if (player !=null ) {
 			players.put(player.getId(), player);
 		} else {

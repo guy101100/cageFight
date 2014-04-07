@@ -26,14 +26,14 @@ public class SplashScene extends Scene {
 	
 	
 	
-	public void loadSplashRes() {
+	public void loadRes() {
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 		splashTA = new BitmapTextureAtlas(this.activity.getTextureManager(), 256, 256);
 		splashTR = BitmapTextureAtlasTextureRegionFactory.createFromAsset(splashTA, this.activity, "splash.png", 0, 0);
 		splashTA.load();
 	}
 	
-	public Scene createSplashScene() {
+	public Scene createScene() {
 		
 		this.setBackground(new Background(1, 1, 1));
 		Sprite splashImage = new Sprite(0, 0, splashTR, engine.getVertexBufferObjectManager());

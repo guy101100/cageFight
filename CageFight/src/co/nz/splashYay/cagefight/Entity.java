@@ -17,8 +17,7 @@ public class Entity implements Serializable{
 	protected float direction;
 	protected int currenthealth;
 	protected int maxhealth;
-	protected int speed;
-	
+	protected int speed;	
 	
 	
 	private transient Sprite sprite;

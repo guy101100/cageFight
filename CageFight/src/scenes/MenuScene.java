@@ -28,11 +28,11 @@ public class MenuScene extends Scene {
 
 	}
 
-	public void loadMenuRes() {
+	public void loadRes() {
 
 	}
 
-	public Scene createMenuScene() {
+	public Scene createScene() {
 
 		this.setBackground(new Background(0, 0, 0));
 

@@ -13,6 +13,7 @@ import scenes.SplashScene;
 public class SceneManager {
 
 	private AllScenes currentScene;
+	
 	private SplashScene splashScene;
 	private ClientGameScene clientGameScene;
 	private MenuScene menuScene;
@@ -66,43 +67,43 @@ public class SceneManager {
 
 	public void loadSplashRes() {
 		splashScene = new SplashScene(activity, engine, camera);
-		splashScene.loadSplashRes();
+		splashScene.loadRes();
 	}
 
 	public void loadMenuRes() {
 		menuScene = new MenuScene(activity, this);
-		menuScene.loadMenuRes();
+		menuScene.loadRes();
 	}
 
 	public void loadClientGameRes() {
 		clientGameScene = new ClientGameScene(activity, engine, camera, ipAddress, this);
-		clientGameScene.loadGameRes();
+		clientGameScene.loadRes();
 
 	}
 	public void loadServerGameRes() {
-		serverGameScene = new ServerGameScene(activity, engine, camera, ipAddress, this);
-		serverGameScene.loadServerGameRes();
+		serverGameScene = new ServerGameScene(activity, engine, camera, this);
+		serverGameScene.loadRes();
 
 	}
 	
 	//Create Scenes
 
 	public Scene createSplashScene() {
-		splashScene.createSplashScene();
+		splashScene.createScene();
 		return splashScene;
 	}
 
 	public Scene createMenuScene() {
-		menuScene.createMenuScene();
+		menuScene.createScene();
 		return menuScene;		
 	}
 
 	public Scene createClientGameScene() {
-		clientGameScene.createGameScene();
+		clientGameScene.createScene();
 		return clientGameScene;
 	}
 	public Scene createServerGameScene() {
-		serverGameScene.createServerGameScene();
+		serverGameScene.createScene();
 		return serverGameScene;
 	}
 	
