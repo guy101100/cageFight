@@ -81,7 +81,7 @@ public class ServerGameScene extends GameScene {
 					player.getPhyHandler().setVelocity(player.getMovementX() * player.getSpeed(), player.getMovementY() * player.getSpeed()); // moves
 																																				// player
 					player.setXPos(player.getSprite().getX());// set player position(in data) to the sprites position.
-					player.setYpos(player.getSprite().getX());
+					player.setYpos(player.getSprite().getY());
 
 					if (player.getMovementX() != 0 && player.getMovementY() != 0) {
 						player.getSprite().setRotation(MathUtils.radToDeg((float) Math.atan2(player.getMovementX(), -player.getMovementY())));

@@ -50,7 +50,7 @@ public class InFromClientNetCom extends Thread {
 					temp.setMovementY(recieved.getMovementY());
 					temp.setDirection(recieved.getDirection());
 
-					System.out.println(" [" + System.currentTimeMillis() + "] Player : " + player.getId() + " " + recieved.getMovementX() + " " + recieved.getMovementY() + " " + recieved.getDirection());
+					//System.out.println(" [" + System.currentTimeMillis() + "] Player : " + player.getId() + " " + recieved.getMovementX() + " " + recieved.getMovementY() + " " + recieved.getDirection());
 				} else if (obj instanceof Player) {
 					Player tempPlayer = (Player) obj;
 					if (gameData.getPlayerWithID(tempPlayer.getId()) == null) {

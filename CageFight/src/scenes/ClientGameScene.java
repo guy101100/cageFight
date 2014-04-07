@@ -10,6 +10,7 @@ import org.andengine.engine.camera.Camera;
 import org.andengine.engine.camera.hud.controls.AnalogOnScreenControl;
 import org.andengine.engine.camera.hud.controls.AnalogOnScreenControl.IAnalogOnScreenControlListener;
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl;
+import org.andengine.engine.handler.physics.PhysicsHandler;
 import org.andengine.entity.modifier.MoveModifier;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.background.Background;
@@ -42,6 +43,7 @@ public class ClientGameScene extends GameScene {
 	private ClientOutNetCom oNC;
 	private ClientInNetCom iNC;
 	private String ipAddress;
+	private boolean resetPlayer = false;
 	
 	
 	private Sprite sPlayer; 
@@ -114,7 +116,7 @@ public class ClientGameScene extends GameScene {
 
 			@Override
 			public void onControlClick(final AnalogOnScreenControl pAnalogOnScreenControl) {
-				
+				resetPlayer = false;
 			}
 		});
 		
@@ -142,14 +144,30 @@ public class ClientGameScene extends GameScene {
 				    while (it.hasNext()) {
 				        Map.Entry pairs = (Map.Entry)it.next();
 				        Player player = (Player) pairs.getValue();
-				        /*
-				        player.getPhyHandler().setVelocity(player.getMovementX() * player.getSpeed(), player.getMovementY() * player.getSpeed()); // moves player
-						if (player.getMovementX() != 0 && player.getMovementY() != 0) {
-							player.getSprite().setRotation(MathUtils.radToDeg((float) Math.atan2(player.getMovementX(), -player.getMovementY())));
-						}
-						*/
+				        
 				        
 						
+						
+						if (player.getMovementX() == 0 && player.getMovementY() == 0) { // if player is not inputing controls
+							if ((Math.abs(player.getXPos() - player.getSprite().getX()) > 10 ) || //if player is more than 10pixels away from actual coords
+									(Math.abs(player.getYpos() - player.getSprite().getY()) > 10 ) && !resetPlayer) { 
+								player.getSprite().setPosition(player.getXPos(), player.getYpos());
+								resetPlayer = true;
+								System.out.println(player.getXPos() + " " + player.getYpos());
+								
+							} 
+
+						} else {
+							player.getPhyHandler().setVelocity(player.getMovementX() * player.getSpeed(), player.getMovementY() * player.getSpeed()); // moves player
+							if (player.getMovementX() != 0 && player.getMovementY() != 0) {								
+								player.getSprite().setRotation(MathUtils.radToDeg((float) Math.atan2(player.getMovementX(), -player.getMovementY())));
+							}
+						}
+						
+						
+						
+				        
+						/*
 				        if (player.getMovementX() == 0 && player.getMovementY() == 0) { // if player is not inputing controls
 							if ((player.getXPos() - player.getSprite().getX() > 50 || player.getXPos() - player.getSprite().getX() < -50) || //if player is more than 50pixels away from actual coords
 									(player.getYpos() - player.getSprite().getY() > 50 || player.getYpos() - player.getSprite().getY() < -50)) { 
@@ -162,6 +180,11 @@ public class ClientGameScene extends GameScene {
 									player.getMoveModifier().reset(0.028f, player.getSprite().getX(), player.getXPos(), player.getSprite().getY(), player.getYpos()); // move player to where actual coords are
 
 								}
+							} else {
+								if (player.getSprite().getEntityModifierCount() > 0) {
+									player.getSprite().clearEntityModifiers();
+								}
+								
 							}
 
 						} else {
@@ -171,6 +194,8 @@ public class ClientGameScene extends GameScene {
 								player.getSprite().setRotation(MathUtils.radToDeg((float) Math.atan2(player.getMovementX(), -player.getMovementY())));
 							}
 						}	
+						
+						*/
 						
 						
 						
@@ -189,6 +214,26 @@ public class ClientGameScene extends GameScene {
 
 		return this;
 
+	}
+	
+	@Override
+	public void addPlayerToGameDataObj(Player newPlayer) {
+		if (newPlayer != null) {
+			gameData.addPlayer(newPlayer);
+			Sprite tempS = new Sprite(camera.getWidth() / 2, camera.getHeight() / 2, playerTextureRegion, this.engine.getVertexBufferObjectManager());
+
+			final PhysicsHandler tempPhyHandler = new PhysicsHandler(tempS); // added
+			tempS.registerUpdateHandler(tempPhyHandler); // added
+			this.attachChild(tempS);
+			newPlayer.setSprite(tempS);
+			newPlayer.setPhyHandler(tempPhyHandler);
+			tempS.setPosition(newPlayer.getXPos(), newPlayer.getYpos());
+			if (newPlayer.getId() == sceneManager.getPlayer().getId()) {
+				sPlayer = tempS;
+				camera.setChaseEntity(sPlayer);
+			}
+
+		}
 	}
 	
 	
