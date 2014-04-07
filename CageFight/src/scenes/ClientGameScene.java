@@ -116,7 +116,7 @@ public class ClientGameScene extends GameScene {
 
 			@Override
 			public void onControlClick(final AnalogOnScreenControl pAnalogOnScreenControl) {
-				resetPlayer = false;
+				
 			}
 		});
 		
@@ -145,57 +145,48 @@ public class ClientGameScene extends GameScene {
 				        Map.Entry pairs = (Map.Entry)it.next();
 				        Player player = (Player) pairs.getValue();
 				        
-				        
-						
-						
+						/* working
+						player.getPhyHandler().setVelocity(player.getMovementX() * player.getSpeed(), player.getMovementY() * player.getSpeed()); // moves player
+						if (player.getMovementX() != 0 && player.getMovementY() != 0) {
+							player.getSprite().setRotation(MathUtils.radToDeg((float) Math.atan2(player.getMovementX(), -player.getMovementY())));
+						}
 						if (player.getMovementX() == 0 && player.getMovementY() == 0) { // if player is not inputing controls
-							if ((Math.abs(player.getXPos() - player.getSprite().getX()) > 10 ) || //if player is more than 10pixels away from actual coords
-									(Math.abs(player.getYpos() - player.getSprite().getY()) > 10 ) && !resetPlayer) { 
+							if (((Math.abs(player.getXPos() - player.getSprite().getX()) > 10) || // if player is more than 10pixels away from actual coords
+							(Math.abs(player.getYpos() - player.getSprite().getY()) > 10))) {
 								player.getSprite().setPosition(player.getXPos(), player.getYpos());
-								resetPlayer = true;
-								System.out.println(player.getXPos() + " " + player.getYpos());
-								
-							} 
-
-						} else {
-							player.getPhyHandler().setVelocity(player.getMovementX() * player.getSpeed(), player.getMovementY() * player.getSpeed()); // moves player
-							if (player.getMovementX() != 0 && player.getMovementY() != 0) {								
-								player.getSprite().setRotation(MathUtils.radToDeg((float) Math.atan2(player.getMovementX(), -player.getMovementY())));
 							}
 						}
+						*/
 						
 						
 						
-				        
-						/*
-				        if (player.getMovementX() == 0 && player.getMovementY() == 0) { // if player is not inputing controls
-							if ((player.getXPos() - player.getSprite().getX() > 50 || player.getXPos() - player.getSprite().getX() < -50) || //if player is more than 50pixels away from actual coords
-									(player.getYpos() - player.getSprite().getY() > 50 || player.getYpos() - player.getSprite().getY() < -50)) { 
-								
+						
+				        player.getPhyHandler().setVelocity(player.getMovementX() * player.getSpeed(), player.getMovementY() * player.getSpeed()); // moves player
+						if (player.getMovementX() != 0 && player.getMovementY() != 0) {
+							player.getSprite().setRotation(MathUtils.radToDeg((float) Math.atan2(player.getMovementX(), -player.getMovementY())));
+						}				        
+						
+						if (player.getMovementX() == 0 && player.getMovementY() == 0) { // if player is not inputing controls
+							if (((Math.abs(player.getXPos() - player.getSprite().getX()) > 10) || // if player is more than 10pixels away from actual coords
+							(Math.abs(player.getYpos() - player.getSprite().getY()) > 10))) {
+
 								if (player.getSprite().getEntityModifierCount() == 0) { // if there is no move modifier add one
-									MoveModifier moveModifier = new MoveModifier(0.028f, player.getSprite().getX(), player.getXPos(), player.getSprite().getY(), player.getYpos());
+									MoveModifier moveModifier = new MoveModifier(2f, player.getSprite().getX(), player.getXPos(), player.getSprite().getY(), player.getYpos());
 									player.setMoveModifier(moveModifier);
 									player.getSprite().registerEntityModifier(moveModifier);
 								} else {
-									player.getMoveModifier().reset(0.028f, player.getSprite().getX(), player.getXPos(), player.getSprite().getY(), player.getYpos()); // move player to where actual coords are
+									player.getMoveModifier().reset(2f, player.getSprite().getX(), player.getXPos(), player.getSprite().getY(), player.getYpos()); // move player to where actual coords are
 
 								}
 							} else {
 								if (player.getSprite().getEntityModifierCount() > 0) {
 									player.getSprite().clearEntityModifiers();
 								}
-								
+
 							}
 
-						} else {
-							player.getSprite().clearEntityModifiers();
-							player.getPhyHandler().setVelocity(player.getMovementX() * player.getSpeed(), player.getMovementY() * player.getSpeed()); // moves player
-							if (player.getMovementX() != 0 && player.getMovementY() != 0) {
-								player.getSprite().setRotation(MathUtils.radToDeg((float) Math.atan2(player.getMovementX(), -player.getMovementY())));
-							}
-						}	
+						}
 						
-						*/
 						
 						
 						
