@@ -50,7 +50,7 @@ public class OutToClientListener extends Thread {
 		for (OutToClientNetCom onc : clients) {
 			onc.updateClient();
 		}
-		long fin = System.currentTimeMillis();
+		//long fin = System.currentTimeMillis();
 		//System.out.println("time : " + (fin - start));
 	}
 

@@ -35,30 +35,22 @@ import co.nz.splashYay.cagefight.network.ClientOutNetCom;
 import com.badlogic.gdx.math.Vector2;
 
 public class ClientGameScene extends GameScene {
-	
-	
-	
-	//networking
+
+	// networking
 	private SceneManager sceneManager;
 	private ClientOutNetCom oNC;
 	private ClientInNetCom iNC;
 	private String ipAddress;
-	private boolean resetPlayer = false;
-	
-	
-	private Sprite sPlayer; 
+
+	private Sprite sPlayer;
 	private BitmapTextureAtlas mOnScreenControlTexture;
 	private ITextureRegion mOnScreenControlBaseTextureRegion;
 	private ITextureRegion mOnScreenControlKnobTextureRegion;
-	
-	//control values
+
+	// control values
 	PlayerControlCommands playerCommands = new PlayerControlCommands();
-	
-	
 
-
-
-	public ClientGameScene(BaseGameActivity act, Engine eng, Camera cam, String ipAddress, SceneManager sceneManager){
+	public ClientGameScene(BaseGameActivity act, Engine eng, Camera cam, String ipAddress, SceneManager sceneManager) {
 		this.activity = act;
 		this.engine = eng;
 		this.camera = cam;
@@ -66,40 +58,36 @@ public class ClientGameScene extends GameScene {
 		this.sceneManager = sceneManager;
 		gameData = new GameData();
 	}
-	
+
 	public void loadRes() {
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/"); // base folder for gfx
 		this.playerTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 64, 64); // width and height must be factor of two eg:2,4,8,16 etc
 		this.playerTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(playerTexture, this.activity, "player.png", 0, 0);
-		playerTexture.load(); //loads the player texture
+		playerTexture.load(); // loads the player texture
 
 		this.mBitmapTextureAtlas = new BitmapTextureAtlas(this.activity.getTextureManager(), 32, 32, TextureOptions.BILINEAR);
 		this.mBitmapTextureAtlas.load();
-		//loads the on screen joystick images
+		// loads the on screen joystick images
 		this.mOnScreenControlTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 256, 128, TextureOptions.BILINEAR);
 		this.mOnScreenControlBaseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mOnScreenControlTexture, this.activity, "onscreen_control_base.png", 0, 0);
 		this.mOnScreenControlKnobTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mOnScreenControlTexture, this.activity, "onscreen_control_knob.png", 128, 0);
 		this.mOnScreenControlTexture.load();
 
 	}
-	
-	
-	
-	
+
 	public Scene createScene() {
 		this.engine.registerUpdateHandler(new FPSLogger());
-		
 
 		oNC = new ClientOutNetCom(ipAddress, sceneManager);
 		iNC = new ClientInNetCom(ipAddress, gameData, this);
 
 		this.setBackground(new Background(0, 125, 58));
-		this.phyWorld = new FixedStepPhysicsWorld(30, 30, new Vector2(0, 0), false); //Gravity! //sensorManager.Gavity_earth
+		this.phyWorld = new FixedStepPhysicsWorld(30, 30, new Vector2(0, 0), false); // Gravity! //sensorManager.Gavity_earth
 		this.registerUpdateHandler(phyWorld);
 
 		setUpMap();
-		
-		//sets what the joystick does
+
+		// sets what the joystick does
 		final AnalogOnScreenControl analogOnScreenControl = new AnalogOnScreenControl(0, camera.getHeight() - this.mOnScreenControlBaseTextureRegion.getHeight(), this.camera, this.mOnScreenControlBaseTextureRegion, this.mOnScreenControlKnobTextureRegion, 0.1f, 200, this.activity.getVertexBufferObjectManager(), new IAnalogOnScreenControlListener() {
 			@Override
 			public void onControlChange(final BaseOnScreenControl pBaseOnScreenControl, final float pValueX, final float pValueY) {
@@ -116,10 +104,10 @@ public class ClientGameScene extends GameScene {
 
 			@Override
 			public void onControlClick(final AnalogOnScreenControl pAnalogOnScreenControl) {
-				
+
 			}
 		});
-		
+
 		analogOnScreenControl.getControlBase().setBlendFunction(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 		analogOnScreenControl.getControlBase().setAlpha(0.5f);
 		analogOnScreenControl.getControlBase().setScaleCenter(0, 128);
@@ -128,71 +116,18 @@ public class ClientGameScene extends GameScene {
 		analogOnScreenControl.refreshControlKnobPosition();
 
 		setChildScene(analogOnScreenControl);// attach control joystick
-		
-		//start networking threads
+
+		// start networking threads
 		oNC.start();
 		iNC.start();
-		
-		
-		//game loop
+
+		// game loop
 		Timer timer = new Timer();
 		TimerTask task = new TimerTask() {
 			public void run() {
-				
+
 				if (gameData.getPlayerWithID(sceneManager.getPlayer().getId()) != null) {
-					Iterator it = gameData.getPlayers().entrySet().iterator();
-				    while (it.hasNext()) {
-				        Map.Entry pairs = (Map.Entry)it.next();
-				        Player player = (Player) pairs.getValue();
-				        
-						/* working
-						player.getPhyHandler().setVelocity(player.getMovementX() * player.getSpeed(), player.getMovementY() * player.getSpeed()); // moves player
-						if (player.getMovementX() != 0 && player.getMovementY() != 0) {
-							player.getSprite().setRotation(MathUtils.radToDeg((float) Math.atan2(player.getMovementX(), -player.getMovementY())));
-						}
-						if (player.getMovementX() == 0 && player.getMovementY() == 0) { // if player is not inputing controls
-							if (((Math.abs(player.getXPos() - player.getSprite().getX()) > 10) || // if player is more than 10pixels away from actual coords
-							(Math.abs(player.getYpos() - player.getSprite().getY()) > 10))) {
-								player.getSprite().setPosition(player.getXPos(), player.getYpos());
-							}
-						}
-						*/
-						
-						
-						
-						
-				        player.getPhyHandler().setVelocity(player.getMovementX() * player.getSpeed(), player.getMovementY() * player.getSpeed()); // moves player
-						if (player.getMovementX() != 0 && player.getMovementY() != 0) {
-							player.getSprite().setRotation(MathUtils.radToDeg((float) Math.atan2(player.getMovementX(), -player.getMovementY())));
-						}				        
-						
-						if (player.getMovementX() == 0 && player.getMovementY() == 0) { // if player is not inputing controls
-							if (((Math.abs(player.getXPos() - player.getSprite().getX()) > 10) || // if player is more than 10pixels away from actual coords
-							(Math.abs(player.getYpos() - player.getSprite().getY()) > 10))) {
-
-								if (player.getSprite().getEntityModifierCount() == 0) { // if there is no move modifier add one
-									MoveModifier moveModifier = new MoveModifier(2f, player.getSprite().getX(), player.getXPos(), player.getSprite().getY(), player.getYpos());
-									player.setMoveModifier(moveModifier);
-									player.getSprite().registerEntityModifier(moveModifier);
-								} else {
-									player.getMoveModifier().reset(2f, player.getSprite().getX(), player.getXPos(), player.getSprite().getY(), player.getYpos()); // move player to where actual coords are
-
-								}
-							} else {
-								if (player.getSprite().getEntityModifierCount() > 0) {
-									player.getSprite().clearEntityModifiers();
-								}
-
-							}
-
-						}
-						
-						
-						
-						
-				        
-				    }
-				    
+					movePlayers();
 					
 					
 					
@@ -201,12 +136,54 @@ public class ClientGameScene extends GameScene {
 			}
 		};
 		timer.scheduleAtFixedRate(task, 2000, 30);
-		//end game loop
+		// end game loop
 
 		return this;
 
 	}
-	
+
+	private void movePlayers() {
+		Iterator it = gameData.getPlayers().entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry pairs = (Map.Entry) it.next();
+			Player player = (Player) pairs.getValue();
+
+			// move player
+			if (player.getMovementX() != 0 || player.getMovementY() != 0) {
+				if (player.getSprite().getEntityModifierCount() > 0) {
+					player.getSprite().clearEntityModifiers();
+				}
+			}
+
+			player.getPhyHandler().setVelocity(player.getMovementX() * player.getSpeed(), player.getMovementY() * player.getSpeed()); // moves player
+			if (player.getMovementX() != 0 && player.getMovementY() != 0) {
+				player.getSprite().setRotation(player.getDirection());
+			}
+
+			// if player is not moving and is out of sync, move to actual position.
+			float moveTime = 2f; // time in seconds it takes to move to actual position
+			if (player.getMovementX() == 0 && player.getMovementY() == 0) { // if player is not inputing controls
+				if (((Math.abs(player.getXPos() - player.getSprite().getX()) > 5) || // if player is more than 5pixels away from actual coords
+				(Math.abs(player.getYpos() - player.getSprite().getY()) > 5))) {
+
+					if (player.getSprite().getEntityModifierCount() == 0) { // if there is no move modifier add one
+						MoveModifier moveModifier = new MoveModifier(moveTime, player.getSprite().getX(), player.getXPos(), player.getSprite().getY(), player.getYpos());
+						player.setMoveModifier(moveModifier);
+						player.getSprite().registerEntityModifier(moveModifier);
+					} else {
+						player.getMoveModifier().reset(moveTime, player.getSprite().getX(), player.getXPos(), player.getSprite().getY(), player.getYpos()); // move player to where actual coords are
+					}
+				} else {
+					if (player.getSprite().getEntityModifierCount() > 0) {
+						player.getSprite().clearEntityModifiers();
+					}
+				}
+			}
+
+		}
+
+	}
+
 	@Override
 	public void addPlayerToGameDataObj(Player newPlayer) {
 		if (newPlayer != null) {
@@ -226,7 +203,5 @@ public class ClientGameScene extends GameScene {
 
 		}
 	}
-	
-	
-	
+
 }
