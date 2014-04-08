@@ -42,7 +42,7 @@ public class ClientInNetCom extends Thread {
 
 				try {
 					GameData gameDataIn = (GameData) inFromServer.readUnshared();
-					System.out.println("recieved data");
+					System.out.println("[" + System.currentTimeMillis() + "] recieved data");
 					
 					for (Entry<Integer, Player> entry: gameDataIn.getPlayers().entrySet()) {					    
 					    Player playerIn = entry.getValue();

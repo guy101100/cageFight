@@ -1,5 +1,7 @@
 package co.nz.splashYay.cagefight;
 
+import org.andengine.engine.Engine;
+import org.andengine.engine.LimitedFPSEngine;
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
@@ -18,13 +20,19 @@ public class MainActivity extends BaseGameActivity {
 
 	private SceneManager sceneManager;
 	private Camera mCamera;
+	
+	@Override
+	public Engine onCreateEngine(EngineOptions engOpt) {
+		
+		return new LimitedFPSEngine(engOpt, 30);
+		
+	}
 
 	@Override
 	public EngineOptions onCreateEngineOptions() {
 		// TODO Auto-generated method stub
-		mCamera = new Camera(0, 0, CAM_WIDTH, CAM_HEIGHT);
-		EngineOptions options = new EngineOptions(true, ScreenOrientation.LANDSCAPE_FIXED, new RatioResolutionPolicy(CAM_WIDTH, CAM_HEIGHT), mCamera);
-
+		mCamera = new Camera(0, 0, CAM_WIDTH, CAM_HEIGHT);		
+		EngineOptions options = new EngineOptions(true, ScreenOrientation.LANDSCAPE_FIXED, new RatioResolutionPolicy(CAM_WIDTH, CAM_HEIGHT), mCamera);		
 		return options;
 	}
 

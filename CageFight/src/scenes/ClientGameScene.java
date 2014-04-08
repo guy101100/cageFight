@@ -128,7 +128,9 @@ public class ClientGameScene extends GameScene {
 			@Override
 			public void onUpdate(float pSecondsElapsed) {
 				if (gameData.getPlayerWithID(sceneManager.getPlayer().getId()) != null) {
-					//movePlayers();
+					movePlayers();
+					//mp();
+					
 					
 					
 					oNC.sendToServer(playerCommands);
@@ -149,17 +151,22 @@ public class ClientGameScene extends GameScene {
 
 	}
 	
-	private void movePlayers() {
+	/*
+	 * Moves players by setting a moveModifier : move from here to there in X seconds.
+	 */
+	private void mp() {
 		Iterator it = gameData.getPlayers().entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry pairs = (Map.Entry) it.next();
 			Player player = (Player) pairs.getValue();
-				
+
+			// move player			
 			if (player.getMovementX() != 0 && player.getMovementY() != 0) {
 				player.getSprite().setRotation(player.getDirection());
 			}
-			
-			float moveTime = 0.1f; // time in seconds it takes to move to actual position
+
+			// if player is not moving and is out of sync, move to actual position.
+			float moveTime = 0.125f; // time in seconds it takes to move to actual position
 
 			if (player.getSprite().getEntityModifierCount() == 0) { // if there is no move modifier add one
 				MoveModifier moveModifier = new MoveModifier(moveTime, player.getSprite().getX(), player.getXPos(), player.getSprite().getY(), player.getYpos());
@@ -171,8 +178,54 @@ public class ClientGameScene extends GameScene {
 
 		}
 	}
-
 	
+	/*
+	 * move players by setting velocity, correct position if out by more that 5
+	 */
+	private void movePlayers() {
+		Iterator it = gameData.getPlayers().entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry pairs = (Map.Entry) it.next();
+			Player player = (Player) pairs.getValue();
+
+			// move player
+			
+			if (player.getMovementX() != 0 || player.getMovementY() != 0) {
+				if (player.getSprite().getEntityModifierCount() > 0) {
+					player.getSprite().clearEntityModifiers();
+				}
+			}
+			
+
+			player.getPhyHandler().setVelocity(player.getMovementX() * player.getSpeed(), player.getMovementY() * player.getSpeed()); // moves player
+			if (player.getMovementX() != 0 && player.getMovementY() != 0) {
+				player.getSprite().setRotation(player.getDirection());
+			}
+			
+			// if player is not moving and is out of sync, move to actual position.
+			float moveTime = 1f; // time in seconds it takes to move to actual position
+			if (player.getMovementX() == 0 && player.getMovementY() == 0) { // if player is not inputing controls
+				if (((Math.abs(player.getXPos() - player.getSprite().getX()) > 5) || // if player is more than 5pixels away from actual coords
+				(Math.abs(player.getYpos() - player.getSprite().getY()) > 5))) {
+
+					if (player.getSprite().getEntityModifierCount() == 0) { // if there is no move modifier add one
+						MoveModifier moveModifier = new MoveModifier(moveTime, player.getSprite().getX(), player.getXPos(), player.getSprite().getY(), player.getYpos());
+						player.setMoveModifier(moveModifier);
+						player.getSprite().registerEntityModifier(moveModifier);
+					} else {
+						//player.getMoveModifier().reset(moveTime, player.getSprite().getX(), player.getXPos(), player.getSprite().getY(), player.getYpos()); // move player to where actual coords are
+					}
+				} else {
+					if (player.getSprite().getEntityModifierCount() > 0) {
+						player.getSprite().clearEntityModifiers();
+					}
+				}
+			}
+			
+
+		}
+
+	}
 
 	@Override
 	public void addPlayerToGameDataObj(Player newPlayer) {
