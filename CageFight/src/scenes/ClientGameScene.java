@@ -96,8 +96,7 @@ public class ClientGameScene extends GameScene {
 			public void onControlChange(final BaseOnScreenControl pBaseOnScreenControl, final float pValueX, final float pValueY) {
 
 				playerCommands.setMovementX(pValueX);
-				playerCommands.setMovementY(pValueY);
-				playerCommands.setDirection(MathUtils.radToDeg((float) Math.atan2(pValueX, -pValueY)));
+				playerCommands.setMovementY(pValueY);				
 				if (sPlayer != null) {
 					playerCommands.setClientPosX(sPlayer.getX());
 					playerCommands.setClientPosY(sPlayer.getY());

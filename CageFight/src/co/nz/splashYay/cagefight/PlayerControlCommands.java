@@ -9,8 +9,7 @@ public class PlayerControlCommands implements Serializable {
 	
 	private float movementX;
 	private float movementY;
-	private float direction;
-	
+		
 	private float clientPosX;
 	private float clientPosY;
 	
@@ -18,7 +17,6 @@ public class PlayerControlCommands implements Serializable {
 	public PlayerControlCommands(){
 		movementX =0;
 		movementY = 0;
-		direction = 0;
 		clientPosX = 0;
 		clientPosY = 0;
 	}
@@ -44,16 +42,7 @@ public class PlayerControlCommands implements Serializable {
 	}
 
 
-	public float getDirection() {
-		return direction;
-	}
-
-
-	public void setDirection(float direction) {
-		this.direction = direction;
-	}
-
-
+	
 	public float getClientPosX() {
 		return clientPosX;
 	}
