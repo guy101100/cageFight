@@ -2,6 +2,8 @@ package co.nz.splashYay.cagefight;
 
 import java.io.Serializable;
 
+import com.badlogic.gdx.physics.box2d.Body;
+
 public class Player extends Entity implements Serializable{
 
 	/**
@@ -13,6 +15,7 @@ public class Player extends Entity implements Serializable{
 	private int experience;
 	private float movementX = 0;
 	private float movementY = 0;
+	
 	
 	
 	public Player(String name, int id, int maxhealth, int currenthealth, int xpos, int ypos) {
@@ -61,6 +64,8 @@ public class Player extends Entity implements Serializable{
 	public void setMovementY(float movementY) {
 		this.movementY = movementY;
 	}
+	
+	
 	
 	/*
 	 * Used by the ClientInNetCom to update the players data

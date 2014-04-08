@@ -128,8 +128,8 @@ public class ClientGameScene extends GameScene {
 			@Override
 			public void onUpdate(float pSecondsElapsed) {
 				if (gameData.getPlayerWithID(sceneManager.getPlayer().getId()) != null) {
-					movePlayers();
-					//mp();
+					//movePlayers();
+					mp();
 					
 					
 					
