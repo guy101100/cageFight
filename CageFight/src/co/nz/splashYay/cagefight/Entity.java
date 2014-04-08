@@ -6,6 +6,8 @@ import org.andengine.engine.handler.physics.PhysicsHandler;
 import org.andengine.entity.modifier.MoveModifier;
 import org.andengine.entity.sprite.Sprite;
 
+import com.badlogic.gdx.physics.box2d.Body;
+
 public class Entity implements Serializable{
 	
 	/**
@@ -23,6 +25,7 @@ public class Entity implements Serializable{
 	private transient Sprite sprite;
 	private transient PhysicsHandler phyHandler;
 	private transient MoveModifier moveModifier;
+	private transient Body body;
 	
 	public Entity(int xpos, int ypos, int maxhealth, int currenthealth)
 	{
@@ -110,6 +113,13 @@ public class Entity implements Serializable{
 
 	public void setDirection(float direction) {
 		this.direction = direction;
+	}
+	
+	public void setBody(Body body){
+		this.body = body;
+	}
+	public Body getBody(){
+		return body;
 	}
 	
 	

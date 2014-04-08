@@ -8,11 +8,16 @@ import java.util.TimerTask;
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.handler.IUpdateHandler;
+import org.andengine.engine.handler.physics.PhysicsHandler;
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.scene.background.Background;
+import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.util.FPSLogger;
 import org.andengine.extension.physics.box2d.FixedStepPhysicsWorld;
+import org.andengine.extension.physics.box2d.PhysicsConnector;
+import org.andengine.extension.physics.box2d.PhysicsFactory;
+import org.andengine.extension.physics.box2d.util.Vector2Pool;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
@@ -26,6 +31,9 @@ import co.nz.splashYay.cagefight.network.InFromClientListener;
 import co.nz.splashYay.cagefight.network.OutToClientListener;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 
 public class ServerGameScene extends GameScene {
 	
@@ -98,8 +106,13 @@ public class ServerGameScene extends GameScene {
 			Map.Entry pairs = (Map.Entry) it.next();
 			Player player = (Player) pairs.getValue();
 
-			player.getPhyHandler().setVelocity(player.getMovementX() * player.getSpeed(), player.getMovementY() * player.getSpeed()); // moves
-																																		// player
+			//player.getPhyHandler().setVelocity(player.getMovementX() * player.getSpeed(), player.getMovementY() * player.getSpeed()); // moves player
+			
+			final Body playerBody = player.getBody();
+			final Vector2 velocity = Vector2Pool.obtain(player.getMovementX() * 5, player.getMovementY() * 5);
+			playerBody.setLinearVelocity(velocity);
+			Vector2Pool.recycle(velocity);
+			
 			player.setXPos(player.getSprite().getX());// set player position(in data) to the sprites position.
 			player.setYpos(player.getSprite().getY());
 
@@ -109,16 +122,36 @@ public class ServerGameScene extends GameScene {
 				player.setDirection(direction);
 			}
 			
-			for (Player tempPlayer : gameData.getPlayers().values()) {
-				if (tempPlayer.getId() != player.getId()) {
-					if (player.getSprite().collidesWith(tempPlayer.getSprite())) {
-						player.getPhyHandler().setVelocity(0, 0);
-					}	
-				}
-			}
+			
 			
 		}
 	}
+	
+	@Override
+	public void addPlayerToGameDataObj(Player newPlayer) {
+		if (newPlayer != null) {
+			gameData.addPlayer(newPlayer);
+			Sprite tempS = new Sprite(camera.getWidth() / 2, camera.getHeight() / 2, playerTextureRegion, this.engine.getVertexBufferObjectManager());
+
+			//final PhysicsHandler tempPhyHandler = new PhysicsHandler(tempS); // added
+			//tempS.registerUpdateHandler(tempPhyHandler); // added
+			
+			final FixtureDef playerFixDef = PhysicsFactory.createFixtureDef(1, 0f, 0.5f);
+			newPlayer.setBody(PhysicsFactory.createCircleBody(phyWorld, tempS, BodyType.DynamicBody, playerFixDef));
+			
+			phyWorld.registerPhysicsConnector(new PhysicsConnector(tempS, newPlayer.getBody(), true, false));			
+			
+			this.attachChild(tempS);			
+			
+			newPlayer.setSprite(tempS);
+			//newPlayer.setPhyHandler(tempPhyHandler);
+			
+			tempS.setPosition(newPlayer.getXPos(), newPlayer.getYpos());
+
+		}
+	}
+	
+	
 
 	
 }
