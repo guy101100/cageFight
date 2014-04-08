@@ -7,6 +7,9 @@ import java.util.TimerTask;
 
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
+import org.andengine.engine.handler.IUpdateHandler;
+import org.andengine.engine.handler.timer.ITimerCallback;
+import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.util.FPSLogger;
 import org.andengine.extension.physics.box2d.FixedStepPhysicsWorld;
@@ -68,31 +71,53 @@ public class ServerGameScene extends GameScene {
 		oTCL = new OutToClientListener(gameData, this);
 		iFCL.start();
 		oTCL.start();
+		
+		
+		//game loop
+		this.registerUpdateHandler(new IUpdateHandler() {
+			@Override
+			public void onUpdate(float pSecondsElapsed) {
 
-		Timer timer = new Timer();
-		TimerTask task = new TimerTask() {
-			public void run() {
-				// job code here
-				Iterator it = gameData.getPlayers().entrySet().iterator();
-				while (it.hasNext()) {
-					Map.Entry pairs = (Map.Entry) it.next();
-					Player player = (Player) pairs.getValue();
-
-					player.getPhyHandler().setVelocity(player.getMovementX() * player.getSpeed(), player.getMovementY() * player.getSpeed()); // moves
-																																				// player
-					player.setXPos(player.getSprite().getX());// set player position(in data) to the sprites position.
-					player.setYpos(player.getSprite().getY());
-
-					if (player.getMovementX() != 0 && player.getMovementY() != 0) {
-						player.getSprite().setRotation(MathUtils.radToDeg((float) Math.atan2(player.getMovementX(), -player.getMovementY())));
-					}
-				}
-
+				movePlayers();
 				oTCL.updateClients();
+
 			}
 
-		};
-		timer.scheduleAtFixedRate(task, 2000, 30);
+			@Override
+			public void reset() {
+			}
+		});
+		//end game loop
+		
+		
+	}
+	
+	private void movePlayers(){
+		Iterator it = gameData.getPlayers().entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry pairs = (Map.Entry) it.next();
+			Player player = (Player) pairs.getValue();
+
+			player.getPhyHandler().setVelocity(player.getMovementX() * player.getSpeed(), player.getMovementY() * player.getSpeed()); // moves
+																																		// player
+			player.setXPos(player.getSprite().getX());// set player position(in data) to the sprites position.
+			player.setYpos(player.getSprite().getY());
+
+			if (player.getMovementX() != 0 && player.getMovementY() != 0) {
+				float direction = MathUtils.radToDeg((float) Math.atan2(player.getMovementX(), -player.getMovementY()));
+				player.getSprite().setRotation(direction);
+				player.setDirection(direction);
+			}
+			
+			for (Player tempPlayer : gameData.getPlayers().values()) {
+				if (tempPlayer.getId() != player.getId()) {
+					if (player.getSprite().collidesWith(tempPlayer.getSprite())) {
+						player.getPhyHandler().setVelocity(0, 0);
+					}	
+				}
+			}
+			
+		}
 	}
 
 	

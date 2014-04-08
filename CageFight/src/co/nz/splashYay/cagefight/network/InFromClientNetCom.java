@@ -48,7 +48,7 @@ public class InFromClientNetCom extends Thread {
 					Player temp = gameData.getPlayerWithID(player.getId());
 					temp.setMovementX(recieved.getMovementX());
 					temp.setMovementY(recieved.getMovementY());
-					temp.setDirection(recieved.getDirection());
+					
 
 					//System.out.println(" [" + System.currentTimeMillis() + "] Player : " + player.getId() + " " + recieved.getMovementX() + " " + recieved.getMovementY() + " " + recieved.getDirection());
 				} else if (obj instanceof Player) {
