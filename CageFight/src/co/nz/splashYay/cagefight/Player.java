@@ -16,7 +16,11 @@ public class Player extends Entity implements Serializable{
 	private int level;
 	private float movementX = 0;
 	private float movementY = 0;
+	private boolean attackCommand = false;
+	
 	private float respawnTime = 0;
+	
+	private State state;
 	
 	
 	
@@ -25,6 +29,7 @@ public class Player extends Entity implements Serializable{
 		this.id = id;
 		this.name = name;
 		this.level = 0;
+		this.state = State.IDLE;
 		
 	}
 	
@@ -35,6 +40,24 @@ public class Player extends Entity implements Serializable{
 		
 	}
 	
+	/*
+	 * Checks and update the players state
+	 */
+	public void checkState(){
+		if (this.getCurrenthealth() >= 0) {
+			setState(State.DEAD);
+			
+		} else  if (attackCommand) {
+			setState(State.ATTACKING);	
+			
+		} else if (getMovementX() != 0 && getMovementY() != 0) {
+			setState(State.MOVING);
+			
+		} else {
+			setState(State.IDLE);
+		}	
+		
+	}
 	
 	
 	
@@ -109,6 +132,27 @@ public class Player extends Entity implements Serializable{
 
 	public void setLevel(int level) {
 		this.level = level;
+	}
+	
+	public State getState() {
+		return state;
+	}
+
+
+	public void setState(State state) {
+		this.state = state;
+	}
+	
+	
+	/*
+	 * Returns true if the player has sent the attack command
+	 */
+	public boolean isAttackCommand() {
+		return attackCommand;
+	}
+
+	public void setAttackCommand(boolean attackCommand) {
+		this.attackCommand = attackCommand;
 	}
 
 	/*

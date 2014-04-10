@@ -108,6 +108,7 @@ public class ServerGameScene extends GameScene {
 			Player player = (Player) pairs.getValue();
 			
 			
+			
 			if (player.getState() == State.MOVING) {
 				player.getBody().setActive(true);
 				final Body playerBody = player.getBody();

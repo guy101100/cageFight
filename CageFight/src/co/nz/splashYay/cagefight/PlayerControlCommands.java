@@ -9,6 +9,8 @@ public class PlayerControlCommands implements Serializable {
 	
 	private float movementX;
 	private float movementY;
+	
+	private boolean attackCommand;
 		
 	private float clientPosX;
 	private float clientPosY;
@@ -19,6 +21,7 @@ public class PlayerControlCommands implements Serializable {
 		movementY = 0;
 		clientPosX = 0;
 		clientPosY = 0;
+		attackCommand = false;
 	}
 
 
@@ -61,6 +64,18 @@ public class PlayerControlCommands implements Serializable {
 	public void setClientPosY(float clientPosY) {
 		this.clientPosY = clientPosY;
 	}
+
+
+	public boolean isAttackCommand() {
+		return attackCommand;
+	}
+
+
+	public void setAttackCommand(boolean attackCommand) {
+		this.attackCommand = attackCommand;
+	}
+	
+	
 	
 	
 	
