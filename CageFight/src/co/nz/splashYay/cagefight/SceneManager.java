@@ -110,7 +110,7 @@ public class SceneManager {
 	
 	//setters	
 	public void createPlayerAndStartGame(int id) {		
-		this.player = new Player((id + " "), id, 1, 1, 0, 0);		
+		this.player = new Player((id + ""), id, 1, 1, 0, 0);		
 		loadClientGameRes();
 		createClientGameScene();
 		setCurrentScene(AllScenes.GAME_CLIENT);

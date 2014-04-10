@@ -107,7 +107,7 @@ public class ServerGameScene extends GameScene {
 			Map.Entry pairs = (Map.Entry) it.next();
 			Player player = (Player) pairs.getValue();
 			
-			
+			player.checkState();// checks and updates the players state
 			
 			if (player.getState() == State.MOVING) {
 				player.getBody().setActive(true);
@@ -133,7 +133,7 @@ public class ServerGameScene extends GameScene {
 				
 				
 			} else if (player.getState() == State.DEAD) {
-				player.getBody().setActive(false);
+				player.killPlayer();
 				
 				
 			}

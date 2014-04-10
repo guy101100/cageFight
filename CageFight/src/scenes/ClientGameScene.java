@@ -148,7 +148,7 @@ public class ClientGameScene extends GameScene {
 
 	}
 	
-	/*
+	/**
 	 * Moves players by setting a moveModifier : move from here to there in X seconds.
 	 */
 	private void mp() {
@@ -176,7 +176,7 @@ public class ClientGameScene extends GameScene {
 		}
 	}
 	
-	/*
+	/**
 	 * move players by setting velocity, correct position if out by more that 5
 	 */
 	private void movePlayers() {
