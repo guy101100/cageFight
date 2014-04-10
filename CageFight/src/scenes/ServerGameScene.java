@@ -27,6 +27,7 @@ import org.andengine.util.math.MathUtils;
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.Player;
 import co.nz.splashYay.cagefight.SceneManager;
+import co.nz.splashYay.cagefight.State;
 import co.nz.splashYay.cagefight.network.InFromClientListener;
 import co.nz.splashYay.cagefight.network.OutToClientListener;
 
@@ -105,27 +106,49 @@ public class ServerGameScene extends GameScene {
 		while (it.hasNext()) {
 			Map.Entry pairs = (Map.Entry) it.next();
 			Player player = (Player) pairs.getValue();
-
-			//player.getPhyHandler().setVelocity(player.getMovementX() * player.getSpeed(), player.getMovementY() * player.getSpeed()); // moves player
 			
-			final Body playerBody = player.getBody();
-			final Vector2 velocity = Vector2Pool.obtain(player.getMovementX() * 5, player.getMovementY() * 5);
-			playerBody.setLinearVelocity(velocity);
-			Vector2Pool.recycle(velocity);
 			
-			player.setXPos(player.getSprite().getX());// set player position(in data) to the sprites position.
-			player.setYpos(player.getSprite().getY());
+			if (player.getState() == State.MOVING) {
+				player.getBody().setActive(true);
+				final Body playerBody = player.getBody();
+				final Vector2 velocity = Vector2Pool.obtain(player.getMovementX() * player.getSpeed(), player.getMovementY() * player.getSpeed());
+				playerBody.setLinearVelocity(velocity);
+				Vector2Pool.recycle(velocity);
+				
+				player.setXPos(player.getSprite().getX());// set player position(in data) to the sprites position.
+				player.setYpos(player.getSprite().getY());
 
-			if (player.getMovementX() != 0 && player.getMovementY() != 0) {
-				float direction = MathUtils.radToDeg((float) Math.atan2(player.getMovementX(), -player.getMovementY()));
-				player.getSprite().setRotation(direction);
-				player.setDirection(direction);
+				if (player.getMovementX() != 0 && player.getMovementY() != 0) {
+					float direction = MathUtils.radToDeg((float) Math.atan2(player.getMovementX(), -player.getMovementY()));
+					player.getSprite().setRotation(direction);
+					player.setDirection(direction);
+				}
+			} else if (player.getState() == State.ATTACKING) {
+				
+				
+				
+			} else if (player.getState() == State.IDLE) {
+				
+				
+				
+			} else if (player.getState() == State.DEAD) {
+				player.getBody().setActive(false);
+				
+				
 			}
+				
+				
+			
+			
+			
 			
 			
 			
 		}
 	}
+	
+	
+	
 	
 	@Override
 	public void addPlayerToGameDataObj(Player newPlayer) {

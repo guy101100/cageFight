@@ -13,8 +13,10 @@ public class Player extends Entity implements Serializable{
 	private int id;
 	private String name;
 	private int experience;
+	private int level;
 	private float movementX = 0;
 	private float movementY = 0;
+	private float respawnTime = 0;
 	
 	
 	
@@ -22,8 +24,44 @@ public class Player extends Entity implements Serializable{
 		super(xpos, ypos, maxhealth, currenthealth);
 		this.id = id;
 		this.name = name;
+		this.level = 0;
 		
 	}
+	
+	private void killPlayer(){
+		//remove some gold.
+		//change players sprite to "dead Image".
+		this.setRespawnTime(this.calculateRespawnLength());
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	// Getters and setters
 
 	public String getName() {
 		return name;
@@ -65,8 +103,38 @@ public class Player extends Entity implements Serializable{
 		this.movementY = movementY;
 	}
 	
+	public int getLevel() {
+		return level;
+	}
+
+	public void setLevel(int level) {
+		this.level = level;
+	}
+
+	/*
+	 * The System time the player will respawn
+	 */
+	public float getRespawnTime() {
+		return respawnTime;
+	}
+	
+	/*
+	 * Sets respawn time to current system time + respawn time
+	 * @Param respawnTime how long it will take to respawn the player
+	 */
+	private void setRespawnTime(float respawnTime) {
+		this.respawnTime = System.currentTimeMillis() + respawnTime;
+	}
+	
+	/*
+	 * Returns the length of the players respawn time
+	 */
+	private long calculateRespawnLength(){
+		return this.level * 10000;
+	}
 	
 	
+
 	/*
 	 * Used by the ClientInNetCom to update the players data
 	 */

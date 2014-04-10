@@ -20,6 +20,7 @@ public class Entity implements Serializable{
 	protected int currenthealth;
 	protected int maxhealth;
 	protected int speed;	
+	protected State state;
 	
 	
 	private transient Sprite sprite;
@@ -33,8 +34,9 @@ public class Entity implements Serializable{
 		this.ypos = ypos;
 		this.maxhealth = maxhealth;
 		this.currenthealth = currenthealth;
-		this.speed = 300;
+		this.speed = 5;
 		this.direction = 0;
+		this.state = State.IDLE;
 	}
 
 
@@ -121,6 +123,18 @@ public class Entity implements Serializable{
 	public Body getBody(){
 		return body;
 	}
+
+
+	public State getState() {
+		return state;
+	}
+
+
+	public void setState(State state) {
+		this.state = state;
+	}
+	
+	
 	
 	
 	
