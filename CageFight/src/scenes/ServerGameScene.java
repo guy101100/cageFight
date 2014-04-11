@@ -109,6 +109,9 @@ public class ServerGameScene extends GameScene {
 			
 			player.checkState();// checks and updates the players state
 			
+			player.setXPos(player.getSprite().getX());// set player position(in data) to the sprites position.
+			player.setYpos(player.getSprite().getY());
+			
 			if (player.getState() == State.MOVING) {
 				player.getBody().setActive(true);
 				final Body playerBody = player.getBody();
@@ -116,27 +119,37 @@ public class ServerGameScene extends GameScene {
 				playerBody.setLinearVelocity(velocity);
 				Vector2Pool.recycle(velocity);
 				
-				player.setXPos(player.getSprite().getX());// set player position(in data) to the sprites position.
-				player.setYpos(player.getSprite().getY());
 
 				if (player.getMovementX() != 0 && player.getMovementY() != 0) {
 					float direction = MathUtils.radToDeg((float) Math.atan2(player.getMovementX(), -player.getMovementY()));
 					player.getSprite().setRotation(direction);
 					player.setDirection(direction);
 				}
-			} else if (player.getState() == State.ATTACKING) {
+			}  else {
+				final Body playerBody = player.getBody();
+				final Vector2 velocity = Vector2Pool.obtain(0, 0);
+				playerBody.setLinearVelocity(velocity);
+				Vector2Pool.recycle(velocity);
 				
-				
-				
-			} else if (player.getState() == State.IDLE) {
-				
-				
-				
-			} else if (player.getState() == State.DEAD) {
-				player.killPlayer();
+				if (player.getState() == State.ATTACKING) {
+					
+					
+					
+					
+				} else if (player.getState() == State.IDLE) {
+					
+					
+					
+				} else if (player.getState() == State.DEAD) {
+					player.killPlayer();
+					
+					
+				}			
 				
 				
 			}
+				
+			 
 				
 				
 			
