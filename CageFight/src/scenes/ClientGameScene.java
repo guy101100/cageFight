@@ -212,7 +212,7 @@ public class ClientGameScene extends GameScene {
 		}
 	}
 	
-	/**
+	/**DEPRECIATED do not use this
 	 * move players by setting velocity, correct position if out by more that 5
 	 */
 	private void movePlayers() {
