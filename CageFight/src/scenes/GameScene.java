@@ -2,6 +2,7 @@ package scenes;
 
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
+import org.andengine.engine.camera.hud.HUD;
 import org.andengine.engine.handler.physics.PhysicsHandler;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.Sprite;

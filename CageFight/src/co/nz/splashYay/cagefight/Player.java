@@ -25,7 +25,7 @@ public class Player extends Entity implements Serializable{
 	private float respawnTime = 0;
 	
 	private State state;
-	
+	private Entity target;
 	
 	
 	public Player(String name, int id, int maxhealth, int currenthealth, int xpos, int ypos) {
@@ -195,6 +195,14 @@ public class Player extends Entity implements Serializable{
 		this.state = state;
 	}
 	
+	public Entity getTarget() {
+		return target;
+	}
+
+	public void setTarget(Entity target) {
+		this.target = target;
+	}
+	
 	
 	/**
 	 * Returns true if the player has sent the attack command
@@ -230,6 +238,7 @@ public class Player extends Entity implements Serializable{
 	private long calculateRespawnLength(){
 		return this.level * 10000;
 	}
+
 	
 	
 	

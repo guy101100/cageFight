@@ -7,6 +7,7 @@ import java.util.TimerTask;
 
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
+import org.andengine.engine.camera.hud.HUD;
 import org.andengine.engine.camera.hud.controls.AnalogOnScreenControl;
 import org.andengine.engine.camera.hud.controls.AnalogOnScreenControl.IAnalogOnScreenControlListener;
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl;
@@ -15,16 +16,20 @@ import org.andengine.engine.handler.physics.PhysicsHandler;
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.modifier.MoveModifier;
+import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.background.Background;
+import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.util.FPSLogger;
 import org.andengine.extension.physics.box2d.FixedStepPhysicsWorld;
+import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
+import org.andengine.util.color.Color;
 import org.andengine.util.math.MathUtils;
 
 import android.opengl.GLES20;
@@ -45,6 +50,8 @@ public class ClientGameScene extends GameScene {
 	private ClientInNetCom iNC;
 	private String ipAddress;
 
+	private HUD hud = new HUD();
+	
 	private Sprite sPlayer;
 	private BitmapTextureAtlas mOnScreenControlTexture;
 	private ITextureRegion mOnScreenControlBaseTextureRegion;
@@ -52,6 +59,7 @@ public class ClientGameScene extends GameScene {
 
 	// control values
 	PlayerControlCommands playerCommands = new PlayerControlCommands();
+	ButtonSprite attack;
 
 	public ClientGameScene(BaseGameActivity act, Engine eng, Camera cam, String ipAddress, SceneManager sceneManager) {
 		this.activity = act;
@@ -59,7 +67,7 @@ public class ClientGameScene extends GameScene {
 		this.camera = cam;
 		this.ipAddress = ipAddress;
 		this.sceneManager = sceneManager;
-		gameData = new GameData();
+		gameData = new GameData();		
 	}
 
 	public void loadRes() {
@@ -89,9 +97,11 @@ public class ClientGameScene extends GameScene {
 		this.registerUpdateHandler(phyWorld);
 
 		setUpMap();
+		
+		//Setup HUD components	
 
 		// sets what the joystick does
-		final AnalogOnScreenControl analogOnScreenControl = new AnalogOnScreenControl(0, camera.getHeight() - this.mOnScreenControlBaseTextureRegion.getHeight(), this.camera, this.mOnScreenControlBaseTextureRegion, this.mOnScreenControlKnobTextureRegion, 0.1f, 200, this.activity.getVertexBufferObjectManager(), new IAnalogOnScreenControlListener() {
+		final AnalogOnScreenControl analogOnScreenControl = new AnalogOnScreenControl(20, camera.getHeight() - this.mOnScreenControlBaseTextureRegion.getHeight() - 20, this.camera, this.mOnScreenControlBaseTextureRegion, this.mOnScreenControlKnobTextureRegion, 0.1f, 200, this.activity.getVertexBufferObjectManager(), new IAnalogOnScreenControlListener() {
 			@Override
 			public void onControlChange(final BaseOnScreenControl pBaseOnScreenControl, final float pValueX, final float pValueY) {
 
@@ -118,6 +128,32 @@ public class ClientGameScene extends GameScene {
 		analogOnScreenControl.refreshControlKnobPosition();
 
 		setChildScene(analogOnScreenControl);// attach control joystick
+		
+		// Set attack button properties
+		attack = new ButtonSprite(camera.getWidth() - 100, camera.getHeight() - 120, mOnScreenControlKnobTextureRegion, this.activity.getVertexBufferObjectManager())
+	    {
+	        public boolean onAreaTouched(TouchEvent touchEvent, float X, float Y)
+	        {
+	            if (touchEvent.isActionUp())
+	            {
+	                attack.setColor(Color.WHITE);
+	            }
+	            if (touchEvent.isActionDown())
+	            {
+	                attack.setColor(Color.RED);
+	            }
+	            return true;
+	        };
+	    };
+	    
+	    attack.setColor(Color.WHITE);
+	    attack.setScale(2.0f);
+	    
+	    
+	    this.hud.attachChild(attack);
+	    this.hud.registerTouchArea(attack);
+		
+		this.camera.setHUD(hud);
 
 		// start networking threads
 		oNC.start();
