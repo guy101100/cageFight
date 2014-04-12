@@ -26,9 +26,6 @@ public class SceneManager {
 	private String ipAddress;
 	private Player player;
 
-	
-	
-
 	public SceneManager(BaseGameActivity act, Engine eng, Camera cam) {
 		this.activity = act;
 		this.engine = eng;

@@ -21,8 +21,6 @@ public class Entity implements Serializable{
 	protected int maxhealth;
 	protected int speed;	
 	
-	
-	
 	private transient Sprite sprite;
 	private transient PhysicsHandler phyHandler;
 	private transient MoveModifier moveModifier;
@@ -75,9 +73,6 @@ public class Entity implements Serializable{
 	public void setSprite(Sprite sprite){
 		this.sprite = sprite;
 	}
-	public void setPhyHandler(PhysicsHandler phyHandler){
-		this.phyHandler = phyHandler;
-	}
 
 	public Sprite getSprite() {
 		return sprite;
@@ -86,7 +81,10 @@ public class Entity implements Serializable{
 	public PhysicsHandler getPhyHandler() {
 		return phyHandler;
 	}
-
+	
+	public void setPhyHandler(PhysicsHandler phyHandler){
+		this.phyHandler = phyHandler;
+	}
 
 	public MoveModifier getMoveModifier() {
 		return moveModifier;

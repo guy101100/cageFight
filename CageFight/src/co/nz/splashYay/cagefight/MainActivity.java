@@ -32,7 +32,8 @@ public class MainActivity extends BaseGameActivity {
 	public EngineOptions onCreateEngineOptions() {
 		// TODO Auto-generated method stub
 		mCamera = new Camera(0, 0, CAM_WIDTH, CAM_HEIGHT);		
-		EngineOptions options = new EngineOptions(true, ScreenOrientation.LANDSCAPE_FIXED, new RatioResolutionPolicy(CAM_WIDTH, CAM_HEIGHT), mCamera);		
+		EngineOptions options = new EngineOptions(true, ScreenOrientation.LANDSCAPE_FIXED, new RatioResolutionPolicy(CAM_WIDTH, CAM_HEIGHT), mCamera);
+		options.getTouchOptions().setNeedsMultiTouch(true);
 		return options;
 	}
 
