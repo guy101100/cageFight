@@ -56,6 +56,7 @@ public abstract class GameScene extends Scene {
 		}
 
 		final TMXLayer tmxLayer = this.mTMXTiledMap.getTMXLayers().get(0);
+		
 		this.attachChild(tmxLayer);
 
 	}
