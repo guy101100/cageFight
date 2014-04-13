@@ -5,10 +5,11 @@ import org.andengine.engine.camera.Camera;
 import org.andengine.entity.scene.Scene;
 import org.andengine.ui.activity.BaseGameActivity;
 
-import scenes.ClientGameScene;
-import scenes.MenuScene;
-import scenes.ServerGameScene;
-import scenes.SplashScene;
+import co.nz.splashYay.cagefight.scenes.ClientGameScene;
+import co.nz.splashYay.cagefight.scenes.MenuScene;
+import co.nz.splashYay.cagefight.scenes.ServerGameScene;
+import co.nz.splashYay.cagefight.scenes.SplashScene;
+
 
 public class SceneManager {
 

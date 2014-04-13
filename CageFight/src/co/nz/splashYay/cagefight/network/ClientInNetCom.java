@@ -9,10 +9,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import scenes.ClientGameScene;
 
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.Player;
+import co.nz.splashYay.cagefight.scenes.ClientGameScene;
 
 
 

@@ -1,4 +1,4 @@
-package scenes;
+package co.nz.splashYay.cagefight.scenes;
 
 import java.util.Iterator;
 import java.util.Map;

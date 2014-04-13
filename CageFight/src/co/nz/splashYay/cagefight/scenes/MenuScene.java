@@ -1,4 +1,4 @@
-package scenes;
+package co.nz.splashYay.cagefight.scenes;
 
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;

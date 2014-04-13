@@ -6,9 +6,9 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 
-import scenes.ServerGameScene;
 
 import co.nz.splashYay.cagefight.GameData;
+import co.nz.splashYay.cagefight.scenes.ServerGameScene;
 
 public class OutToClientNetCom extends Thread {
 	private Socket welcomeSocket;

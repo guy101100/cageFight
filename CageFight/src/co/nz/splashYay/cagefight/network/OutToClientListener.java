@@ -7,9 +7,9 @@ import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import scenes.ServerGameScene;
 
 import co.nz.splashYay.cagefight.GameData;
+import co.nz.splashYay.cagefight.scenes.ServerGameScene;
 
 
 public class OutToClientListener extends Thread {

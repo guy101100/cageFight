@@ -110,6 +110,7 @@ public class Player extends Entity implements Serializable{
 	 */
 	private void respawn(){
 		this.setPlayerState(PlayerState.IDLE);
+		setAlive(true);
 		
 		currenthealth = maxhealth; //heal the player to full health
 		
@@ -117,13 +118,11 @@ public class Player extends Entity implements Serializable{
 		
 		//TO ADD : reset sprite to alive sprite
 		
-		//teleports the body to the respawn position
-	    final float widthD2 = getSprite().getWidth() / 2;
-	    final float heightD2 = getSprite().getHeight() / 2;
+		//teleports the body to the respawn position	    
 	    final float angle = getBody().getAngle(); // keeps the body angle
 	    int x = 10; // x & y need to be replaced with team.getRespawnPosition()
 	    int y = 10;
-	    final Vector2 v2 = Vector2Pool.obtain((x + widthD2) / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT, (y + heightD2) / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT);
+	    final Vector2 v2 = Vector2Pool.obtain(x / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT, y / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT);
 	    getBody().setTransform(v2, angle);
 	    Vector2Pool.recycle(v2);
 	    

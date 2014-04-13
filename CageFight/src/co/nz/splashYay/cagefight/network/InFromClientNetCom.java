@@ -6,10 +6,10 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import scenes.ServerGameScene;
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.Player;
 import co.nz.splashYay.cagefight.PlayerControlCommands;
+import co.nz.splashYay.cagefight.scenes.ServerGameScene;
 
 
 public class InFromClientNetCom extends Thread {

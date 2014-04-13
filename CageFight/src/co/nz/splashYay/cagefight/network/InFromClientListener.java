@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import scenes.ServerGameScene;
 
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.MainActivity;
+import co.nz.splashYay.cagefight.scenes.ServerGameScene;
 
 
 public class InFromClientListener extends Thread {
