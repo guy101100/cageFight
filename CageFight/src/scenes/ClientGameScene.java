@@ -21,21 +21,28 @@ import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.entity.text.Text;
+import org.andengine.entity.text.TextOptions;
 import org.andengine.entity.util.FPSLogger;
 import org.andengine.extension.physics.box2d.FixedStepPhysicsWorld;
 import org.andengine.input.touch.TouchEvent;
+import org.andengine.opengl.font.Font;
+import org.andengine.opengl.font.FontFactory;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
+import org.andengine.util.HorizontalAlign;
 import org.andengine.util.color.Color;
 import org.andengine.util.math.MathUtils;
 
+import android.graphics.Typeface;
 import android.opengl.GLES20;
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.Player;
 import co.nz.splashYay.cagefight.PlayerControlCommands;
+import co.nz.splashYay.cagefight.PlayerState;
 import co.nz.splashYay.cagefight.SceneManager;
 import co.nz.splashYay.cagefight.network.ClientInNetCom;
 import co.nz.splashYay.cagefight.network.ClientOutNetCom;
@@ -49,8 +56,6 @@ public class ClientGameScene extends GameScene {
 	private ClientOutNetCom oNC;
 	private ClientInNetCom iNC;
 	private String ipAddress;
-
-	private HUD hud = new HUD();
 	
 	private Sprite sPlayer;
 	private BitmapTextureAtlas mOnScreenControlTexture;
@@ -59,7 +64,13 @@ public class ClientGameScene extends GameScene {
 
 	// control values
 	PlayerControlCommands playerCommands = new PlayerControlCommands();
-	ButtonSprite attack;
+
+	//HUD
+	private HUD hud = new HUD();
+	private ButtonSprite attack;
+	private AnalogOnScreenControl joyStick;
+	private Text targetInfo;
+	private Font font;
 
 	public ClientGameScene(BaseGameActivity act, Engine eng, Camera cam, String ipAddress, SceneManager sceneManager) {
 		this.activity = act;
@@ -75,7 +86,11 @@ public class ClientGameScene extends GameScene {
 		this.playerTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 64, 64); // width and height must be factor of two eg:2,4,8,16 etc
 		this.playerTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(playerTexture, this.activity, "player.png", 0, 0);
 		playerTexture.load(); // loads the player texture
-
+		
+		//Load font
+		font = FontFactory.create(activity.getFontManager(), activity.getTextureManager(), 256, 256, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 32);
+		font.load();
+		
 		this.mBitmapTextureAtlas = new BitmapTextureAtlas(this.activity.getTextureManager(), 32, 32, TextureOptions.BILINEAR);
 		this.mBitmapTextureAtlas.load();
 		// loads the on screen joystick images
@@ -101,17 +116,30 @@ public class ClientGameScene extends GameScene {
 		//Setup HUD components	
 
 		// sets what the joystick does
-		final AnalogOnScreenControl analogOnScreenControl = new AnalogOnScreenControl(20, camera.getHeight() - this.mOnScreenControlBaseTextureRegion.getHeight() - 20, this.camera, this.mOnScreenControlBaseTextureRegion, this.mOnScreenControlKnobTextureRegion, 0.1f, 200, this.activity.getVertexBufferObjectManager(), new IAnalogOnScreenControlListener() {
+		joyStick = new AnalogOnScreenControl(20, camera.getHeight() - this.mOnScreenControlBaseTextureRegion.getHeight() - 20, this.camera, this.mOnScreenControlBaseTextureRegion, this.mOnScreenControlKnobTextureRegion, 0.1f, 200, this.activity.getVertexBufferObjectManager(), new IAnalogOnScreenControlListener() {
 			@Override
 			public void onControlChange(final BaseOnScreenControl pBaseOnScreenControl, final float pValueX, final float pValueY) {
 
+				
+				if(	pValueX == 0 &&
+					pValueY == 0 &&
+					sceneManager.getPlayer().getPlayerState().equals(PlayerState.MOVING))
+				{
+					sceneManager.getPlayer().setPlayerState(PlayerState.IDLE);
+				}
+				else if(pValueX != 0 &&
+						pValueY != 0 &&
+						sceneManager.getPlayer().getPlayerState().equals(PlayerState.IDLE))
+				{
+					sceneManager.getPlayer().setPlayerState(PlayerState.MOVING);
+				}
+				
 				playerCommands.setMovementX(pValueX);
 				playerCommands.setMovementY(pValueY);				
 				if (sPlayer != null) {
 					playerCommands.setClientPosX(sPlayer.getX());
 					playerCommands.setClientPosY(sPlayer.getY());
 				}
-
 			}
 
 			@Override
@@ -120,27 +148,37 @@ public class ClientGameScene extends GameScene {
 			}
 		});
 
-		analogOnScreenControl.getControlBase().setBlendFunction(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
-		analogOnScreenControl.getControlBase().setAlpha(0.5f);
-		analogOnScreenControl.getControlBase().setScaleCenter(0, 128);
-		analogOnScreenControl.getControlBase().setScale(1.25f);
-		analogOnScreenControl.getControlKnob().setScale(1.25f);
-		analogOnScreenControl.refreshControlKnobPosition();
+		joyStick.getControlBase().setBlendFunction(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+		joyStick.getControlBase().setAlpha(0.5f);
+		joyStick.getControlBase().setScaleCenter(0, 128);
+		joyStick.getControlBase().setScale(1.25f);
+		joyStick.getControlKnob().setScale(1.25f);
+		joyStick.refreshControlKnobPosition();
 
-		setChildScene(analogOnScreenControl);// attach control joystick
+		setChildScene(joyStick);// attach control joystick
 		
-		// Set attack button properties
+		//Create target info
+		targetInfo = new Text(camera.getWidth() / 2, 0, this.font, "Test", new TextOptions(HorizontalAlign.CENTER), activity.getVertexBufferObjectManager());
+		
+		this.hud.attachChild(targetInfo);
+		
+		//Set attack button properties
 		attack = new ButtonSprite(camera.getWidth() - 100, camera.getHeight() - 120, mOnScreenControlKnobTextureRegion, this.activity.getVertexBufferObjectManager())
 	    {
 	        public boolean onAreaTouched(TouchEvent touchEvent, float X, float Y)
 	        {
-	            if (touchEvent.isActionUp())
+	        	if (touchEvent.isActionDown())
 	            {
-	                attack.setColor(Color.WHITE);
-	            }
-	            if (touchEvent.isActionDown())
-	            {
+	            	sceneManager.getPlayer().setPlayerState(PlayerState.ATTACKING);
 	                attack.setColor(Color.RED);
+	                
+	                //sceneManager.getPlayer().targetNearestPlayer(gameData);
+	                
+	            }
+	        	else if (touchEvent.isActionUp())
+	            {
+	            	sceneManager.getPlayer().setPlayerState(PlayerState.IDLE);
+	                attack.setColor(Color.WHITE);
 	            }
 	            return true;
 	        };
@@ -148,7 +186,6 @@ public class ClientGameScene extends GameScene {
 	    
 	    attack.setColor(Color.WHITE);
 	    attack.setScale(2.0f);
-	    
 	    
 	    this.hud.attachChild(attack);
 	    this.hud.registerTouchArea(attack);
@@ -167,6 +204,7 @@ public class ClientGameScene extends GameScene {
 					mp();
 					
 					oNC.sendToServer(playerCommands);
+					
 				}
 			}
 
@@ -202,11 +240,11 @@ public class ClientGameScene extends GameScene {
 			float moveTime = 0.125f; // time in seconds it takes to move to actual position
 
 			if (player.getSprite().getEntityModifierCount() == 0) { // if there is no move modifier add one
-				MoveModifier moveModifier = new MoveModifier(moveTime, player.getSprite().getX(), player.getXPos(), player.getSprite().getY(), player.getYpos());
+				MoveModifier moveModifier = new MoveModifier(moveTime, player.getSprite().getX(), player.getXPos(), player.getSprite().getY(), player.getYPos());
 				player.setMoveModifier(moveModifier);
 				player.getSprite().registerEntityModifier(moveModifier);
 			} else {
-				player.getMoveModifier().reset(moveTime, player.getSprite().getX(), player.getXPos(), player.getSprite().getY(), player.getYpos()); // move player to where actual coords are
+				player.getMoveModifier().reset(moveTime, player.getSprite().getX(), player.getXPos(), player.getSprite().getY(), player.getYPos()); // move player to where actual coords are
 			}
 
 		}
@@ -239,10 +277,10 @@ public class ClientGameScene extends GameScene {
 			float moveTime = 1f; // time in seconds it takes to move to actual position
 			if (player.getMovementX() == 0 && player.getMovementY() == 0) { // if player is not inputing controls
 				if (((Math.abs(player.getXPos() - player.getSprite().getX()) > 5) || // if player is more than 5pixels away from actual coords
-				(Math.abs(player.getYpos() - player.getSprite().getY()) > 5))) {
+				(Math.abs(player.getYPos() - player.getSprite().getY()) > 5))) {
 
 					if (player.getSprite().getEntityModifierCount() == 0) { // if there is no move modifier add one
-						MoveModifier moveModifier = new MoveModifier(moveTime, player.getSprite().getX(), player.getXPos(), player.getSprite().getY(), player.getYpos());
+						MoveModifier moveModifier = new MoveModifier(moveTime, player.getSprite().getX(), player.getXPos(), player.getSprite().getY(), player.getYPos());
 						player.setMoveModifier(moveModifier);
 						player.getSprite().registerEntityModifier(moveModifier);
 					} else {
@@ -271,7 +309,7 @@ public class ClientGameScene extends GameScene {
 			this.attachChild(tempS);
 			newPlayer.setSprite(tempS);
 			newPlayer.setPhyHandler(tempPhyHandler);
-			tempS.setPosition(newPlayer.getXPos(), newPlayer.getYpos());
+			tempS.setPosition(newPlayer.getXPos(), newPlayer.getYPos());
 			if (newPlayer.getId() == sceneManager.getPlayer().getId()) {
 				sPlayer = tempS;
 				camera.setChaseEntity(sPlayer);

@@ -16,15 +16,18 @@ public class Player extends Entity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private int id;
 	private String name;
-	private int experience;
-	private int level;
 	private float movementX = 0;
 	private float movementY = 0;
 	private boolean attackCommand = false;
 	
+	//Player Stats
+	private int experience;
+	private int level;
+	private int damage;
+	
 	private float respawnTime = 0;
 	
-	private State state;
+	private PlayerState state;
 	private Entity target;
 	
 	
@@ -33,7 +36,7 @@ public class Player extends Entity implements Serializable{
 		this.id = id;
 		this.name = name;
 		this.level = 0;
-		this.state = State.IDLE;
+		this.state = PlayerState.IDLE;
 		
 	}
 	
@@ -55,11 +58,33 @@ public class Player extends Entity implements Serializable{
 		this.direction = player.getDirection();
 		this.maxhealth = player.getMaxhealth();
 		this.xpos = player.getXPos();
-		this.ypos  = player.getYpos();
+		this.ypos  = player.getYPos();
 		this.speed = player.getSpeed();
 		
+	}
+	
+	public void targetNearestPlayer(GameData gd)
+	{
+		Player currentClose = null;
 		
+		for(Player p : gd.getPlayers().values())
+		{
+			if(p.getId() != this.id)
+			{
+				if(currentClose == null)
+					currentClose = p;
+				else
+				{
+					double distanceToPlayerCurrent = Math.pow((currentClose.getXPos() - this.getXPos()), 2) + Math.pow((currentClose.getYPos() - this.getYPos()), 2);
+					double distanceToPlayerNext = Math.pow((p.getXPos() - this.getXPos()), 2) + Math.pow((p.getYPos() - this.getYPos()), 2);
+					
+					if(distanceToPlayerNext < distanceToPlayerCurrent)
+						currentClose = p;
+				}
+			}
+		}
 		
+		this.target = currentClose;
 	}
 	
 	
@@ -83,7 +108,7 @@ public class Player extends Entity implements Serializable{
 	 * Reactivates body, teleports body to spawn point, heals player, set state to idle
 	 */
 	private void respawn(){
-		this.setState(State.IDLE);
+		this.setPlayerState(PlayerState.IDLE);
 		
 		currenthealth = maxhealth; //heal the player to full health
 		
@@ -118,18 +143,18 @@ public class Player extends Entity implements Serializable{
 			if (System.currentTimeMillis() >= getRespawnTime()) {
 				this.respawn();
 			} else {
-				setState(State.DEAD);
+				setPlayerState(PlayerState.DEAD);
 			}
 			
 			
 		} else  if (attackCommand) {
-			setState(State.ATTACKING);	
+			setPlayerState(PlayerState.ATTACKING);	
 			
 		} else if (getMovementX() != 0 && getMovementY() != 0) {
-			setState(State.MOVING);
+			setPlayerState(PlayerState.MOVING);
 			
 		} else {
-			setState(State.IDLE);
+			setPlayerState(PlayerState.IDLE);
 		}	
 		
 	}
@@ -186,12 +211,20 @@ public class Player extends Entity implements Serializable{
 		this.level = level;
 	}
 	
-	public State getState() {
+	public int getDamage() {
+		return damage;
+	}
+
+	public void setDamage(int damage) {
+		this.damage = damage;
+	}
+
+	public PlayerState getPlayerState() {
 		return state;
 	}
 
 
-	public void setState(State state) {
+	public void setPlayerState(PlayerState state) {
 		this.state = state;
 	}
 	

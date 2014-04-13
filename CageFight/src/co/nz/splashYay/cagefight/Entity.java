@@ -46,11 +46,11 @@ public class Entity implements Serializable{
 		this.xpos = xpos;
 	}
 	
-	public float getYpos() {
+	public float getYPos() {
 		return ypos;
 	}
 	
-	public void setYpos(float ypos) {
+	public void setYPos(float ypos) {
 		this.ypos = ypos;
 	}
 
