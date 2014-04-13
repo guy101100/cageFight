@@ -71,7 +71,7 @@ public abstract class GameScene extends Scene {
 			this.attachChild(tempS);
 			newPlayer.setSprite(tempS);
 			newPlayer.setPhyHandler(tempPhyHandler);
-			tempS.setPosition(newPlayer.getXPos(), newPlayer.getYpos());
+			tempS.setPosition(newPlayer.getXPos(), newPlayer.getYPos());
 
 		}
 	}
