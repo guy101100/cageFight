@@ -96,6 +96,7 @@ public class Player extends Entity implements Serializable{
 	 * removes gold, changes the sprite image, set body inactive, sets respawn time
 	 */
 	public void killPlayer(){
+		this.setAlive(false);
 		// TO ADD : remove some gold.
 		// TO ADD : change players sprite to "dead Image".
 		this.getBody().setActive(false);

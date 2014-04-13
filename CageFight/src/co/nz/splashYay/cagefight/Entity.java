@@ -21,6 +21,8 @@ public class Entity implements Serializable{
 	protected int maxhealth;
 	protected int speed;	
 	
+	protected boolean alive = true;
+	
 	private transient Sprite sprite;
 	private transient PhysicsHandler phyHandler;
 	private transient MoveModifier moveModifier;
@@ -121,6 +123,18 @@ public class Entity implements Serializable{
 	public Body getBody(){
 		return body;
 	}
+
+
+	public boolean isAlive() {
+		return alive;
+	}
+
+
+	public void setAlive(boolean alive) {
+		this.alive = alive;
+	}
+	
+	
 
 
 	

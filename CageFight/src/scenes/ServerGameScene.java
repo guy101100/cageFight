@@ -141,9 +141,9 @@ public class ServerGameScene extends GameScene {
 					
 					
 				} else if (player.getPlayerState() == PlayerState.DEAD) {
-					player.killPlayer();
-					
-					
+					if (player.isAlive()) {
+						player.killPlayer();
+					}	
 				}			
 				
 				
