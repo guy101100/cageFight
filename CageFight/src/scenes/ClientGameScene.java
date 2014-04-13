@@ -172,7 +172,7 @@ public class ClientGameScene extends GameScene {
 	            	sceneManager.getPlayer().setPlayerState(PlayerState.ATTACKING);
 	                attack.setColor(Color.RED);
 	                
-	                sceneManager.getPlayer().targetNearestPlayer(gameData);
+	                //sceneManager.getPlayer().targetNearestPlayer(gameData);
 	                
 	            }
 	        	else if (touchEvent.isActionUp())
