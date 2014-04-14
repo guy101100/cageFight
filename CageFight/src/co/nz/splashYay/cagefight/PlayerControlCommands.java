@@ -11,7 +11,7 @@ public class PlayerControlCommands implements Serializable {
 	private float movementY;
 	
 	private boolean attackCommand;	
-	private Player target;
+	private int targetID;
 	
 		
 	private float clientPosX;
@@ -79,13 +79,13 @@ public class PlayerControlCommands implements Serializable {
 	}
 
 
-	public Player getTarget() {
-		return target;
+	public int getTargetID() {
+		return targetID;
 	}
 
 
-	public void setTarget(Player target) {
-		this.target = target;
+	public void setTargetID(int target) {
+		this.targetID = target;
 	}
 	
 	

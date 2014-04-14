@@ -159,7 +159,7 @@ public class ClientGameScene extends GameScene {
 	        	if (touchEvent.isActionDown())
 	            {
 	                attack.setColor(Color.RED);
-	                playerCommands.setTarget(sceneManager.getPlayer().targetNearestPlayer(gameData));
+	                playerCommands.setTargetID(sceneManager.getPlayer().targetNearestPlayer(gameData).getId());
 	                playerCommands.setAttackCommand(true);
 	            }
 	        	else if (touchEvent.isActionUp())

@@ -59,7 +59,7 @@ public class InFromClientNetCom extends Thread {
 					tempPlayer.setMovementX(receivedCommands.getMovementX());
 					tempPlayer.setMovementY(receivedCommands.getMovementY());
 					tempPlayer.setAttackCommand(receivedCommands.isAttackCommand());
-					tempPlayer.setTarget(receivedCommands.getTarget());
+					tempPlayer.setTarget(gameData.getPlayerWithID(receivedCommands.getTargetID()));
 					
 					
 					//System.out.println(" [" + System.currentTimeMillis() + "] Player : " + player.getId() + " " + recieved.getMovementX() + " " + recieved.getMovementY() + " " + recieved.getDirection());
