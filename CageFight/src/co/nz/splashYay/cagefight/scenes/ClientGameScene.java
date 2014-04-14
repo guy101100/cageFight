@@ -213,7 +213,7 @@ public class ClientGameScene extends GameScene {
 	 * Moves players by setting a moveModifier : move from here to there in X seconds.
 	 */
 	private void mp() {
-		Iterator it = gameData.getPlayers().entrySet().iterator();
+		Iterator it = gameData.getEntities().entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry pairs = (Map.Entry) it.next();
 			Player player = (Player) pairs.getValue();

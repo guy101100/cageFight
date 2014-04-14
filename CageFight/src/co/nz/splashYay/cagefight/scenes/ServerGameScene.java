@@ -103,7 +103,7 @@ public class ServerGameScene extends GameScene {
 	}
 	
 	private void processPlayerActions(){
-		Iterator it = gameData.getPlayers().entrySet().iterator();
+		Iterator it = gameData.getEntities().entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry pairs = (Map.Entry) it.next();
 			Player player = (Player) pairs.getValue();

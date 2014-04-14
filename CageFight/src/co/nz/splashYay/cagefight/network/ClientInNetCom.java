@@ -45,9 +45,9 @@ public class ClientInNetCom extends Thread {
 					GameData gameDataIn = (GameData) inFromServer.readUnshared();
 					System.out.println("[" + System.currentTimeMillis() + "] recieved data");
 					
-					for (Entry<Integer, Entity> entry: gameDataIn.getPlayers().entrySet()) {					    
+					for (Entry<Integer, Entity> entry: gameDataIn.getEntities().entrySet()) {					    
 					    Entity entityIn = entry.getValue();
-						if (!gameData.getPlayers().containsKey(entry.getKey())) {
+						if (!gameData.getEntities().containsKey(entry.getKey())) {
 					        clientGameScene.addEntityToGameDataObj(entityIn);
 					    } else {
 					    	if (entityIn instanceof Player) {

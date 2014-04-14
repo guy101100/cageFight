@@ -71,7 +71,7 @@ public class Player extends Entity implements Serializable{
 	public Player targetNearestPlayer(GameData gd) {
 		Player currentClose = null;
 
-		for (Entity e : gd.getPlayers().values()) {
+		for (Entity e : gd.getEntities().values()) {
 			if (e instanceof Player) {
 				Player p = (Player) e;
 				if (p.getId() != this.id) {

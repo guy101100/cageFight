@@ -32,7 +32,7 @@ public class GameData implements Serializable{
 		}
 	}
 	
-	public HashMap<Integer, Entity> getPlayers(){
+	public HashMap<Integer, Entity> getEntities(){
 		return entities;
 		
 	}
