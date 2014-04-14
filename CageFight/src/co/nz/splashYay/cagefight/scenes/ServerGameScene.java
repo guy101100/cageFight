@@ -87,7 +87,7 @@ public class ServerGameScene extends GameScene {
 			@Override
 			public void onUpdate(float pSecondsElapsed) {
 
-				movePlayers();
+				processPlayerActions();
 				oTCL.updateClients();
 
 			}
@@ -101,7 +101,7 @@ public class ServerGameScene extends GameScene {
 		
 	}
 	
-	private void movePlayers(){
+	private void processPlayerActions(){
 		Iterator it = gameData.getPlayers().entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry pairs = (Map.Entry) it.next();
@@ -132,7 +132,9 @@ public class ServerGameScene extends GameScene {
 				Vector2Pool.recycle(velocity);
 				
 				if (player.getPlayerState() == PlayerState.ATTACKING) {
-					
+					if (player.getTarget() != null && System.currentTimeMillis() >= player.getLastAttackTime() + player.getAttackCoolDown()) {
+						player.attackTarget();
+					}
 					
 					
 					

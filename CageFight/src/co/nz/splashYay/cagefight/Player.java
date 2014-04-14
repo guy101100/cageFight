@@ -28,7 +28,7 @@ public class Player extends Entity implements Serializable{
 	private float respawnTime = 0;
 	
 	private PlayerState state;
-	private Entity target;
+	private Player target;
 	
 	
 	public Player(String name, int id, int maxhealth, int currenthealth, int xpos, int ypos) {
@@ -63,7 +63,7 @@ public class Player extends Entity implements Serializable{
 		
 	}
 	
-	public void targetNearestPlayer(GameData gd)
+	public Player targetNearestPlayer(GameData gd)
 	{
 		Player currentClose = null;
 		
@@ -84,7 +84,7 @@ public class Player extends Entity implements Serializable{
 			}
 		}
 		
-		this.target = currentClose;
+		return currentClose;
 	}
 	
 	
@@ -92,6 +92,17 @@ public class Player extends Entity implements Serializable{
 	///////////////////////////////////////////////////////////////////////
 	//                         sever only methods
 	///////////////////////////////////////////////////////////////////////
+	/**
+	 * 
+	 */
+	public void attackTarget() {
+		//cycle annimation
+		System.out.println("Player : " + this.getId() + " ATTACKED player : " + getTarget().getId());		
+	}
+	
+	
+	
+	
 	/**
 	 * removes gold, changes the sprite image, set body inactive, sets respawn time
 	 */
@@ -140,11 +151,10 @@ public class Player extends Entity implements Serializable{
 	 */
 	public void checkState(){
 		if (this.getCurrenthealth() <= 0) {
-			if (System.currentTimeMillis() >= getRespawnTime()) {
-				this.respawn();
-			} else {
-				setPlayerState(PlayerState.DEAD);
-			}
+			setPlayerState(PlayerState.DEAD);
+			
+			
+			// check respawn
 			
 			
 		} else  if (attackCommand) {
@@ -228,11 +238,11 @@ public class Player extends Entity implements Serializable{
 		this.state = state;
 	}
 	
-	public Entity getTarget() {
+	public Player getTarget() {
 		return target;
 	}
 
-	public void setTarget(Entity target) {
+	public void setTarget(Player target) {
 		this.target = target;
 	}
 	
@@ -271,6 +281,10 @@ public class Player extends Entity implements Serializable{
 	private long calculateRespawnLength(){
 		return this.level * 10000;
 	}
+
+
+
+	
 
 	
 	

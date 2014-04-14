@@ -121,18 +121,6 @@ public class ClientGameScene extends GameScene {
 			public void onControlChange(final BaseOnScreenControl pBaseOnScreenControl, final float pValueX, final float pValueY) {
 
 				
-				if(	pValueX == 0 &&
-					pValueY == 0 &&
-					sceneManager.getPlayer().getPlayerState().equals(PlayerState.MOVING))
-				{
-					sceneManager.getPlayer().setPlayerState(PlayerState.IDLE);
-				}
-				else if(pValueX != 0 &&
-						pValueY != 0 &&
-						sceneManager.getPlayer().getPlayerState().equals(PlayerState.IDLE))
-				{
-					sceneManager.getPlayer().setPlayerState(PlayerState.MOVING);
-				}
 				
 				playerCommands.setMovementX(pValueX);
 				playerCommands.setMovementY(pValueY);				
@@ -169,16 +157,14 @@ public class ClientGameScene extends GameScene {
 	        {
 	        	if (touchEvent.isActionDown())
 	            {
-	            	sceneManager.getPlayer().setPlayerState(PlayerState.ATTACKING);
 	                attack.setColor(Color.RED);
-	                
-	                //sceneManager.getPlayer().targetNearestPlayer(gameData);
-	                
+	                playerCommands.setTarget(sceneManager.getPlayer().targetNearestPlayer(gameData));
+	                playerCommands.setAttackCommand(true);
 	            }
 	        	else if (touchEvent.isActionUp())
-	            {
-	            	sceneManager.getPlayer().setPlayerState(PlayerState.IDLE);
+	            {	            	
 	                attack.setColor(Color.WHITE);
+	                playerCommands.setAttackCommand(false);
 	            }
 	            return true;
 	        };

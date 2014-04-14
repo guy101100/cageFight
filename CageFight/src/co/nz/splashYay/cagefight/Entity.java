@@ -28,6 +28,10 @@ public class Entity implements Serializable{
 	private transient MoveModifier moveModifier;
 	private transient Body body;
 	
+	private long lastAttackTime;
+	
+	private long attackCoolDown;
+	
 	public Entity(int xpos, int ypos, int maxhealth, int currenthealth)
 	{
 		this.xpos = xpos;
@@ -36,6 +40,8 @@ public class Entity implements Serializable{
 		this.currenthealth = currenthealth;
 		this.speed = 5;
 		this.direction = 0;
+		lastAttackTime = 0;
+		attackCoolDown = 2000;
 		
 	}
 
@@ -133,6 +139,28 @@ public class Entity implements Serializable{
 	public void setAlive(boolean alive) {
 		this.alive = alive;
 	}
+
+
+	public long getLastAttackTime() {
+		return lastAttackTime;
+	}
+
+
+	public void setLastAttackTime(long lastAttackTime) {
+		this.lastAttackTime = lastAttackTime;
+	}
+
+
+	public long getAttackCoolDown() {
+		return attackCoolDown;
+	}
+
+
+	public void setAttackCoolDown(long attackCoolDown) {
+		this.attackCoolDown = attackCoolDown;
+	}
+	
+	
 	
 	
 
