@@ -107,8 +107,7 @@ public class SceneManager {
 	
 	
 	//setters	
-	public void createPlayerAndStartGame(int id) {		
-		this.player = new Player((id + ""), id, 1, 1, 0, 0);		
+	public void startGame() {					
 		loadClientGameRes();
 		createClientGameScene();
 		setCurrentScene(AllScenes.GAME_CLIENT);
@@ -117,9 +116,14 @@ public class SceneManager {
 	public void setIpaddress(String ipAddress){
 		this.ipAddress = ipAddress;
 		
+	}	
+	
+	public void setPlayer(Player player) {
+		this.player = player;
 	}
-	
-	
+
+
+
 	//getters
 	public Player getPlayer(){
 		return player;

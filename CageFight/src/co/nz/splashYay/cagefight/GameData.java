@@ -16,6 +16,25 @@ public class GameData implements Serializable{
 		
 	}
 	
+	
+	
+	/**
+	 * gets the first unused id number
+	 * @return an unused ID number
+	 */
+	public int getUnusedID(){
+		int toReturn = 0;
+		int checkNum = 1;
+		while (toReturn == 0) {
+			if (!entities.containsKey(checkNum)) {
+				toReturn = checkNum;
+			} else {
+				checkNum++;
+			}
+		}
+		return toReturn;
+		
+	}
 
 	
 	

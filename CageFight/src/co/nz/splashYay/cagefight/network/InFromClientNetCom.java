@@ -2,6 +2,7 @@ package co.nz.splashYay.cagefight.network;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,6 +19,7 @@ public class InFromClientNetCom extends Thread {
 	private Socket welcomeSocket;
 	private InFromClientListener iFCL;
 	private ObjectInputStream inFromClient;
+	private ObjectOutputStream outToClient;
 	private Player player;
 	private GameData gameData;
 	private ServerGameScene serverScene;
@@ -39,7 +41,15 @@ public class InFromClientNetCom extends Thread {
 	public void run() {
 		try {
 			inFromClient = new ObjectInputStream(welcomeSocket.getInputStream());
+			outToClient = new ObjectOutputStream(welcomeSocket.getOutputStream());
 			welcomeSocket.setTcpNoDelay(true);
+			
+			Player newPlayer = new Player("", gameData.getUnusedID(), 1, 1, 10, 10);
+			this.player = newPlayer; //the player this is connection is to
+			serverScene.addEntityToGameDataObj(newPlayer);
+			outToClient.writeObject(newPlayer);
+			
+			
 			while (!interrupted()) {
 
 				Object obj = inFromClient.readUnshared();
@@ -52,16 +62,7 @@ public class InFromClientNetCom extends Thread {
 					tempPlayer.setTarget(receivedCommands.getTarget());
 					
 					
-
 					//System.out.println(" [" + System.currentTimeMillis() + "] Player : " + player.getId() + " " + recieved.getMovementX() + " " + recieved.getMovementY() + " " + recieved.getDirection());
-				} else if (obj instanceof Player) {
-					Player tempPlayer = (Player) obj;
-					if (gameData.getPlayerWithID(tempPlayer.getId()) == null) {
-						serverScene.addEntityToGameDataObj(tempPlayer);
-						
-					}
-					this.player = tempPlayer; //the player this is connection is to
-					
 				} else {
 					System.err.println("error reciveving");
 				}

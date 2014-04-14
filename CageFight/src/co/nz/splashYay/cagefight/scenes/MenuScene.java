@@ -85,7 +85,7 @@ public class MenuScene extends Scene {
 		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				sceneManager.setIpaddress(input.getText().toString().trim());				
-				getPlayerID(activity);
+				sceneManager.startGame();
 			}
 		});
 
@@ -97,27 +97,6 @@ public class MenuScene extends Scene {
 		alert.show();
 	}
 	
-	//gets id creates a player, starts game scene, needs to change
-	public void getPlayerID(Context context) {
-
-		final AlertDialog.Builder alert = new AlertDialog.Builder(context);
-		final EditText input = new EditText(context);
-
-		alert.setView(input);
-		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int whichButton) {
-				String id = input.getText().toString().trim();
-				int idInt = Integer.parseInt(id);
-				sceneManager.createPlayerAndStartGame(idInt);
-			}
-		});
-
-		alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int whichButton) {
-				dialog.cancel();
-			}
-		});
-		alert.show();
-	}
+	
 
 }
