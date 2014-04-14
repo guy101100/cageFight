@@ -7,23 +7,36 @@ import java.util.TimerTask;
 
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
+import org.andengine.engine.camera.hud.HUD;
+import org.andengine.engine.camera.hud.controls.AnalogOnScreenControl;
+import org.andengine.engine.camera.hud.controls.BaseOnScreenControl;
+import org.andengine.engine.camera.hud.controls.AnalogOnScreenControl.IAnalogOnScreenControlListener;
 import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.engine.handler.physics.PhysicsHandler;
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.scene.background.Background;
+import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.entity.text.Text;
+import org.andengine.entity.text.TextOptions;
 import org.andengine.entity.util.FPSLogger;
 import org.andengine.extension.physics.box2d.FixedStepPhysicsWorld;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.extension.physics.box2d.util.Vector2Pool;
+import org.andengine.input.touch.TouchEvent;
+import org.andengine.opengl.font.Font;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
+import org.andengine.opengl.texture.region.TextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
+import org.andengine.util.HorizontalAlign;
+import org.andengine.util.color.Color;
 import org.andengine.util.math.MathUtils;
 
+import android.opengl.GLES20;
 import co.nz.splashYay.cagefight.Entity;
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.Player;
@@ -43,7 +56,20 @@ public class ServerGameScene extends GameScene {
 	// networking
 	private SceneManager sceneManager;	
 	private InFromClientListener iFCL;
-	private OutToClientListener oTCL;	
+	private OutToClientListener oTCL;
+	private BitmapTextureAtlas mOnScreenControlTexture;
+	private TextureRegion mOnScreenControlBaseTextureRegion;
+	private TextureRegion mOnScreenControlKnobTextureRegion;
+
+	//HUD
+	private HUD hud = new HUD();
+	private ButtonSprite attack;
+	private AnalogOnScreenControl joyStick;
+	private Text targetInfo;
+	private Font font;
+
+	//server Player
+	Player player;
 	
 	
 	public ServerGameScene(BaseGameActivity act, Engine eng, Camera cam, SceneManager sceneManager) {
@@ -64,6 +90,12 @@ public class ServerGameScene extends GameScene {
 		this.mBitmapTextureAtlas = new BitmapTextureAtlas(this.activity.getTextureManager(), 32, 32, TextureOptions.BILINEAR);
 
 		this.mBitmapTextureAtlas.load();
+		
+		this.mOnScreenControlTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 256, 128, TextureOptions.BILINEAR);
+		this.mOnScreenControlBaseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mOnScreenControlTexture, this.activity, "onscreen_control_base.png", 0, 0);
+		this.mOnScreenControlKnobTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mOnScreenControlTexture, this.activity, "onscreen_control_knob.png", 128, 0);
+		this.mOnScreenControlTexture.load();
+		
 		gameData = new GameData();
 
 	}
@@ -74,14 +106,19 @@ public class ServerGameScene extends GameScene {
 		this.setBackground(new Background(0, 125, 58));
 		this.phyWorld = new FixedStepPhysicsWorld(30, 30, new Vector2(0, 0), false);
 		this.registerUpdateHandler(phyWorld);
+		
+		
 
 		setUpMap();
+		setUpControls();
 
 		iFCL = new InFromClientListener(gameData, this);
 		oTCL = new OutToClientListener(gameData, this);
 		iFCL.start();
 		oTCL.start();
 		
+		player = new Player("", gameData.getUnusedID(), 10, 10, 50, 50);
+		addEntityToGameDataObj(player);
 		
 		//game loop
 		this.registerUpdateHandler(new IUpdateHandler() {
@@ -195,10 +232,71 @@ public class ServerGameScene extends GameScene {
 				//newPlayer.setPhyHandler(tempPhyHandler);
 				
 				tempS.setPosition(newPlayer.getXPos(), newPlayer.getYPos());
+				
+				if (newPlayer.getId() == player.getId()) {
+					camera.setChaseEntity(tempS);
+				}
 			}
 			
 
 		}
+	}
+	
+	
+	private void setUpControls(){
+		joyStick = new AnalogOnScreenControl(20, camera.getHeight() - this.mOnScreenControlBaseTextureRegion.getHeight() - 20, this.camera, this.mOnScreenControlBaseTextureRegion, this.mOnScreenControlKnobTextureRegion, 0.1f, 200, this.activity.getVertexBufferObjectManager(), new IAnalogOnScreenControlListener() {
+			@Override
+			public void onControlChange(final BaseOnScreenControl pBaseOnScreenControl, final float pValueX, final float pValueY) {
+				player.setMovementX(pValueX);
+				player.setMovementY(pValueY);
+			}
+
+			@Override
+			public void onControlClick(final AnalogOnScreenControl pAnalogOnScreenControl) {
+				//do nothing
+			}
+		});
+
+		joyStick.getControlBase().setBlendFunction(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+		joyStick.getControlBase().setAlpha(0.5f);
+		joyStick.getControlBase().setScaleCenter(0, 128);
+		joyStick.getControlBase().setScale(1.25f);
+		joyStick.getControlKnob().setScale(1.25f);
+		joyStick.refreshControlKnobPosition();
+
+		setChildScene(joyStick);
+		
+		
+		
+		//Set attack button properties
+		attack = new ButtonSprite(camera.getWidth() - 100, camera.getHeight() - 120, mOnScreenControlKnobTextureRegion, this.activity.getVertexBufferObjectManager())
+	    {
+	        public boolean onAreaTouched(TouchEvent touchEvent, float X, float Y)
+	        {
+	        	if (touchEvent.isActionDown())
+	            {
+	                attack.setColor(Color.RED);
+	                player.setAttackCommand(true);
+	                player.setTarget(player.targetNearestPlayer(gameData));
+	                
+	            }
+	        	else if (touchEvent.isActionUp())
+	            {	            	
+	                attack.setColor(Color.WHITE);
+	                player.setAttackCommand(false);
+	            }
+	            return true;
+	        };
+	    };
+	    
+	    attack.setColor(Color.WHITE);
+	    attack.setScale(2.0f);
+	    
+	    this.hud.attachChild(attack);
+	    this.hud.registerTouchArea(attack);
+		
+		this.camera.setHUD(hud);
+		
 	}
 	
 	

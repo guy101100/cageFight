@@ -23,7 +23,7 @@ public class Entity implements Serializable{
 	private long lastAttackTime;	
 	private long attackCoolDown;
 	
-	protected boolean alive = true;
+	protected boolean alive;
 	
 	protected EntityState state;
 	
@@ -44,6 +44,7 @@ public class Entity implements Serializable{
 		this.direction = 0;
 		lastAttackTime = 0;
 		attackCoolDown = 2000;
+		alive = true;
 		
 		this.state = EntityState.IDLE;
 		

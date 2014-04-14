@@ -116,7 +116,8 @@ public class Player extends Entity implements Serializable{
 		// TO ADD : remove some gold.
 		// TO ADD : change players sprite to "dead Image".
 		this.getBody().setActive(false);
-		this.setRespawnTime(this.calculateRespawnLength());
+		this.setRespawnTime();
+		System.out.println("Player : " + this.getId() + " has Died. Respawn in " + getRespawnTime());
 		
 		
 	}
@@ -136,8 +137,8 @@ public class Player extends Entity implements Serializable{
 		
 		//teleports the body to the respawn position	    
 	    final float angle = getBody().getAngle(); // keeps the body angle
-	    int x = 10; // x & y need to be replaced with team.getRespawnPosition()
-	    int y = 10;
+	    int x = 100; // x & y need to be replaced with team.getRespawnPosition()
+	    int y = 100;
 	    final Vector2 v2 = Vector2Pool.obtain(x / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT, y / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT);
 	    getBody().setTransform(v2, angle);
 	    Vector2Pool.recycle(v2);
@@ -272,16 +273,12 @@ public class Player extends Entity implements Serializable{
 	 * Sets respawn time to current system time + respawn time
 	 * @Param respawnTime how long it will take to respawn the player
 	 */
-	private void setRespawnTime(float respawnTime) {
-		this.respawnTime = System.currentTimeMillis() + respawnTime;
+	private void setRespawnTime() {
+		long respawnLength = this.level * 10000;
+		this.respawnTime = System.currentTimeMillis() + respawnLength;
 	}
 	
-	/**
-	 * Returns the length of the players respawn time
-	 */
-	private long calculateRespawnLength(){
-		return this.level * 10000;
-	}
+	
 
 
 
