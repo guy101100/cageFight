@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 
+import co.nz.splashYay.cagefight.Entity;
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.Player;
 import co.nz.splashYay.cagefight.scenes.ClientGameScene;
@@ -44,13 +45,17 @@ public class ClientInNetCom extends Thread {
 					GameData gameDataIn = (GameData) inFromServer.readUnshared();
 					System.out.println("[" + System.currentTimeMillis() + "] recieved data");
 					
-					for (Entry<Integer, Player> entry: gameDataIn.getPlayers().entrySet()) {					    
-					    Player playerIn = entry.getValue();
+					for (Entry<Integer, Entity> entry: gameDataIn.getPlayers().entrySet()) {					    
+					    Entity entityIn = entry.getValue();
 						if (!gameData.getPlayers().containsKey(entry.getKey())) {
-					        clientGameScene.addPlayerToGameDataObj(playerIn);
+					        clientGameScene.addEntityToGameDataObj(entityIn);
 					    } else {
-					    	Player actual = gameData.getPlayerWithID(playerIn.getId());
-					    	actual.updatePlayerInfoFromOtherPlayerData(playerIn);
+					    	if (entityIn instanceof Player) {
+					    		Player playerIn = (Player) entityIn;
+					    		Player actual = gameData.getPlayerWithID(playerIn.getId());
+						    	actual.updatePlayerInfoFromOtherPlayerData(playerIn);
+					    	}
+					    	
 					    }
 					}
 					

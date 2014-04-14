@@ -68,27 +68,26 @@ public class Player extends Entity implements Serializable{
 	 * @param gd
 	 * @return
 	 */
-	public Player targetNearestPlayer(GameData gd)
-	{
+	public Player targetNearestPlayer(GameData gd) {
 		Player currentClose = null;
-		
-		for(Player p : gd.getPlayers().values())
-		{
-			if(p.getId() != this.id)
-			{
-				if(currentClose == null)
-					currentClose = p;
-				else
-				{
-					double distanceToPlayerCurrent = Math.pow((currentClose.getXPos() - this.getXPos()), 2) + Math.pow((currentClose.getYPos() - this.getYPos()), 2);
-					double distanceToPlayerNext = Math.pow((p.getXPos() - this.getXPos()), 2) + Math.pow((p.getYPos() - this.getYPos()), 2);
-					
-					if(distanceToPlayerNext < distanceToPlayerCurrent)
+
+		for (Entity e : gd.getPlayers().values()) {
+			if (e instanceof Player) {
+				Player p = (Player) e;
+				if (p.getId() != this.id) {
+					if (currentClose == null)
 						currentClose = p;
+					else {
+						double distanceToPlayerCurrent = Math.pow((currentClose.getXPos() - this.getXPos()), 2) + Math.pow((currentClose.getYPos() - this.getYPos()), 2);
+						double distanceToPlayerNext = Math.pow((p.getXPos() - this.getXPos()), 2) + Math.pow((p.getYPos() - this.getYPos()), 2);
+
+						if (distanceToPlayerNext < distanceToPlayerCurrent)
+							currentClose = p;
+					}
 				}
 			}
 		}
-		
+
 		return currentClose;
 	}
 	

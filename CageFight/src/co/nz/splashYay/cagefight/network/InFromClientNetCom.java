@@ -57,7 +57,7 @@ public class InFromClientNetCom extends Thread {
 				} else if (obj instanceof Player) {
 					Player tempPlayer = (Player) obj;
 					if (gameData.getPlayerWithID(tempPlayer.getId()) == null) {
-						serverScene.addPlayerToGameDataObj(tempPlayer);
+						serverScene.addEntityToGameDataObj(tempPlayer);
 						
 					}
 					this.player = tempPlayer; //the player this is connection is to

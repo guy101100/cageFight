@@ -39,6 +39,7 @@ import org.andengine.util.math.MathUtils;
 
 import android.graphics.Typeface;
 import android.opengl.GLES20;
+import co.nz.splashYay.cagefight.Entity;
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.Player;
 import co.nz.splashYay.cagefight.PlayerControlCommands;
@@ -236,70 +237,28 @@ public class ClientGameScene extends GameScene {
 		}
 	}
 	
-	/**DEPRECIATED do not use this
-	 * move players by setting velocity, correct position if out by more that 5
-	 */
-	private void movePlayers() {
-		Iterator it = gameData.getPlayers().entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry pairs = (Map.Entry) it.next();
-			Player player = (Player) pairs.getValue();
-
-			// move player
-			
-			if (player.getMovementX() != 0 || player.getMovementY() != 0) {
-				if (player.getSprite().getEntityModifierCount() > 0) {
-					player.getSprite().clearEntityModifiers();
-				}
-			}
-			
-
-			player.getPhyHandler().setVelocity(player.getMovementX() * player.getSpeed(), player.getMovementY() * player.getSpeed()); // moves player
-			if (player.getMovementX() != 0 && player.getMovementY() != 0) {
-				player.getSprite().setRotation(player.getDirection());
-			}
-			
-			// if player is not moving and is out of sync, move to actual position.
-			float moveTime = 1f; // time in seconds it takes to move to actual position
-			if (player.getMovementX() == 0 && player.getMovementY() == 0) { // if player is not inputing controls
-				if (((Math.abs(player.getXPos() - player.getSprite().getX()) > 5) || // if player is more than 5pixels away from actual coords
-				(Math.abs(player.getYPos() - player.getSprite().getY()) > 5))) {
-
-					if (player.getSprite().getEntityModifierCount() == 0) { // if there is no move modifier add one
-						MoveModifier moveModifier = new MoveModifier(moveTime, player.getSprite().getX(), player.getXPos(), player.getSprite().getY(), player.getYPos());
-						player.setMoveModifier(moveModifier);
-						player.getSprite().registerEntityModifier(moveModifier);
-					} else {
-						//player.getMoveModifier().reset(moveTime, player.getSprite().getX(), player.getXPos(), player.getSprite().getY(), player.getYpos()); // move player to where actual coords are
-					}
-				} else {
-					if (player.getSprite().getEntityModifierCount() > 0) {
-						player.getSprite().clearEntityModifiers();
-					}
-				}
-			}
-			
-
-		}
-
-	}
+	
 
 	@Override
-	public void addPlayerToGameDataObj(Player newPlayer) {
-		if (newPlayer != null) {
-			gameData.addPlayer(newPlayer);
-			Sprite tempS = new Sprite(camera.getWidth() / 2, camera.getHeight() / 2, playerTextureRegion, this.engine.getVertexBufferObjectManager());
+	public void addEntityToGameDataObj(Entity newEntity) {
+		if (newEntity != null) {
+			if (newEntity instanceof Player) {
+				Player newPlayer = (Player) newEntity;
+				gameData.addPlayer(newPlayer);
+				Sprite tempS = new Sprite(camera.getWidth() / 2, camera.getHeight() / 2, playerTextureRegion, this.engine.getVertexBufferObjectManager());
 
-			final PhysicsHandler tempPhyHandler = new PhysicsHandler(tempS); // added
-			tempS.registerUpdateHandler(tempPhyHandler); // added
-			this.attachChild(tempS);
-			newPlayer.setSprite(tempS);
-			newPlayer.setPhyHandler(tempPhyHandler);
-			tempS.setPosition(newPlayer.getXPos(), newPlayer.getYPos());
-			if (newPlayer.getId() == sceneManager.getPlayer().getId()) {
-				sPlayer = tempS;
-				camera.setChaseEntity(sPlayer);
+				final PhysicsHandler tempPhyHandler = new PhysicsHandler(tempS); // added
+				tempS.registerUpdateHandler(tempPhyHandler); // added
+				this.attachChild(tempS);
+				newPlayer.setSprite(tempS);
+				newPlayer.setPhyHandler(tempPhyHandler);
+				tempS.setPosition(newPlayer.getXPos(), newPlayer.getYPos());
+				if (newPlayer.getId() == sceneManager.getPlayer().getId()) {
+					sPlayer = tempS;
+					camera.setChaseEntity(sPlayer);
+				}
 			}
+			
 
 		}
 	}

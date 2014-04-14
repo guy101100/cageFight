@@ -9,7 +9,7 @@ public class GameData implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
-	private HashMap<Integer, Player> players = new HashMap<Integer, Player>();
+	private HashMap<Integer, Entity> entities = new HashMap<Integer, Entity>();
 
 	public GameData(){
 				
@@ -21,19 +21,19 @@ public class GameData implements Serializable{
 	
 	
 	public Player getPlayerWithID(int id){
-		return (Player) players.get(id);
+		return (Player) entities.get(id);
 	}
 	
 	public void addPlayer(Player player){ // causes concurrent modification errors
 		if (player !=null ) {
-			players.put(player.getId(), player);
+			entities.put(player.getId(), player);
 		} else {
 			System.out.println("Null player");
 		}
 	}
 	
-	public HashMap<Integer, Player> getPlayers(){
-		return players;
+	public HashMap<Integer, Entity> getPlayers(){
+		return entities;
 		
 	}
 	

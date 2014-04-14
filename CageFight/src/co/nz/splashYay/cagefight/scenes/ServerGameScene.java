@@ -24,6 +24,7 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegion
 import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.util.math.MathUtils;
 
+import co.nz.splashYay.cagefight.Entity;
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.Player;
 import co.nz.splashYay.cagefight.SceneManager;
@@ -173,25 +174,29 @@ public class ServerGameScene extends GameScene {
 	
 	
 	@Override
-	public void addPlayerToGameDataObj(Player newPlayer) {
-		if (newPlayer != null) {
-			gameData.addPlayer(newPlayer);
-			Sprite tempS = new Sprite(camera.getWidth() / 2, camera.getHeight() / 2, playerTextureRegion, this.engine.getVertexBufferObjectManager());
+	public void addEntityToGameDataObj(Entity newEntity) {
+		if (newEntity != null) {
+			if (newEntity instanceof Player) {
+				Player newPlayer = (Player) newEntity;
+				gameData.addPlayer(newPlayer);
+				Sprite tempS = new Sprite(camera.getWidth() / 2, camera.getHeight() / 2, playerTextureRegion, this.engine.getVertexBufferObjectManager());
 
-			//final PhysicsHandler tempPhyHandler = new PhysicsHandler(tempS); // added
-			//tempS.registerUpdateHandler(tempPhyHandler); // added
+				//final PhysicsHandler tempPhyHandler = new PhysicsHandler(tempS); // added
+				//tempS.registerUpdateHandler(tempPhyHandler); // added
+				
+				final FixtureDef playerFixDef = PhysicsFactory.createFixtureDef(1, 0f, 0.5f);
+				newPlayer.setBody(PhysicsFactory.createCircleBody(phyWorld, tempS, BodyType.DynamicBody, playerFixDef));
+				
+				phyWorld.registerPhysicsConnector(new PhysicsConnector(tempS, newPlayer.getBody(), true, false));			
+				
+				this.attachChild(tempS);			
+				
+				newPlayer.setSprite(tempS);
+				//newPlayer.setPhyHandler(tempPhyHandler);
+				
+				tempS.setPosition(newPlayer.getXPos(), newPlayer.getYPos());
+			}
 			
-			final FixtureDef playerFixDef = PhysicsFactory.createFixtureDef(1, 0f, 0.5f);
-			newPlayer.setBody(PhysicsFactory.createCircleBody(phyWorld, tempS, BodyType.DynamicBody, playerFixDef));
-			
-			phyWorld.registerPhysicsConnector(new PhysicsConnector(tempS, newPlayer.getBody(), true, false));			
-			
-			this.attachChild(tempS);			
-			
-			newPlayer.setSprite(tempS);
-			//newPlayer.setPhyHandler(tempPhyHandler);
-			
-			tempS.setPosition(newPlayer.getXPos(), newPlayer.getYPos());
 
 		}
 	}

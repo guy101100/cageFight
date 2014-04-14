@@ -21,6 +21,7 @@ import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.util.debug.Debug;
 
+import co.nz.splashYay.cagefight.Entity;
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.Player;
 
@@ -62,8 +63,9 @@ public abstract class GameScene extends Scene {
 
 	}
 
-	public void addPlayerToGameDataObj(Player newPlayer) {
-		if (newPlayer != null) {
+	public void addEntityToGameDataObj(Entity newEntity) {
+		if (newEntity != null) {
+			Player newPlayer = (Player) newEntity;
 			gameData.addPlayer(newPlayer);
 			Sprite tempS = new Sprite(camera.getWidth() / 2, camera.getHeight() / 2, playerTextureRegion, this.engine.getVertexBufferObjectManager());
 
