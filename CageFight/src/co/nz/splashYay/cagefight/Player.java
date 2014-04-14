@@ -10,9 +10,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 
 public class Player extends Entity implements Serializable{
 
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1L;
 	private int id;
 	private String name;
