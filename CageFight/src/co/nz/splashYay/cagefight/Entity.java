@@ -20,6 +20,8 @@ public class Entity implements Serializable{
 	protected int currenthealth;
 	protected int maxhealth;
 	protected int speed;	
+	private long lastAttackTime;	
+	private long attackCoolDown;
 	
 	protected boolean alive = true;
 	
@@ -28,9 +30,7 @@ public class Entity implements Serializable{
 	private transient MoveModifier moveModifier;
 	private transient Body body;
 	
-	private long lastAttackTime;
 	
-	private long attackCoolDown;
 	
 	public Entity(int xpos, int ypos, int maxhealth, int currenthealth)
 	{
