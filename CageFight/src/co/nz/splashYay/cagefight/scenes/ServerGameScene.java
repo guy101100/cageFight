@@ -126,6 +126,7 @@ public class ServerGameScene extends GameScene {
 					player.setDirection(direction);
 				}
 			}  else {
+				//stops players from moving
 				final Body playerBody = player.getBody();
 				final Vector2 velocity = Vector2Pool.obtain(0, 0);
 				playerBody.setLinearVelocity(velocity);
@@ -139,10 +140,11 @@ public class ServerGameScene extends GameScene {
 					
 					
 				} else if (player.getPlayerState() == EntityState.IDLE) {
-					
+					//do nothing
 					
 					
 				} else if (player.getPlayerState() == EntityState.DEAD) {
+					//kill the player and check if when to respawn
 					if (player.isAlive()) {
 						player.killPlayer();
 					}	else {

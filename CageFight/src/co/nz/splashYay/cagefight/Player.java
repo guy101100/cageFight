@@ -48,6 +48,7 @@ public class Player extends Entity implements Serializable{
 	
 	/**
 	 * Used by the ClientInNetCom to update the players data
+	 * @param player to get data from
 	 */
 	public void updatePlayerInfoFromOtherPlayerData(Player player){
 		this.experience = player.getExperience();
@@ -62,6 +63,11 @@ public class Player extends Entity implements Serializable{
 		
 	}
 	
+	/**
+	 * 
+	 * @param gd
+	 * @return
+	 */
 	public Player targetNearestPlayer(GameData gd)
 	{
 		Player currentClose = null;
