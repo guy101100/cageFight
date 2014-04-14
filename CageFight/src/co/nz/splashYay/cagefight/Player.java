@@ -24,7 +24,7 @@ public class Player extends Entity implements Serializable{
 	private int level;
 	private int damage;
 	
-	private float respawnTime = 0;
+	private long respawnTime = 0;
 	
 	
 	private Player target;
@@ -34,7 +34,7 @@ public class Player extends Entity implements Serializable{
 		super(xpos, ypos, maxhealth, currenthealth);
 		this.id = id;
 		this.name = name;
-		this.level = 0;
+		this.level = 1;
 		
 		
 	}
@@ -117,7 +117,7 @@ public class Player extends Entity implements Serializable{
 		// TO ADD : change players sprite to "dead Image".
 		this.getBody().setActive(false);
 		this.setRespawnTime();
-		System.out.println("Player : " + this.getId() + " has Died. Respawn in " + getRespawnTime());
+		System.out.println("Player : " + this.getId() + " has Died. Respawn in " + getRespawnTime() + " [" + System.currentTimeMillis() + "]");
 		
 		
 	}
@@ -142,6 +142,7 @@ public class Player extends Entity implements Serializable{
 	    final Vector2 v2 = Vector2Pool.obtain(x / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT, y / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT);
 	    getBody().setTransform(v2, angle);
 	    Vector2Pool.recycle(v2);
+	    System.out.println("Player : " + this.getId() + " has respawned [" + System.currentTimeMillis() + "]");
 	    
 	    
 	    
@@ -265,7 +266,7 @@ public class Player extends Entity implements Serializable{
 	 * The System time the player will respawn
 	 * @return the time the player will respawn
 	 */
-	public float getRespawnTime() {
+	public long getRespawnTime() {
 		return respawnTime;
 	}
 	
@@ -275,7 +276,7 @@ public class Player extends Entity implements Serializable{
 	 */
 	private void setRespawnTime() {
 		long respawnLength = this.level * 10000;
-		this.respawnTime = System.currentTimeMillis() + respawnLength;
+		this.respawnTime = (System.currentTimeMillis() + respawnLength);
 	}
 	
 	

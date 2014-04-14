@@ -117,7 +117,7 @@ public class ServerGameScene extends GameScene {
 		iFCL.start();
 		oTCL.start();
 		
-		player = new Player("", gameData.getUnusedID(), 10, 10, 50, 50);
+		player = new Player("", gameData.getUnusedID(), 1, 1, 50, 50);
 		addEntityToGameDataObj(player);
 		
 		//game loop
