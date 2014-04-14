@@ -132,7 +132,7 @@ public class ServerGameScene extends GameScene {
 				Vector2Pool.recycle(velocity);
 				
 				if (player.getPlayerState() == PlayerState.ATTACKING) {
-					if (player.getTarget() != null && System.currentTimeMillis() >= player.getLastAttackTime() + player.getAttackCoolDown()) {
+					if (player.getTarget() != null && System.currentTimeMillis() >= (player.getLastAttackTime() + player.getAttackCoolDown())  ) {
 						player.attackTarget();
 					}
 					
@@ -145,7 +145,11 @@ public class ServerGameScene extends GameScene {
 				} else if (player.getPlayerState() == PlayerState.DEAD) {
 					if (player.isAlive()) {
 						player.killPlayer();
-					}	
+					}	else {
+						if (player.getRespawnTime() <= System.currentTimeMillis()) {
+							player.respawn();
+						}
+					}
 				}			
 				
 				

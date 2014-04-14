@@ -96,7 +96,8 @@ public class Player extends Entity implements Serializable{
 	 */
 	public void attackTarget() {
 		//cycle annimation
-		System.out.println("Player : " + this.getId() + " ATTACKED player : " + getTarget().getId());		
+		System.out.println("Player : " + this.getId() + " ATTACKED player : " + getTarget().getId());
+		getTarget().setCurrenthealth(0);
 	}
 	
 	
@@ -118,7 +119,7 @@ public class Player extends Entity implements Serializable{
 	/**
 	 * Reactivates body, teleports body to spawn point, heals player, set state to idle
 	 */
-	private void respawn(){
+	public void respawn(){
 		this.setPlayerState(PlayerState.IDLE);
 		setAlive(true);
 		
@@ -150,11 +151,7 @@ public class Player extends Entity implements Serializable{
 	 */
 	public void checkState(){
 		if (this.getCurrenthealth() <= 0) {
-			setPlayerState(PlayerState.DEAD);
-			
-			
-			// check respawn
-			
+			setPlayerState(PlayerState.DEAD);			
 			
 		} else  if (attackCommand) {
 			setPlayerState(PlayerState.ATTACKING);	
