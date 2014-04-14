@@ -25,6 +25,8 @@ public class Entity implements Serializable{
 	
 	protected boolean alive = true;
 	
+	protected EntityState state;
+	
 	private transient Sprite sprite;
 	private transient PhysicsHandler phyHandler;
 	private transient MoveModifier moveModifier;
@@ -42,6 +44,8 @@ public class Entity implements Serializable{
 		this.direction = 0;
 		lastAttackTime = 0;
 		attackCoolDown = 2000;
+		
+		this.state = EntityState.IDLE;
 		
 	}
 

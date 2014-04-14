@@ -42,7 +42,7 @@ import android.opengl.GLES20;
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.Player;
 import co.nz.splashYay.cagefight.PlayerControlCommands;
-import co.nz.splashYay.cagefight.PlayerState;
+import co.nz.splashYay.cagefight.EntityState;
 import co.nz.splashYay.cagefight.SceneManager;
 import co.nz.splashYay.cagefight.network.ClientInNetCom;
 import co.nz.splashYay.cagefight.network.ClientOutNetCom;

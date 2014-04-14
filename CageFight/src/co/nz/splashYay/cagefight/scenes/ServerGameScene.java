@@ -27,7 +27,7 @@ import org.andengine.util.math.MathUtils;
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.Player;
 import co.nz.splashYay.cagefight.SceneManager;
-import co.nz.splashYay.cagefight.PlayerState;
+import co.nz.splashYay.cagefight.EntityState;
 import co.nz.splashYay.cagefight.network.InFromClientListener;
 import co.nz.splashYay.cagefight.network.OutToClientListener;
 
@@ -112,7 +112,7 @@ public class ServerGameScene extends GameScene {
 			player.setXPos(player.getSprite().getX());// set player position(in data) to the sprites position.
 			player.setYPos(player.getSprite().getY());
 			
-			if (player.getPlayerState() == PlayerState.MOVING) {
+			if (player.getPlayerState() == EntityState.MOVING) {
 				player.getBody().setActive(true);
 				final Body playerBody = player.getBody();
 				final Vector2 velocity = Vector2Pool.obtain(player.getMovementX() * player.getSpeed(), player.getMovementY() * player.getSpeed());
@@ -131,18 +131,18 @@ public class ServerGameScene extends GameScene {
 				playerBody.setLinearVelocity(velocity);
 				Vector2Pool.recycle(velocity);
 				
-				if (player.getPlayerState() == PlayerState.ATTACKING) {
+				if (player.getPlayerState() == EntityState.ATTACKING) {
 					if (player.getTarget() != null && System.currentTimeMillis() >= (player.getLastAttackTime() + player.getAttackCoolDown())  ) {
 						player.attackTarget();
 					}
 					
 					
 					
-				} else if (player.getPlayerState() == PlayerState.IDLE) {
+				} else if (player.getPlayerState() == EntityState.IDLE) {
 					
 					
 					
-				} else if (player.getPlayerState() == PlayerState.DEAD) {
+				} else if (player.getPlayerState() == EntityState.DEAD) {
 					if (player.isAlive()) {
 						player.killPlayer();
 					}	else {

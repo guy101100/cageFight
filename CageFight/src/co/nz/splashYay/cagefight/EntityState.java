@@ -1,6 +1,6 @@
 package co.nz.splashYay.cagefight;
 
-public enum PlayerState {
+public enum EntityState {
 
 	MOVING, IDLE, ATTACKING, DEAD;
 	

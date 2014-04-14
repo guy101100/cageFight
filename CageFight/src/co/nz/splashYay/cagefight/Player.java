@@ -26,7 +26,7 @@ public class Player extends Entity implements Serializable{
 	
 	private float respawnTime = 0;
 	
-	private PlayerState state;
+	
 	private Player target;
 	
 	
@@ -35,7 +35,7 @@ public class Player extends Entity implements Serializable{
 		this.id = id;
 		this.name = name;
 		this.level = 0;
-		this.state = PlayerState.IDLE;
+		
 		
 	}
 	
@@ -120,7 +120,7 @@ public class Player extends Entity implements Serializable{
 	 * Reactivates body, teleports body to spawn point, heals player, set state to idle
 	 */
 	public void respawn(){
-		this.setPlayerState(PlayerState.IDLE);
+		this.setPlayerState(EntityState.IDLE);
 		setAlive(true);
 		
 		currenthealth = maxhealth; //heal the player to full health
@@ -151,16 +151,16 @@ public class Player extends Entity implements Serializable{
 	 */
 	public void checkState(){
 		if (this.getCurrenthealth() <= 0) {
-			setPlayerState(PlayerState.DEAD);			
+			setPlayerState(EntityState.DEAD);			
 			
 		} else  if (attackCommand) {
-			setPlayerState(PlayerState.ATTACKING);	
+			setPlayerState(EntityState.ATTACKING);	
 			
 		} else if (getMovementX() != 0 && getMovementY() != 0) {
-			setPlayerState(PlayerState.MOVING);
+			setPlayerState(EntityState.MOVING);
 			
 		} else {
-			setPlayerState(PlayerState.IDLE);
+			setPlayerState(EntityState.IDLE);
 		}	
 		
 	}
@@ -225,12 +225,12 @@ public class Player extends Entity implements Serializable{
 		this.damage = damage;
 	}
 
-	public PlayerState getPlayerState() {
+	public EntityState getPlayerState() {
 		return state;
 	}
 
 
-	public void setPlayerState(PlayerState state) {
+	public void setPlayerState(EntityState state) {
 		this.state = state;
 	}
 	
