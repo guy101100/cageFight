@@ -121,7 +121,7 @@ public class ClientGameScene extends GameScene {
 			@Override
 			public void onUpdate(float pSecondsElapsed) {
 				if (sceneManager.getPlayer() != null &&
-					gameData.getPlayerWithID(sceneManager.getPlayer().getId()) != null) {					
+					gameData.getEntityWithId(sceneManager.getPlayer().getId()) != null) {					
 					mp();
 					
 					oNC.sendToServer(playerCommands);

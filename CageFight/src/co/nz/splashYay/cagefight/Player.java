@@ -12,7 +12,6 @@ public class Player extends Entity implements Serializable{
 
 	
 	private static final long serialVersionUID = 1L;
-	private int id;
 	private String name;
 	
 	private float movementX = 0;
@@ -31,8 +30,7 @@ public class Player extends Entity implements Serializable{
 	
 	
 	public Player(String name, int id, int maxhealth, int currenthealth, int xpos, int ypos) {
-		super(xpos, ypos, maxhealth, currenthealth);
-		this.id = id;
+		super(xpos, ypos, maxhealth, currenthealth, id);
 		this.name = name;
 		this.level = 1;
 		
