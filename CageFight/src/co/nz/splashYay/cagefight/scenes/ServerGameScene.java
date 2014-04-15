@@ -42,6 +42,7 @@ import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.Player;
 import co.nz.splashYay.cagefight.SceneManager;
 import co.nz.splashYay.cagefight.EntityState;
+import co.nz.splashYay.cagefight.ValueBar;
 import co.nz.splashYay.cagefight.network.InFromClientListener;
 import co.nz.splashYay.cagefight.network.OutToClientListener;
 
@@ -65,8 +66,7 @@ public class ServerGameScene extends GameScene {
 	private HUD hud = new HUD();
 	private ButtonSprite attack;
 	private AnalogOnScreenControl joyStick;
-	private Text targetInfo;
-	private Font font;
+	private ValueBar targetInfo;
 
 	//server Player
 	Player player;
@@ -107,10 +107,8 @@ public class ServerGameScene extends GameScene {
 		this.phyWorld = new FixedStepPhysicsWorld(30, 30, new Vector2(0, 0), false);
 		this.registerUpdateHandler(phyWorld);
 		
-		
-
 		setUpMap();
-		setUpControls();
+		setUpHUD();
 
 		iFCL = new InFromClientListener(gameData, this);
 		oTCL = new OutToClientListener(gameData, this);
@@ -194,17 +192,7 @@ public class ServerGameScene extends GameScene {
 				}			
 				
 				
-			}
-				
-			 
-				
-				
-			
-			
-			
-			
-			
-			
+			}		
 		}
 	}
 	
@@ -244,7 +232,7 @@ public class ServerGameScene extends GameScene {
 	}
 	
 	
-	private void setUpControls(){
+	private void setUpHUD(){
 		joyStick = new AnalogOnScreenControl(20, camera.getHeight() - this.mOnScreenControlBaseTextureRegion.getHeight() - 20, this.camera, this.mOnScreenControlBaseTextureRegion, this.mOnScreenControlKnobTextureRegion, 0.1f, 200, this.activity.getVertexBufferObjectManager(), new IAnalogOnScreenControlListener() {
 			@Override
 			public void onControlChange(final BaseOnScreenControl pBaseOnScreenControl, final float pValueX, final float pValueY) {
@@ -267,8 +255,12 @@ public class ServerGameScene extends GameScene {
 
 		setChildScene(joyStick);
 		
+		//Create TargetInfo
+		targetInfo = new ValueBar(camera.getWidth() / 2 - 80, 5, 160, 30, activity.getVertexBufferObjectManager());
+		targetInfo.setAlpha(0.8f);
 		
-		
+		hud.attachChild(targetInfo);
+
 		//Set attack button properties
 		attack = new ButtonSprite(camera.getWidth() - 100, camera.getHeight() - 120, mOnScreenControlKnobTextureRegion, this.activity.getVertexBufferObjectManager())
 	    {

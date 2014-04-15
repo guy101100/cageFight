@@ -45,6 +45,7 @@ import co.nz.splashYay.cagefight.Player;
 import co.nz.splashYay.cagefight.PlayerControlCommands;
 import co.nz.splashYay.cagefight.EntityState;
 import co.nz.splashYay.cagefight.SceneManager;
+import co.nz.splashYay.cagefight.ValueBar;
 import co.nz.splashYay.cagefight.network.ClientInNetCom;
 import co.nz.splashYay.cagefight.network.ClientOutNetCom;
 
@@ -70,8 +71,7 @@ public class ClientGameScene extends GameScene {
 	private HUD hud = new HUD();
 	private ButtonSprite attack;
 	private AnalogOnScreenControl joyStick;
-	private Text targetInfo;
-	private Font font;
+	private ValueBar targetInfo;
 
 	public ClientGameScene(BaseGameActivity act, Engine eng, Camera cam, String ipAddress, SceneManager sceneManager) {
 		this.activity = act;
@@ -87,10 +87,6 @@ public class ClientGameScene extends GameScene {
 		this.playerTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 64, 64); // width and height must be factor of two eg:2,4,8,16 etc
 		this.playerTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(playerTexture, this.activity, "player.png", 0, 0);
 		playerTexture.load(); // loads the player texture
-		
-		//Load font
-		font = FontFactory.create(activity.getFontManager(), activity.getTextureManager(), 256, 256, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 32);
-		font.load();
 		
 		this.mBitmapTextureAtlas = new BitmapTextureAtlas(this.activity.getTextureManager(), 32, 32, TextureOptions.BILINEAR);
 		this.mBitmapTextureAtlas.load();
@@ -113,7 +109,42 @@ public class ClientGameScene extends GameScene {
 		this.registerUpdateHandler(phyWorld);
 
 		setUpMap();
+		setUpHUD();
 		
+
+		// start networking threads
+		oNC.start();
+		iNC.start();
+
+		// game loop
+		this.registerUpdateHandler(new IUpdateHandler() {
+			@Override
+			public void onUpdate(float pSecondsElapsed) {
+				if (sceneManager.getPlayer() != null &&
+					gameData.getPlayerWithID(sceneManager.getPlayer().getId()) != null) {					
+					mp();
+					
+					oNC.sendToServer(playerCommands);
+					
+				}
+			}
+
+			@Override
+			public void reset() {				
+			}	
+		});
+		
+		
+		
+		
+		// end game loop
+
+		return this;
+
+	}
+	
+	private void setUpHUD()
+	{
 		//Setup HUD components	
 
 		// sets what the joystick does
@@ -147,9 +178,8 @@ public class ClientGameScene extends GameScene {
 		setChildScene(joyStick);// attach control joystick
 		
 		//Create target info
-		targetInfo = new Text(camera.getWidth() / 2, 0, this.font, "Test", new TextOptions(HorizontalAlign.CENTER), activity.getVertexBufferObjectManager());
 		
-		this.hud.attachChild(targetInfo);
+		
 		
 		//Set attack button properties
 		attack = new ButtonSprite(camera.getWidth() - 100, camera.getHeight() - 120, mOnScreenControlKnobTextureRegion, this.activity.getVertexBufferObjectManager())
@@ -159,7 +189,10 @@ public class ClientGameScene extends GameScene {
 	        	if (touchEvent.isActionDown())
 	            {
 	                attack.setColor(Color.RED);
-	                playerCommands.setTargetID(sceneManager.getPlayer().targetNearestPlayer(gameData).getId());
+	                
+	                if(!sceneManager.getPlayer().hasTarget())
+	                	playerCommands.setTargetID(sceneManager.getPlayer().targetNearestPlayer(gameData).getId());
+	                
 	                playerCommands.setAttackCommand(true);
 	            }
 	        	else if (touchEvent.isActionUp())
@@ -178,35 +211,6 @@ public class ClientGameScene extends GameScene {
 	    this.hud.registerTouchArea(attack);
 		
 		this.camera.setHUD(hud);
-
-		// start networking threads
-		oNC.start();
-		iNC.start();
-
-		// game loop
-		this.registerUpdateHandler(new IUpdateHandler() {
-			@Override
-			public void onUpdate(float pSecondsElapsed) {
-				if (sceneManager.getPlayer() != null && gameData.getPlayerWithID(sceneManager.getPlayer().getId()) != null) {					
-					mp();
-					
-					oNC.sendToServer(playerCommands);
-					
-				}
-			}
-
-			@Override
-			public void reset() {				
-			}	
-		});
-		
-		
-		
-		
-		// end game loop
-
-		return this;
-
 	}
 	
 	/**

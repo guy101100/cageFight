@@ -250,6 +250,11 @@ public class Player extends Entity implements Serializable{
 		this.target = target;
 	}
 	
+	public boolean hasTarget()
+	{
+		return target != null;
+	}
+	
 	
 	/**
 	 * Returns true if the player has sent the attack command
