@@ -173,6 +173,7 @@ public class ServerGameScene extends GameScene {
 				if (player.getPlayerState() == EntityState.ATTACKING) {
 					if (player.getTarget() != null && System.currentTimeMillis() >= (player.getLastAttackTime() + player.getAttackCoolDown())  ) {
 						player.attackTarget();
+						player.setLastAttackTime(System.currentTimeMillis());
 					}
 					
 					

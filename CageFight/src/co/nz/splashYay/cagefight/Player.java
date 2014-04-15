@@ -101,7 +101,6 @@ public class Player extends Entity implements Serializable{
 	 */
 	public void attackTarget() {
 		//cycle annimation
-		
 		getTarget().setCurrenthealth(0);
 		System.out.println("Player : " + this.getId() + " ATTACKED player : " + getTarget().getId() + " [" + getTarget().getCurrenthealth() + "]");
 	}
