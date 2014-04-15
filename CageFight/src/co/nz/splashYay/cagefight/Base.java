@@ -5,8 +5,8 @@ public class Base extends Entity{
 	
 	
 	
-	public Base(int xpos, int ypos, int maxhealth, int currenthealth) {
-		super(xpos, ypos, maxhealth, currenthealth);
+	public Base(int xpos, int ypos, int maxhealth, int currenthealth, int id) {
+		super(xpos, ypos, maxhealth, currenthealth, id);
 		this.speed = 0;
 		
 	}

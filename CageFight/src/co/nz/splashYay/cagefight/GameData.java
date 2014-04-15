@@ -1,6 +1,7 @@
 package co.nz.splashYay.cagefight;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 
@@ -10,6 +11,7 @@ public class GameData implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private HashMap<Integer, Entity> entities = new HashMap<Integer, Entity>();
+	private ArrayList<Integer> IDs = new ArrayList<Integer>();
 
 	public GameData(){
 				
@@ -22,12 +24,13 @@ public class GameData implements Serializable{
 	 * gets the first unused id number
 	 * @return an unused ID number
 	 */
-	public int getUnusedID(){
+	public synchronized int getUnusedID(){
 		int toReturn = 0;
 		int checkNum = 1;
 		while (toReturn == 0) {
-			if (!entities.containsKey(checkNum)) {
+			if (!IDs.contains(checkNum)) {
 				toReturn = checkNum;
+				IDs.add(checkNum);
 			} else {
 				checkNum++;
 			}
@@ -36,11 +39,15 @@ public class GameData implements Serializable{
 		
 	}
 
+	public void addEntity(Entity entity){
+		if (entity != null && !entities.containsKey(entity.getId())) {
+			entities.put(entity.getId(), entity);
+		}
+	}
 	
 	
-	
-	public Player getPlayerWithID(int id){
-		return (Player) entities.get(id);
+	public Entity getEntityWithId(int id){
+		return entities.get(id);
 	}
 	
 	public void addPlayer(Player player){ // causes concurrent modification errors
@@ -55,6 +62,8 @@ public class GameData implements Serializable{
 		return entities;
 		
 	}
+	
+	
 	
 	
 	

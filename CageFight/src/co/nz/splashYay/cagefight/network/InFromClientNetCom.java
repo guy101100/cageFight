@@ -55,11 +55,11 @@ public class InFromClientNetCom extends Thread {
 				Object obj = inFromClient.readUnshared();
 				if (obj instanceof PlayerControlCommands) {
 					PlayerControlCommands receivedCommands = (PlayerControlCommands) obj;
-					Player tempPlayer = gameData.getPlayerWithID(player.getId());
+					Player tempPlayer = (Player)gameData.getEntityWithId(player.getId());
 					tempPlayer.setMovementX(receivedCommands.getMovementX());
 					tempPlayer.setMovementY(receivedCommands.getMovementY());
 					tempPlayer.setAttackCommand(receivedCommands.isAttackCommand());
-					tempPlayer.setTarget(gameData.getPlayerWithID(receivedCommands.getTargetID()));
+					tempPlayer.setTarget((Player)gameData.getEntityWithId(receivedCommands.getTargetID()));
 					
 					
 					//System.out.println(" [" + System.currentTimeMillis() + "] Player : " + player.getId() + " " + recieved.getMovementX() + " " + recieved.getMovementY() + " " + recieved.getDirection());

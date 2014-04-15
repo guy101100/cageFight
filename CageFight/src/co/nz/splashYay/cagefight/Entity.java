@@ -14,6 +14,7 @@ public class Entity implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	protected int id;
 	protected float xpos;
 	protected float ypos;
 	protected float direction;
@@ -34,7 +35,7 @@ public class Entity implements Serializable{
 	
 	
 	
-	public Entity(int xpos, int ypos, int maxhealth, int currenthealth)
+	public Entity(int xpos, int ypos, int maxhealth, int currenthealth, int id)
 	{
 		this.xpos = xpos;
 		this.ypos = ypos;
@@ -45,6 +46,7 @@ public class Entity implements Serializable{
 		lastAttackTime = 0;
 		attackCoolDown = 2000;
 		alive = true;
+		this.id = id;
 		
 		this.state = EntityState.IDLE;
 		
@@ -258,7 +260,13 @@ public class Entity implements Serializable{
 		this.attackCoolDown = attackCoolDown;
 	}
 	
-	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 	
 	
 

@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 
+import co.nz.splashYay.cagefight.Base;
 import co.nz.splashYay.cagefight.Entity;
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.Player;
@@ -52,8 +53,12 @@ public class ClientInNetCom extends Thread {
 					    } else {
 					    	if (entityIn instanceof Player) {
 					    		Player playerIn = (Player) entityIn;
-					    		Player actual = gameData.getPlayerWithID(playerIn.getId());
+					    		Player actual = (Player)gameData.getEntityWithId(playerIn.getId());
 						    	actual.updatePlayerInfoFromOtherPlayerData(playerIn);
+					    	
+					    	} else if (entityIn instanceof Base) {
+					    		//update bases info
+					    		
 					    	}
 					    	
 					    }
