@@ -11,6 +11,8 @@ import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.andengine.entity.scene.Scene;
 import org.andengine.ui.activity.BaseGameActivity;
 
+import android.content.Intent;
+
 import co.nz.splashYay.cagefight.SceneManager.AllScenes;
 
 public class MainActivity extends BaseGameActivity {
@@ -41,6 +43,17 @@ public class MainActivity extends BaseGameActivity {
 	public void onCreateResources(OnCreateResourcesCallback pOnCreateResourcesCallback) throws Exception {
 		// TODO Auto-generated method stub
 		sceneManager = new SceneManager(this, mEngine, mCamera);
+		Intent intent = getIntent();
+		boolean server = intent.getExtras().getBoolean("server");
+		String ip = "";
+		if(!server){
+			ip = intent.getExtras().getString("ip");
+			sceneManager.setIpaddress(ip);
+			sceneManager.setServer(false);
+		} else {
+			sceneManager.setServer(true);
+		}
+		
 		sceneManager.loadSplashRes();
 
 		pOnCreateResourcesCallback.onCreateResourcesFinished();
@@ -63,9 +76,18 @@ public class MainActivity extends BaseGameActivity {
 			public void onTimePassed(TimerHandler pTimerHandler) {
 				// TODO Auto-generated method stub
 				mEngine.unregisterUpdateHandler(pTimerHandler);				
-				sceneManager.loadMenuRes();
-				sceneManager.createMenuScene();
-				sceneManager.setCurrentScene(AllScenes.MENU);
+				
+				if (sceneManager.isServer()) {
+					sceneManager.loadServerGameRes();
+					sceneManager.createServerGameScene();
+					sceneManager.setCurrentScene(AllScenes.GAME_SERVER);
+				} else {
+					sceneManager.loadClientGameRes();
+					sceneManager.createClientGameScene();
+					sceneManager.setCurrentScene(AllScenes.GAME_CLIENT);
+				}
+				
+				
 			}
 		}));
 

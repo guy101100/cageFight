@@ -59,19 +59,8 @@ public class ClientGameScene extends GameScene {
 	private ClientInNetCom iNC;
 	private String ipAddress;
 	
-	private Sprite sPlayer;
-	private BitmapTextureAtlas mOnScreenControlTexture;
-	private ITextureRegion mOnScreenControlBaseTextureRegion;
-	private ITextureRegion mOnScreenControlKnobTextureRegion;
-
-	// control values
-	PlayerControlCommands playerCommands = new PlayerControlCommands();
-
-	//HUD
-	private HUD hud = new HUD();
-	private ButtonSprite attack;
-	private AnalogOnScreenControl joyStick;
-	private ValueBar targetInfo;
+	
+	
 
 	public ClientGameScene(BaseGameActivity act, Engine eng, Camera cam, String ipAddress, SceneManager sceneManager) {
 		this.activity = act;
@@ -120,8 +109,8 @@ public class ClientGameScene extends GameScene {
 		this.registerUpdateHandler(new IUpdateHandler() {
 			@Override
 			public void onUpdate(float pSecondsElapsed) {
-				if (sceneManager.getPlayer() != null &&
-					gameData.getEntityWithId(sceneManager.getPlayer().getId()) != null) {					
+				if (sceneManager.isGameStarted() &&
+					gameData.getEntityWithId(player.getId()) != null) {					
 					mp();
 					
 					oNC.sendToServer(playerCommands);
@@ -143,75 +132,7 @@ public class ClientGameScene extends GameScene {
 
 	}
 	
-	private void setUpHUD()
-	{
-		//Setup HUD components	
-
-		// sets what the joystick does
-		joyStick = new AnalogOnScreenControl(20, camera.getHeight() - this.mOnScreenControlBaseTextureRegion.getHeight() - 20, this.camera, this.mOnScreenControlBaseTextureRegion, this.mOnScreenControlKnobTextureRegion, 0.1f, 200, this.activity.getVertexBufferObjectManager(), new IAnalogOnScreenControlListener() {
-			@Override
-			public void onControlChange(final BaseOnScreenControl pBaseOnScreenControl, final float pValueX, final float pValueY) {
-
-				
-				
-				playerCommands.setMovementX(pValueX);
-				playerCommands.setMovementY(pValueY);				
-				if (sPlayer != null) {
-					playerCommands.setClientPosX(sPlayer.getX());
-					playerCommands.setClientPosY(sPlayer.getY());
-				}
-			}
-
-			@Override
-			public void onControlClick(final AnalogOnScreenControl pAnalogOnScreenControl) {
-
-			}
-		});
-
-		joyStick.getControlBase().setBlendFunction(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
-		joyStick.getControlBase().setAlpha(0.5f);
-		joyStick.getControlBase().setScaleCenter(0, 128);
-		joyStick.getControlBase().setScale(1.25f);
-		joyStick.getControlKnob().setScale(1.25f);
-		joyStick.refreshControlKnobPosition();
-
-		setChildScene(joyStick);// attach control joystick
-		
-		//Create target info
-		
-		
-		
-		//Set attack button properties
-		attack = new ButtonSprite(camera.getWidth() - 100, camera.getHeight() - 120, mOnScreenControlKnobTextureRegion, this.activity.getVertexBufferObjectManager())
-	    {
-	        public boolean onAreaTouched(TouchEvent touchEvent, float X, float Y)
-	        {
-	        	if (touchEvent.isActionDown())
-	            {
-	                attack.setColor(Color.RED);
-	                
-	                if(!sceneManager.getPlayer().hasTarget())
-	                	playerCommands.setTargetID(sceneManager.getPlayer().targetNearestPlayer(gameData).getId());
-	                
-	                playerCommands.setAttackCommand(true);
-	            }
-	        	else if (touchEvent.isActionUp())
-	            {	            	
-	                attack.setColor(Color.WHITE);
-	                playerCommands.setAttackCommand(false);
-	            }
-	            return true;
-	        };
-	    };
-	    
-	    attack.setColor(Color.WHITE);
-	    attack.setScale(2.0f);
-	    
-	    this.hud.attachChild(attack);
-	    this.hud.registerTouchArea(attack);
-		
-		this.camera.setHUD(hud);
-	}
+	
 	
 	/**
 	 * Moves players by setting a moveModifier : move from here to there in X seconds.
@@ -257,7 +178,7 @@ public class ClientGameScene extends GameScene {
 				newPlayer.setSprite(tempS);
 				newPlayer.setPhyHandler(tempPhyHandler);
 				tempS.setPosition(newPlayer.getXPos(), newPlayer.getYPos());
-				if (newPlayer.getId() == sceneManager.getPlayer().getId()) {
+				if (newPlayer.getId() == player.getId()) {
 					sPlayer = tempS;
 					camera.setChaseEntity(sPlayer);
 				}
@@ -265,6 +186,11 @@ public class ClientGameScene extends GameScene {
 			
 
 		}
+	}
+
+	public void setPlayer(Player player) {
+		this.player = player;
+		
 	}
 
 }

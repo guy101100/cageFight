@@ -38,6 +38,7 @@ public class ClientOutNetCom extends Thread{
 			//outToServer.writeObject(((SceneManager) sceneManager).getPlayer());
 			Player player = (Player) inFromServer.readUnshared();
 			sceneManager.setPlayer(player);
+			sceneManager.setGameStarted(true);
 			outToServer.reset();
 						
 
@@ -53,7 +54,7 @@ public class ClientOutNetCom extends Thread{
 	}
 	
 	public void sendToServer(PlayerControlCommands cmds){
-		if (sceneManager.getPlayer() != null) {
+		if (sceneManager.isGameStarted()) {
 			try {
 				outToServer.flush();
 				outToServer.writeObject(cmds);

@@ -3,8 +3,12 @@ package co.nz.splashYay.cagefight.scenes;
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.camera.hud.HUD;
+import org.andengine.engine.camera.hud.controls.AnalogOnScreenControl;
+import org.andengine.engine.camera.hud.controls.BaseOnScreenControl;
+import org.andengine.engine.camera.hud.controls.AnalogOnScreenControl.IAnalogOnScreenControlListener;
 import org.andengine.engine.handler.physics.PhysicsHandler;
 import org.andengine.entity.scene.Scene;
+import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.extension.physics.box2d.FixedStepPhysicsWorld;
 import org.andengine.extension.tmx.TMXLayer;
@@ -15,15 +19,21 @@ import org.andengine.extension.tmx.TMXTileProperty;
 import org.andengine.extension.tmx.TMXTiledMap;
 import org.andengine.extension.tmx.TMXLoader.ITMXTilePropertiesListener;
 import org.andengine.extension.tmx.util.exception.TMXLoadException;
+import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
+import org.andengine.util.color.Color;
 import org.andengine.util.debug.Debug;
+
+import android.opengl.GLES20;
 
 import co.nz.splashYay.cagefight.Entity;
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.Player;
+import co.nz.splashYay.cagefight.PlayerControlCommands;
+import co.nz.splashYay.cagefight.ValueBar;
 
 public abstract class GameScene extends Scene {
 	protected BaseGameActivity activity;
@@ -38,6 +48,22 @@ public abstract class GameScene extends Scene {
 	protected BitmapTextureAtlas mBitmapTextureAtlas;
 	
 	protected GameData gameData;
+	
+	protected PlayerControlCommands playerCommands = new PlayerControlCommands();
+	
+	protected BitmapTextureAtlas mOnScreenControlTexture;
+	protected ITextureRegion mOnScreenControlBaseTextureRegion;
+	protected ITextureRegion mOnScreenControlKnobTextureRegion;
+	
+	protected Sprite sPlayer;
+	protected Player player;
+	
+
+	//HUD
+	private HUD hud = new HUD();
+	private ButtonSprite attack;
+	private AnalogOnScreenControl joyStick;
+	private ValueBar targetInfo;
 	
 	
 	
@@ -77,6 +103,83 @@ public abstract class GameScene extends Scene {
 			tempS.setPosition(newPlayer.getXPos(), newPlayer.getYPos());
 
 		}
+	}
+	
+	protected void setUpHUD()
+	{
+		//Setup HUD components	
+
+		// sets what the joystick does
+		joyStick = new AnalogOnScreenControl(20, camera.getHeight() - this.mOnScreenControlBaseTextureRegion.getHeight() - 20, this.camera, this.mOnScreenControlBaseTextureRegion, this.mOnScreenControlKnobTextureRegion, 0.1f, 200, this.activity.getVertexBufferObjectManager(), new IAnalogOnScreenControlListener() {
+			@Override
+			public void onControlChange(final BaseOnScreenControl pBaseOnScreenControl, final float pValueX, final float pValueY) {
+
+				
+				
+				playerCommands.setMovementX(pValueX);
+				playerCommands.setMovementY(pValueY);				
+				if (sPlayer != null) {
+					playerCommands.setClientPosX(sPlayer.getX());
+					playerCommands.setClientPosY(sPlayer.getY());
+				}
+			}
+
+			@Override
+			public void onControlClick(final AnalogOnScreenControl pAnalogOnScreenControl) {
+
+			}
+		});
+
+		joyStick.getControlBase().setBlendFunction(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+		joyStick.getControlBase().setAlpha(0.5f);
+		joyStick.getControlBase().setScaleCenter(0, 128);
+		joyStick.getControlBase().setScale(1.25f);
+		joyStick.getControlKnob().setScale(1.25f);
+		joyStick.refreshControlKnobPosition();
+
+		setChildScene(joyStick);// attach control joystick
+		
+		//Create target info
+		
+		
+		
+		//Set attack button properties
+		attack = new ButtonSprite(camera.getWidth() - 100, camera.getHeight() - 120, mOnScreenControlKnobTextureRegion, this.activity.getVertexBufferObjectManager())
+	    {
+	        public boolean onAreaTouched(TouchEvent touchEvent, float X, float Y)
+	        {
+	        	if (touchEvent.isActionDown())
+	            {
+	                attack.setColor(Color.RED);
+	                
+	                if(!player.hasTarget())
+	                {
+	                	playerCommands.setTargetID(player.targetNearestPlayer(gameData).getId());
+	                }
+	                else if (!player.getTarget().isAlive())
+                	{
+                		playerCommands.setTargetID(player.targetNearestPlayer(gameData).getId());
+                	}
+	                	
+	                
+	                playerCommands.setAttackCommand(true);
+	            }
+	        	else if (touchEvent.isActionUp())
+	            {	            	
+	                attack.setColor(Color.WHITE);
+	                playerCommands.setAttackCommand(false);
+	            }
+	            return true;
+	        };
+	    };
+	    
+	    attack.setColor(Color.WHITE);
+	    attack.setScale(2.0f);
+	    
+	    this.hud.attachChild(attack);
+	    this.hud.registerTouchArea(attack);
+		
+		this.camera.setHUD(hud);
 	}
 
 	

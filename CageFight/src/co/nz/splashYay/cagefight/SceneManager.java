@@ -25,12 +25,15 @@ public class SceneManager {
 	private Camera camera;
 	
 	private String ipAddress;
-	private Player player;
+	
+	private boolean gameStarted;
+	private boolean server;
 
 	public SceneManager(BaseGameActivity act, Engine eng, Camera cam) {
 		this.activity = act;
 		this.engine = eng;
 		this.camera = cam;
+		gameStarted = false;
 	}
 	
 	//scene management
@@ -119,15 +122,40 @@ public class SceneManager {
 	}	
 	
 	public void setPlayer(Player player) {
-		this.player = player;
+		clientGameScene.setPlayer(player);
 	}
 
 
 
 	//getters
-	public Player getPlayer(){
-		return player;
+	
+
+
+
+	public void setServer(boolean b) {
+		this.server = b;
+		
 	}
+
+
+
+	public boolean isServer() {
+		return server;
+	}
+
+
+
+	public boolean isGameStarted() {
+		return gameStarted;
+	}
+
+
+
+	public void setGameStarted(boolean gameStarted) {
+		this.gameStarted = gameStarted;
+	}
+	
+	
 	
 	
 	

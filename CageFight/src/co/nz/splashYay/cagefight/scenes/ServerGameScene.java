@@ -40,6 +40,7 @@ import android.opengl.GLES20;
 import co.nz.splashYay.cagefight.Entity;
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.Player;
+import co.nz.splashYay.cagefight.PlayerControlCommands;
 import co.nz.splashYay.cagefight.SceneManager;
 import co.nz.splashYay.cagefight.EntityState;
 import co.nz.splashYay.cagefight.ValueBar;
@@ -58,18 +59,9 @@ public class ServerGameScene extends GameScene {
 	private SceneManager sceneManager;	
 	private InFromClientListener iFCL;
 	private OutToClientListener oTCL;
-	private BitmapTextureAtlas mOnScreenControlTexture;
-	private TextureRegion mOnScreenControlBaseTextureRegion;
-	private TextureRegion mOnScreenControlKnobTextureRegion;
+	
 
-	//HUD
-	private HUD hud = new HUD();
-	private ButtonSprite attack;
-	private AnalogOnScreenControl joyStick;
-	private ValueBar targetInfo;
-
-	//server Player
-	Player player;
+	
 	
 	
 	public ServerGameScene(BaseGameActivity act, Engine eng, Camera cam, SceneManager sceneManager) {
@@ -122,7 +114,7 @@ public class ServerGameScene extends GameScene {
 		this.registerUpdateHandler(new IUpdateHandler() {
 			@Override
 			public void onUpdate(float pSecondsElapsed) {
-
+				processServerPlayerControls();
 				processPlayerActions();
 				oTCL.updateClients();
 
@@ -135,6 +127,14 @@ public class ServerGameScene extends GameScene {
 		//end game loop
 		
 		
+	}
+	
+	private void processServerPlayerControls() {
+		Player tempPlayer = (Player)gameData.getEntityWithId(player.getId());
+		tempPlayer.setMovementX(playerCommands.getMovementX());
+		tempPlayer.setMovementY(playerCommands.getMovementY());
+		tempPlayer.setAttackCommand(playerCommands.isAttackCommand());
+		tempPlayer.setTarget((Player)gameData.getEntityWithId(playerCommands.getTargetID()));
 	}
 	
 	private void processPlayerActions(){
@@ -232,65 +232,6 @@ public class ServerGameScene extends GameScene {
 	}
 	
 	
-	private void setUpHUD(){
-		joyStick = new AnalogOnScreenControl(20, camera.getHeight() - this.mOnScreenControlBaseTextureRegion.getHeight() - 20, this.camera, this.mOnScreenControlBaseTextureRegion, this.mOnScreenControlKnobTextureRegion, 0.1f, 200, this.activity.getVertexBufferObjectManager(), new IAnalogOnScreenControlListener() {
-			@Override
-			public void onControlChange(final BaseOnScreenControl pBaseOnScreenControl, final float pValueX, final float pValueY) {
-				player.setMovementX(pValueX);
-				player.setMovementY(pValueY);
-			}
-
-			@Override
-			public void onControlClick(final AnalogOnScreenControl pAnalogOnScreenControl) {
-				//do nothing
-			}
-		});
-
-		joyStick.getControlBase().setBlendFunction(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
-		joyStick.getControlBase().setAlpha(0.5f);
-		joyStick.getControlBase().setScaleCenter(0, 128);
-		joyStick.getControlBase().setScale(1.25f);
-		joyStick.getControlKnob().setScale(1.25f);
-		joyStick.refreshControlKnobPosition();
-
-		setChildScene(joyStick);
-		
-		//Create TargetInfo
-		targetInfo = new ValueBar(camera.getWidth() / 2 - 80, 5, 160, 30, activity.getVertexBufferObjectManager());
-		targetInfo.setAlpha(0.8f);
-		
-		hud.attachChild(targetInfo);
-
-		//Set attack button properties
-		attack = new ButtonSprite(camera.getWidth() - 100, camera.getHeight() - 120, mOnScreenControlKnobTextureRegion, this.activity.getVertexBufferObjectManager())
-	    {
-	        public boolean onAreaTouched(TouchEvent touchEvent, float X, float Y)
-	        {
-	        	if (touchEvent.isActionDown())
-	            {
-	                attack.setColor(Color.RED);
-	                player.setAttackCommand(true);
-	                player.setTarget(player.targetNearestPlayer(gameData));
-	                
-	            }
-	        	else if (touchEvent.isActionUp())
-	            {	            	
-	                attack.setColor(Color.WHITE);
-	                player.setAttackCommand(false);
-	            }
-	            return true;
-	        };
-	    };
-	    
-	    attack.setColor(Color.WHITE);
-	    attack.setScale(2.0f);
-	    
-	    this.hud.attachChild(attack);
-	    this.hud.registerTouchArea(attack);
-		
-		this.camera.setHUD(hud);
-		
-	}
 	
 	
 
