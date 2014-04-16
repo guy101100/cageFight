@@ -74,15 +74,22 @@ public abstract class GameScene extends Scene {
 				public void onTMXTileWithPropertiesCreated(final TMXTiledMap pTMXTiledMap, final TMXLayer pTMXLayer, final TMXTile pTMXTile, final TMXProperties<TMXTileProperty> pTMXTileProperties) {
 				}
 			});
-			this.mTMXTiledMap = tmxLoader.loadFromAsset("tmx/desert.tmx");
+			this.mTMXTiledMap = tmxLoader.loadFromAsset("tmx/map.tmx");
 
 		} catch (final TMXLoadException e) {
 			Debug.e(e);
 		}
 
-		final TMXLayer tmxLayer = this.mTMXTiledMap.getTMXLayers().get(0);
+		//final TMXLayer tmxLayer[] = new TMXLayer[12];	
 		
-		this.attachChild(tmxLayer);
+		
+		for(TMXLayer layer : this.mTMXTiledMap.getTMXLayers()){
+            this.attachChild(layer);
+    }       
+        
+		//tmxLayer[11] = this.mTMXTiledMap.getTMXLayers().get(10);
+		//this.attachChild(tmxLayer[10]);
+		
 
 	}
 

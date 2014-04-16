@@ -81,7 +81,7 @@ public class ServerGameScene extends GameScene {
 
 		playerTexture.load();
 
-		this.mBitmapTextureAtlas = new BitmapTextureAtlas(this.activity.getTextureManager(), 32, 32, TextureOptions.BILINEAR);
+		this.mBitmapTextureAtlas = new BitmapTextureAtlas(this.activity.getTextureManager(), 16, 16, TextureOptions.DEFAULT);
 
 		this.mBitmapTextureAtlas.load();
 		
