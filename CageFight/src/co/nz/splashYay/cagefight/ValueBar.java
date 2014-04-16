@@ -17,13 +17,16 @@ public class ValueBar extends Entity
     	this.width = width;
     	this.height = height;
     	this.progress = 100;
-    	this.padding = 0.0f;
+    	this.padding = 2.0f;
     	
     	backgroundRectangle = new Rectangle(xPos, yPos, width, height, vbm);
     	progressRectangle = new Rectangle(xPos+padding, yPos+padding, width-2*padding, height-2*padding, vbm);
     	
     	backgroundRectangle.setColor(Color.BLACK);
     	progressRectangle.setColor(Color.WHITE);
+    	
+    	super.attachChild(backgroundRectangle);
+    	super.attachChild(progressRectangle);
     }
     
     public void setProgressPercentage(float progress)
