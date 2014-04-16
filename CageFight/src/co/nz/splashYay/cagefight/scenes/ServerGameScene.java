@@ -118,7 +118,7 @@ public class ServerGameScene extends GameScene {
 				processPlayerActions();
 				oTCL.updateClients();
 				
-				
+				updateTargetInfo();
 
 			}
 
@@ -172,8 +172,15 @@ public class ServerGameScene extends GameScene {
 				
 				if (player.getPlayerState() == EntityState.ATTACKING) {
 					if (player.getTarget() != null && System.currentTimeMillis() >= (player.getLastAttackTime() + player.getAttackCoolDown())  ) {
-						player.attackTarget();
-						player.setLastAttackTime(System.currentTimeMillis());
+						
+						double distanceSqr = Math.pow((player.getTarget().getXPos() - player.getXPos()), 2) + Math.pow((player.getTarget().getYPos() - player.getYPos()), 2);
+						double distance = Math.sqrt(distanceSqr);
+						
+						if(distance < 150)
+						{
+							player.attackTarget();
+							player.setLastAttackTime(System.currentTimeMillis());
+						}
 					}
 					
 					

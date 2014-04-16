@@ -115,6 +115,7 @@ public class ClientGameScene extends GameScene {
 					
 					oNC.sendToServer(playerCommands);
 					
+					updateTargetInfo();
 					
 				}
 			}
