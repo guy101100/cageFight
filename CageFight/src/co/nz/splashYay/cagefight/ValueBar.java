@@ -12,13 +12,18 @@ public class ValueBar extends Entity
     
     public ValueBar(float xPos, float yPos, float width, float height, VertexBufferObjectManager vbm)
     {
+    	super();
+    	
     	this.width = width;
     	this.height = height;
     	this.progress = 100;
-    	this.padding = 2.0f;
+    	this.padding = 0.0f;
     	
     	backgroundRectangle = new Rectangle(xPos, yPos, width, height, vbm);
     	progressRectangle = new Rectangle(xPos+padding, yPos+padding, width-2*padding, height-2*padding, vbm);
+    	
+    	backgroundRectangle.setColor(Color.BLACK);
+    	progressRectangle.setColor(Color.WHITE);
     }
     
     public void setProgressPercentage(float progress)

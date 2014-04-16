@@ -66,9 +66,6 @@ public abstract class GameScene extends Scene {
 	private ValueBar targetInfo;
 	
 	
-	
-	
-	
 	protected void setUpMap() {
 		// Load the TMX level
 		try {
@@ -140,8 +137,12 @@ public abstract class GameScene extends Scene {
 		setChildScene(joyStick);// attach control joystick
 		
 		//Create target info
+		targetInfo = new ValueBar(camera.getWidth() / 2, camera.getHeight() / 2, 80, 25, activity.getVertexBufferObjectManager());
 		
 		
+		
+		hud.attachChild(targetInfo);
+		System.out.println(targetInfo.getX());
 		
 		//Set attack button properties
 		attack = new ButtonSprite(camera.getWidth() - 100, camera.getHeight() - 120, mOnScreenControlKnobTextureRegion, this.activity.getVertexBufferObjectManager())
@@ -181,6 +182,16 @@ public abstract class GameScene extends Scene {
 		
 		this.camera.setHUD(hud);
 	}
+	
+	public void updateTargetInfo()
+	{
+		if(player.hasTarget())
+		{
+			//targetInfo.setProgressPercentage((float) (player.getTarget().getCurrenthealth() / player.getTarget().getMaxhealth())); 
+		}
+
+	}
+	
 
 	
 	

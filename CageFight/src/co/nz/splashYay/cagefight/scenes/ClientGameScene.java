@@ -77,7 +77,7 @@ public class ClientGameScene extends GameScene {
 		this.playerTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(playerTexture, this.activity, "player.png", 0, 0);
 		playerTexture.load(); // loads the player texture
 		
-		this.mBitmapTextureAtlas = new BitmapTextureAtlas(this.activity.getTextureManager(), 32, 32, TextureOptions.BILINEAR);
+		this.mBitmapTextureAtlas = new BitmapTextureAtlas(this.activity.getTextureManager(), 32, 32, TextureOptions.DEFAULT);
 		this.mBitmapTextureAtlas.load();
 		// loads the on screen joystick images
 		this.mOnScreenControlTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 256, 128, TextureOptions.BILINEAR);
@@ -114,6 +114,7 @@ public class ClientGameScene extends GameScene {
 					mp();
 					
 					oNC.sendToServer(playerCommands);
+					
 					
 				}
 			}

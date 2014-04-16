@@ -99,7 +99,7 @@ public class Player extends Entity implements Serializable{
 	 */
 	public void attackTarget() {
 		//cycle annimation
-		getTarget().setCurrenthealth(0);
+		getTarget().setCurrenthealth(getTarget().getCurrenthealth() - 1);
 		System.out.println("Player : " + this.getId() + " ATTACKED player : " + getTarget().getId() + " [" + getTarget().getCurrenthealth() + "]");
 	}
 	
@@ -155,7 +155,6 @@ public class Player extends Entity implements Serializable{
 	 * Checks and update the players state
 	 */
 	public void checkState(){
-		System.out.println(this.getId() + " HP:" + this.getCurrenthealth());
 		if (this.getCurrenthealth() <= 0) {
 			setPlayerState(EntityState.DEAD);			
 			
@@ -168,7 +167,6 @@ public class Player extends Entity implements Serializable{
 		} else {
 			setPlayerState(EntityState.IDLE);
 		}	
-		System.out.println("State" + this.getPlayerState());
 	}
 	
 	///////////////////////////////////////////////////////////////////////
