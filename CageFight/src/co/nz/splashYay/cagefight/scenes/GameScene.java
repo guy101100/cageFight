@@ -7,12 +7,16 @@ import org.andengine.engine.camera.hud.controls.AnalogOnScreenControl;
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl;
 import org.andengine.engine.camera.hud.controls.AnalogOnScreenControl.IAnalogOnScreenControlListener;
 import org.andengine.engine.handler.physics.PhysicsHandler;
+import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.extension.physics.box2d.FixedStepPhysicsWorld;
+import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.extension.tmx.TMXLayer;
 import org.andengine.extension.tmx.TMXLoader;
+import org.andengine.extension.tmx.TMXObject;
+import org.andengine.extension.tmx.TMXObjectGroup;
 import org.andengine.extension.tmx.TMXProperties;
 import org.andengine.extension.tmx.TMXTile;
 import org.andengine.extension.tmx.TMXTileProperty;
@@ -26,6 +30,9 @@ import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.util.color.Color;
 import org.andengine.util.debug.Debug;
+
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 
 import android.opengl.GLES20;
 import co.nz.splashYay.cagefight.Entity;
@@ -84,18 +91,29 @@ public abstract class GameScene extends Scene {
 			Debug.e(e);
 		}
 
-		//final TMXLayer tmxLayer[] = new TMXLayer[12];	
-		
-		
-		for(TMXLayer layer : this.mTMXTiledMap.getTMXLayers()){
-            this.attachChild(layer);
-    }       
-        
-		//tmxLayer[11] = this.mTMXTiledMap.getTMXLayers().get(10);
-		//this.attachChild(tmxLayer[10]);
-		
+		for (TMXLayer layer : this.mTMXTiledMap.getTMXLayers()) {
+			this.attachChild(layer);
+		}
+
+		createUnwalkableObjects(mTMXTiledMap);
 
 	}
+	
+	private void createUnwalkableObjects(TMXTiledMap map){
+        // Loop through the object groups
+         for(final TMXObjectGroup group: this.mTMXTiledMap.getTMXObjectGroups()) {
+                 if(group.getTMXObjectGroupProperties().containsTMXProperty("wall", "true")){
+                         // This is our "wall" layer. Create the boxes from it
+                         for(final TMXObject object : group.getTMXObjects()) {
+                                final Rectangle rect = new Rectangle(object.getX(), object.getY(),object.getWidth(), object.getHeight(), this.engine.getVertexBufferObjectManager());
+                                final FixtureDef boxFixtureDef = PhysicsFactory.createFixtureDef(0, 0, 1f);
+                                PhysicsFactory.createBoxBody(phyWorld, rect, BodyType.StaticBody, boxFixtureDef);
+                                rect.setVisible(false);
+                                this.attachChild(rect);
+                         }
+                 }
+         }
+}
 
 	public void addEntityToGameDataObj(Entity newEntity) {
 		if (newEntity != null) {
