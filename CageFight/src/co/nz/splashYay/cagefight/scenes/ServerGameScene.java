@@ -139,7 +139,7 @@ public class ServerGameScene extends GameScene {
 		tempPlayer.setMovementX(playerCommands.getMovementX());
 		tempPlayer.setMovementY(playerCommands.getMovementY());
 		tempPlayer.setAttackCommand(playerCommands.isAttackCommand());
-		tempPlayer.setTarget((Player)gameData.getEntityWithId(playerCommands.getTargetID()));
+		tempPlayer.setTarget(gameData.getEntityWithId(playerCommands.getTargetID()));
 	}
 	
 	private void processPlayerActions(){

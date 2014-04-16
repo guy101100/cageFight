@@ -28,7 +28,6 @@ import org.andengine.util.color.Color;
 import org.andengine.util.debug.Debug;
 
 import android.opengl.GLES20;
-
 import co.nz.splashYay.cagefight.Entity;
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.Player;
@@ -71,7 +70,12 @@ public abstract class GameScene extends Scene {
 		try {
 			final TMXLoader tmxLoader = new TMXLoader(this.activity.getAssets(), this.activity.getTextureManager(), TextureOptions.BILINEAR_PREMULTIPLYALPHA, this.activity.getVertexBufferObjectManager(), new ITMXTilePropertiesListener() {
 				@Override
-				public void onTMXTileWithPropertiesCreated(final TMXTiledMap pTMXTiledMap, final TMXLayer pTMXLayer, final TMXTile pTMXTile, final TMXProperties<TMXTileProperty> pTMXTileProperties) {
+				public void onTMXTileWithPropertiesCreated(
+						TMXTiledMap pTMXTiledMap, TMXLayer pTMXLayer,
+						TMXTile pTMXTile,
+						TMXProperties<TMXTileProperty> pTMXTileProperties) {
+					// TODO Auto-generated method stub
+					
 				}
 			});
 			this.mTMXTiledMap = tmxLoader.loadFromAsset("tmx/map.tmx");
@@ -158,7 +162,7 @@ public abstract class GameScene extends Scene {
 	            {
 	                attack.setColor(Color.RED);
 	                
-	                Entity target = player.targetNearestPlayer(gameData);
+	                Entity target = player.targetNearestEntity(gameData);
 	                
 	                if(target != null)
 	                {

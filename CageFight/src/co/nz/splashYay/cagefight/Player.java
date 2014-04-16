@@ -26,7 +26,7 @@ public class Player extends Entity implements Serializable{
 	private long respawnTime = 0;
 	
 	
-	private Player target;
+	private Entity target;
 	
 	
 	public Player(String name, int id, int maxhealth, int currenthealth, int xpos, int ypos) {
@@ -70,7 +70,7 @@ public class Player extends Entity implements Serializable{
 		Player currentClose = null;
 
 		for (Entity e : gd.getEntities().values()) {
-			if (e instanceof Player) {
+			if (e instanceof Player && e.isAlive()) {
 				Player p = (Player) e;
 				if (p.getId() != this.id) {
 					if (currentClose == null)
@@ -89,6 +89,27 @@ public class Player extends Entity implements Serializable{
 		return currentClose;
 	}
 	
+	public Entity targetNearestEntity(GameData gd) {
+		Entity currentClose = null;
+
+		for (Entity e : gd.getEntities().values()) {
+			if (e.isAlive()) {
+				if (e.getId() != this.id) {
+					if (currentClose == null)
+						currentClose = e;
+					else {
+						double distanceToPlayerCurrent = Math.pow((currentClose.getXPos() - this.getXPos()), 2) + Math.pow((currentClose.getYPos() - this.getYPos()), 2);
+						double distanceToPlayerNext = Math.pow((e.getXPos() - this.getXPos()), 2) + Math.pow((e.getYPos() - this.getYPos()), 2);
+
+						if (distanceToPlayerNext < distanceToPlayerCurrent)
+							currentClose = e;
+					}
+				}
+			}
+		}
+
+		return currentClose;
+	}
 	
 	
 	///////////////////////////////////////////////////////////////////////
@@ -238,11 +259,11 @@ public class Player extends Entity implements Serializable{
 		this.state = state;
 	}
 	
-	public Player getTarget() {
+	public Entity getTarget() {
 		return target;
 	}
 
-	public void setTarget(Player target) {
+	public void setTarget(Entity target) {
 		this.target = target;
 	}
 	
