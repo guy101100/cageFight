@@ -77,7 +77,7 @@ public class ClientGameScene extends GameScene {
 
 	public void loadRes() {
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/"); // base folder for gfx
-		this.playerTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 32, 32); // width and height must be factor of two eg:2,4,8,16 etc
+		this.playerTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 64, 64); // width and height must be factor of two eg:2,4,8,16 etc
 		this.playerTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(playerTexture, this.activity, "player.png", 0, 0);
 		playerTexture.load(); // loads the player texture
 		
