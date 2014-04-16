@@ -25,6 +25,7 @@ import org.andengine.entity.text.Text;
 import org.andengine.entity.text.TextOptions;
 import org.andengine.entity.util.FPSLogger;
 import org.andengine.extension.physics.box2d.FixedStepPhysicsWorld;
+import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.FontFactory;
@@ -39,6 +40,7 @@ import org.andengine.util.math.MathUtils;
 
 import android.graphics.Typeface;
 import android.opengl.GLES20;
+import co.nz.splashYay.cagefight.Base;
 import co.nz.splashYay.cagefight.Entity;
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.Player;
@@ -50,6 +52,8 @@ import co.nz.splashYay.cagefight.network.ClientInNetCom;
 import co.nz.splashYay.cagefight.network.ClientOutNetCom;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
 public class ClientGameScene extends GameScene {
 
@@ -111,7 +115,7 @@ public class ClientGameScene extends GameScene {
 			public void onUpdate(float pSecondsElapsed) {
 				if (sceneManager.isGameStarted() &&
 					gameData.getEntityWithId(player.getId()) != null) {					
-					mp();
+					processEntities();
 					
 					oNC.sendToServer(playerCommands);
 					
@@ -139,28 +143,36 @@ public class ClientGameScene extends GameScene {
 	/**
 	 * Moves players by setting a moveModifier : move from here to there in X seconds.
 	 */
-	private void mp() {
+	private void processEntities() {
 		Iterator it = gameData.getEntities().entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry pairs = (Map.Entry) it.next();
-			Player player = (Player) pairs.getValue();
-
-			// move player			
-			if (player.getMovementX() != 0 && player.getMovementY() != 0) {
-				player.getSprite().setRotation(player.getDirection());
+			if (pairs.getValue() instanceof Player) {
+				Player player = (Player) pairs.getValue();
+				processPlayer(player);
 			}
+			
+			
+			
 
-			// if player is not moving and is out of sync, move to actual position.
-			float moveTime = 0.125f; // time in seconds it takes to move to actual position
+		}
+	}
+	
+	private void processPlayer(Player player) {
+		// move player			
+		if (player.getMovementX() != 0 && player.getMovementY() != 0) {
+			player.getSprite().setRotation(player.getDirection());
+		}
 
-			if (player.getSprite().getEntityModifierCount() == 0) { // if there is no move modifier add one
-				MoveModifier moveModifier = new MoveModifier(moveTime, player.getSprite().getX(), player.getXPos(), player.getSprite().getY(), player.getYPos());
-				player.setMoveModifier(moveModifier);
-				player.getSprite().registerEntityModifier(moveModifier);
-			} else {
-				player.getMoveModifier().reset(moveTime, player.getSprite().getX(), player.getXPos(), player.getSprite().getY(), player.getYPos()); // move player to where actual coords are
-			}
+		// if player is not moving and is out of sync, move to actual position.
+		float moveTime = 0.125f; // time in seconds it takes to move to actual position
 
+		if (player.getSprite().getEntityModifierCount() == 0) { // if there is no move modifier add one
+			MoveModifier moveModifier = new MoveModifier(moveTime, player.getSprite().getX(), player.getXPos(), player.getSprite().getY(), player.getYPos());
+			player.setMoveModifier(moveModifier);
+			player.getSprite().registerEntityModifier(moveModifier);
+		} else {
+			player.getMoveModifier().reset(moveTime, player.getSprite().getX(), player.getXPos(), player.getSprite().getY(), player.getYPos()); // move player to where actual coords are
 		}
 	}
 	
@@ -184,6 +196,16 @@ public class ClientGameScene extends GameScene {
 					sPlayer = tempS;
 					camera.setChaseEntity(sPlayer);
 				}
+			} else if (newEntity instanceof Base) {
+				
+				Base newBase = (Base) newEntity;	
+				gameData.addEntity(newBase);
+				Rectangle baseRec = new Rectangle(newBase.getXPos(), newBase.getYPos(), 150, 150, this.engine.getVertexBufferObjectManager());
+				baseRec.setColor(Color.BLUE);				
+				this.attachChild(baseRec);
+				
+				
+				
 			}
 			
 

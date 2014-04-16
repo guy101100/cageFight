@@ -15,6 +15,7 @@ import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.engine.handler.physics.PhysicsHandler;
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
+import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
@@ -37,6 +38,7 @@ import org.andengine.util.color.Color;
 import org.andengine.util.math.MathUtils;
 
 import android.opengl.GLES20;
+import co.nz.splashYay.cagefight.Base;
 import co.nz.splashYay.cagefight.Entity;
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.Player;
@@ -101,6 +103,7 @@ public class ServerGameScene extends GameScene {
 		
 		setUpMap();
 		setUpHUD();
+		setUpBases();
 
 		iFCL = new InFromClientListener(gameData, this);
 		oTCL = new OutToClientListener(gameData, this);
@@ -143,68 +146,90 @@ public class ServerGameScene extends GameScene {
 		Iterator it = gameData.getEntities().entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry pairs = (Map.Entry) it.next();
-			Player player = (Player) pairs.getValue();
 			
-			player.checkState();// checks and updates the players state
+			if (pairs.getValue() instanceof Player) {
+				Player player = (Player) pairs.getValue();
+				proccessPlayer(player);
+				
+			} else if (pairs.getValue() instanceof Base) {
+				Base base = (Base) pairs.getValue();
+				proccessBase(base);
+			}
 			
-			player.setXPos(player.getSprite().getX());// set player position(in data) to the sprites position.
-			player.setYPos(player.getSprite().getY());
-			
-			if (player.getPlayerState() == EntityState.MOVING) {
-				player.getBody().setActive(true);
-				final Body playerBody = player.getBody();
-				final Vector2 velocity = Vector2Pool.obtain(player.getMovementX() * player.getSpeed(), player.getMovementY() * player.getSpeed());
-				playerBody.setLinearVelocity(velocity);
-				Vector2Pool.recycle(velocity);
-				
-
-				if (player.getMovementX() != 0 && player.getMovementY() != 0) {
-					float direction = MathUtils.radToDeg((float) Math.atan2(player.getMovementX(), -player.getMovementY()));
-					player.getSprite().setRotation(direction);
-					player.setDirection(direction);
-				}
-			}  else {
-				//stops players from moving
-				final Body playerBody = player.getBody();
-				final Vector2 velocity = Vector2Pool.obtain(0, 0);
-				playerBody.setLinearVelocity(velocity);
-				Vector2Pool.recycle(velocity);
-				
-				if (player.getPlayerState() == EntityState.ATTACKING) {
-					if (player.getTarget() != null && System.currentTimeMillis() >= (player.getLastAttackTime() + player.getAttackCoolDown())  ) {
-						
-						double distanceSqr = Math.pow((player.getTarget().getXPos() - player.getXPos()), 2) + Math.pow((player.getTarget().getYPos() - player.getYPos()), 2);
-						double distance = Math.sqrt(distanceSqr);
-						
-						if(distance < 150)
-						{
-							player.attackTarget();
-							player.setLastAttackTime(System.currentTimeMillis());
-						}
-					}
-					
-					
-					
-				} else if (player.getPlayerState() == EntityState.IDLE) {
-					//do nothing
-					
-					
-				} else if (player.getPlayerState() == EntityState.DEAD) {
-					//kill the player and check if when to respawn
-					if (player.isAlive()) {
-						player.killPlayer();
-					}	else {
-						if (player.getRespawnTime() <= System.currentTimeMillis()) {
-							player.respawn();
-						}
-					}
-				}			
-				
-				
-			}		
 		}
 	}
 	
+	private void proccessBase(Base base) {
+		base.checkState();
+	}
+	
+	private void proccessPlayer(Player player) {		
+		
+		player.checkState();// checks and updates the players state
+		
+		player.setXPos(player.getSprite().getX());// set player position(in data) to the sprites position.
+		player.setYPos(player.getSprite().getY());
+		
+		if (player.getPlayerState() == EntityState.MOVING) {
+			player.getBody().setActive(true);
+			final Body playerBody = player.getBody();
+			final Vector2 velocity = Vector2Pool.obtain(player.getMovementX() * player.getSpeed(), player.getMovementY() * player.getSpeed());
+			playerBody.setLinearVelocity(velocity);
+			Vector2Pool.recycle(velocity);
+			
+
+			if (player.getMovementX() != 0 && player.getMovementY() != 0) {
+				float direction = MathUtils.radToDeg((float) Math.atan2(player.getMovementX(), -player.getMovementY()));
+				player.getSprite().setRotation(direction);
+				player.setDirection(direction);
+			}
+		}  else {
+			//stops players from moving
+			final Body playerBody = player.getBody();
+			final Vector2 velocity = Vector2Pool.obtain(0, 0);
+			playerBody.setLinearVelocity(velocity);
+			Vector2Pool.recycle(velocity);
+			
+			if (player.getPlayerState() == EntityState.ATTACKING) {
+				if (player.getTarget() != null && System.currentTimeMillis() >= (player.getLastAttackTime() + player.getAttackCoolDown())  ) {
+					
+					double distanceSqr = Math.pow((player.getTarget().getXPos() - player.getXPos()), 2) + Math.pow((player.getTarget().getYPos() - player.getYPos()), 2);
+					double distance = Math.sqrt(distanceSqr);
+					
+					if(distance < 150)
+					{
+						player.attackTarget();
+						player.setLastAttackTime(System.currentTimeMillis());
+					}
+				}
+				
+				
+				
+			} else if (player.getPlayerState() == EntityState.IDLE) {
+				//do nothing
+				
+				
+			} else if (player.getPlayerState() == EntityState.DEAD) {
+				//kill the player and check if when to respawn
+				if (player.isAlive()) {
+					player.killPlayer();
+				}	else {
+					if (player.getRespawnTime() <= System.currentTimeMillis()) {
+						player.respawn();
+					}
+				}
+			}			
+			
+			
+		}		
+	}
+	
+	private void setUpBases(){
+		Base base1 = new Base(500, 500, 10, 10, gameData.getUnusedID());
+		addEntityToGameDataObj(base1);
+		Base base2 = new Base(100, 100, 10, 10, gameData.getUnusedID());
+		addEntityToGameDataObj(base2);
+	}
 	
 	
 	
@@ -234,7 +259,18 @@ public class ServerGameScene extends GameScene {
 				if (newPlayer.getId() == player.getId()) {
 					camera.setChaseEntity(tempS);
 				}
-			} 
+			} else if (newEntity instanceof Base) {
+				Base newBase = (Base) newEntity;
+				gameData.addEntity(newBase);
+				FixtureDef baseFix = PhysicsFactory.createFixtureDef(0, 0f, 0f);
+				Rectangle baseRec = new Rectangle(newBase.getXPos(), newBase.getYPos(), 150, 150, this.engine.getVertexBufferObjectManager());
+				baseRec.setColor(Color.BLUE);
+				newBase.setBody(PhysicsFactory.createBoxBody(phyWorld, baseRec, BodyType.StaticBody, baseFix));
+				this.attachChild(baseRec);
+				
+				
+				
+			}
 			
 
 		}
