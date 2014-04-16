@@ -227,7 +227,7 @@ public class ServerGameScene extends GameScene {
 				if (newPlayer.getId() == player.getId()) {
 					camera.setChaseEntity(tempS);
 				}
-			}
+			} 
 			
 
 		}
