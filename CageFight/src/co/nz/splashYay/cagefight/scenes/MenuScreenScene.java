@@ -263,7 +263,7 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 		switch (pMenuItem.getID()) {
 		case MENU_SERVER:
 			sceneManager.setCurrentScene(AllScenes.LOAD_SCENE);
-			engine.registerUpdateHandler(new TimerHandler(5f, new ITimerCallback() {
+			engine.registerUpdateHandler(new TimerHandler(2f, new ITimerCallback() {
 				
 				@Override
 				public void onTimePassed(TimerHandler pTimerHandler) {
