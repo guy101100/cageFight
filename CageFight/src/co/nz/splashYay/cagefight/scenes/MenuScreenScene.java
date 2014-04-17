@@ -2,7 +2,6 @@ package co.nz.splashYay.cagefight.scenes;
 
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
-import org.andengine.entity.Entity;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
@@ -10,6 +9,9 @@ import org.andengine.entity.scene.menu.item.IMenuItem;
 import org.andengine.entity.scene.menu.item.SpriteMenuItem;
 import org.andengine.entity.scene.menu.item.decorator.ScaleMenuItemDecorator;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.entity.text.Text;
+import org.andengine.opengl.font.Font;
+import org.andengine.opengl.font.FontFactory;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
@@ -26,15 +28,14 @@ import org.andengine.util.debug.Debug;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Typeface;
 import android.os.Handler;
 import android.os.Looper;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import co.nz.splashYay.cagefight.SceneManager;
 import co.nz.splashYay.cagefight.SceneManager.AllScenes;
 import co.nz.splashYay.cagefight.network.ClientCheckCom;
-import co.nz.splashYay.cagefight.network.ServerCheckCom;
 
 public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 	
@@ -71,6 +72,8 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 	private TextureRegion title2;
 	
 	private String ipAddress = "";
+	private Font mFont;
+	private Text ipText;
 	
 	
 	
@@ -97,16 +100,22 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 	    joinMenu.addMenuItem(joinMenuItem);
 	    joinMenu.addMenuItem(serverIpMenuItem);
 	    joinMenu.addMenuItem(backMenuItem);
-	    
+	    ipText = new Text(100, 160, this.mFont, "Server IP : ", "Server IP : XXX.XXX.XXX.XXX Extra bit on the end".length(), activity.getVertexBufferObjectManager());
+	    joinMenu.attachChild(ipText);
 	    
 	    joinMenu.buildAnimations();
 	    joinMenu.setBackgroundEnabled(false);
 	    
 	    float cX = (camera.getWidth()/3) - (joinMenuItem.getWidth()/2);
 	    titleItem2.setPosition(0, 25);
+	    ipText.setPosition(cX, joinMenuItem.getY() - ipText.getHeight());
 	    joinMenuItem.setPosition(cX, (camera.getHeight()/2) - (joinMenuItem.getHeight()/3));
 	    serverIpMenuItem.setPosition(cX, joinMenuItem.getY() + joinMenuItem.getHeight() + 5 );
 	    backMenuItem.setPosition(cX, serverIpMenuItem.getY() + serverIpMenuItem.getHeight() + 5 );
+	    
+	    
+	    
+	    
 	    
 	    
 	    joinMenu.setOnMenuItemClickListener(this);
@@ -164,6 +173,10 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 		} catch (final TextureAtlasBuilderException e) {
 			Debug.e(e);
 		}
+		
+		this.mFont = FontFactory.create(activity.getFontManager(), activity.getTextureManager(), 256, 256, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 32);
+		this.mFont.load();
+
 
 	}
 	
@@ -202,6 +215,13 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 						//sceneManager.setIpaddress(input.getText().toString().trim());
 						//sceneManager.startGame();
 						ipAddress = input.getText().toString().trim();
+						String text = "Server IP : " + ipAddress;
+						if (text.length() < 40) {
+							ipText.setText(text);
+						} else {
+							makeAToast("Error entering IP Address");
+						}
+						
 					}
 				});
 
@@ -227,6 +247,9 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 		});
 		
 	}
+	
+	
+	
 
 	@Override
 	public boolean onMenuItemClicked(MenuScene pMenuScene, IMenuItem pMenuItem, float pMenuItemLocalX, float pMenuItemLocalY) {
