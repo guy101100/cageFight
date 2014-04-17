@@ -6,7 +6,7 @@ import org.andengine.entity.scene.Scene;
 import org.andengine.ui.activity.BaseGameActivity;
 
 import co.nz.splashYay.cagefight.scenes.ClientGameScene;
-import co.nz.splashYay.cagefight.scenes.MenuScene;
+import co.nz.splashYay.cagefight.scenes.MenuScreenScene;
 import co.nz.splashYay.cagefight.scenes.ServerGameScene;
 import co.nz.splashYay.cagefight.scenes.SplashScene;
 
@@ -17,7 +17,7 @@ public class SceneManager {
 	
 	private SplashScene splashScene;
 	private ClientGameScene clientGameScene;
-	private MenuScene menuScene;
+	private MenuScreenScene menuScene;
 	private ServerGameScene serverGameScene;
 
 	private BaseGameActivity activity;
@@ -72,8 +72,8 @@ public class SceneManager {
 	}
 
 	public void loadMenuRes() {
-		menuScene = new MenuScene(activity, this);
-		menuScene.loadRes();
+		menuScene = new MenuScreenScene(activity, engine, camera, this);
+		menuScene.loadMenuRes();
 	}
 
 	public void loadClientGameRes() {
@@ -94,11 +94,7 @@ public class SceneManager {
 		return splashScene;
 	}
 
-	public Scene createMenuScene() {
-		menuScene.createScene();
-		return menuScene;		
-	}
-
+	
 	public Scene createClientGameScene() {
 		clientGameScene.createScene();
 		return clientGameScene;
@@ -106,6 +102,10 @@ public class SceneManager {
 	public Scene createServerGameScene() {
 		serverGameScene.createScene();
 		return serverGameScene;
+	}
+	public Scene createMenuScene() {
+		menuScene.createMenuScene();
+		return menuScene;
 	}
 	
 	
@@ -154,7 +154,14 @@ public class SceneManager {
 	public void setGameStarted(boolean gameStarted) {
 		this.gameStarted = gameStarted;
 	}
+
+
+
+
 	
+	
+	
+
 	
 	
 	

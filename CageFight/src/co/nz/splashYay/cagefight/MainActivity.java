@@ -78,9 +78,13 @@ public class MainActivity extends BaseGameActivity {
 				mEngine.unregisterUpdateHandler(pTimerHandler);				
 				
 				if (sceneManager.isServer()) {
-					sceneManager.loadServerGameRes();
-					sceneManager.createServerGameScene();
-					sceneManager.setCurrentScene(AllScenes.GAME_SERVER);
+					//sceneManager.loadServerGameRes();
+					//sceneManager.createServerGameScene();
+					//sceneManager.setCurrentScene(AllScenes.GAME_SERVER);
+					sceneManager.loadMenuRes();
+					sceneManager.createMenuScene();
+					sceneManager.setCurrentScene(AllScenes.MENU);
+					
 				} else {
 					sceneManager.loadClientGameRes();
 					sceneManager.createClientGameScene();

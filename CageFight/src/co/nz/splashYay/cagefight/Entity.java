@@ -59,7 +59,12 @@ public class Entity implements Serializable{
 	 * @return x position
 	 */
 	public float getXPos() {
-		return xpos;
+		if (sprite == null) {
+			return xpos;
+		} else {
+			return xpos + (sprite.getWidth()/2);
+		}
+		
 	}
 	
 	/**
@@ -75,7 +80,11 @@ public class Entity implements Serializable{
 	 * @return
 	 */
 	public float getYPos() {
-		return ypos;
+		if (sprite == null) {
+			return ypos;
+		} else {
+			return ypos + (sprite.getHeight()/2);
+		}
 	}
 	
 	/**

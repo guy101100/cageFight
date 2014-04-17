@@ -95,6 +95,7 @@ public class ServerGameScene extends GameScene {
 		this.mOnScreenControlTexture.load();
 		
 		gameData = new GameData();
+		
 
 	}
 
