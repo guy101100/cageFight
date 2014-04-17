@@ -173,11 +173,11 @@ public abstract class GameScene extends Scene {
 		setChildScene(joyStick);// attach control joystick
 		
 		//Create target info
-		targetInfo = new ValueBar(camera.getWidth() / 2 + 40, 5, 160, 30, activity.getVertexBufferObjectManager());
+		targetInfo = new ValueBar(camera.getWidth() / 2 + 80, 5, 160, 30, activity.getVertexBufferObjectManager());
 		targetInfo.setVisible(false);		
 		hud.attachChild(targetInfo);
 		
-		playerInfo = new ValueBar(camera.getWidth() / 2 -140, 5, 160, 30, activity.getVertexBufferObjectManager());
+		playerInfo = new ValueBar(camera.getWidth() / 2 -180, 5, 160, 30, activity.getVertexBufferObjectManager());
 		//targetInfo.setVisible(false);
 		
 		hud.attachChild(playerInfo);
@@ -235,11 +235,11 @@ public abstract class GameScene extends Scene {
 	
 	public void updateValueBars()
 	{
-		playerInfo.setProgressPercentage(player.getCurrenthealth() / player.getMaxhealth());
+		playerInfo.setProgressPercentage(( (float)player.getCurrenthealth() / (float)player.getMaxhealth() ) * 100);
 		
 		if(player.hasTarget())
 		{
-			targetInfo.setProgressPercentage((float) (player.getTarget().getCurrenthealth() / player.getTarget().getMaxhealth())); 
+			targetInfo.setProgressPercentage(( (float)player.getTarget().getCurrenthealth() / (float)player.getTarget().getMaxhealth() ) * 100); 
 			targetInfo.setVisible(true);
 		}
 		else

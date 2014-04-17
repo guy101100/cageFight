@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import org.andengine.extension.physics.box2d.util.Vector2Pool;
 import org.andengine.extension.physics.box2d.util.constants.PhysicsConstants;
+import org.andengine.util.math.MathUtils;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -120,6 +121,7 @@ public class Player extends Entity implements Serializable{
 	 */
 	public void attackTarget() {
 		//cycle annimation
+		getSprite().setRotation(MathUtils.radToDeg((float) Math.atan2( ( getTarget().getXPos() - getXPos() ), -( getTarget().getYPos()- getYPos() ))));
 		getTarget().setCurrenthealth(getTarget().getCurrenthealth() - 1);
 		System.out.println("Player : " + this.getId() + " ATTACKED player : " + getTarget().getId() + " [" + getTarget().getCurrenthealth() + "]");
 	}
