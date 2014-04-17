@@ -2,6 +2,7 @@ package co.nz.splashYay.cagefight.scenes;
 
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
+import org.andengine.entity.Entity;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
@@ -47,6 +48,8 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 	private TextureRegion quit;
 	private TextureRegion join;
 	private TextureRegion back;
+	private TextureRegion ip;
+	
 	private BuildableBitmapTextureAtlas menuTextureAtlas;
 	
 	private MenuScene startMenu;
@@ -57,7 +60,9 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 	private final int MENU_CLIENT = 1;
 	private final int MENU_QUIT = 2;
 	private final int MENU_JOIN = 3;
-	private final int MENU_BACK = 4;
+	private final int MENU_IP = 4;
+	private final int MENU_BACK = 5;
+	
 	
 
 
@@ -75,19 +80,22 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 	    
 	    final IMenuItem joinMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_JOIN, join, engine.getVertexBufferObjectManager()), 1.2f, 1);	    
 	    final IMenuItem backMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_BACK, back, engine.getVertexBufferObjectManager()), 1.2f, 1);
+	    final IMenuItem serverIpMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_IP, ip, engine.getVertexBufferObjectManager()), 1.2f, 1);
 	    
 	    
 	    joinMenu.addMenuItem(joinMenuItem);
+	    joinMenu.addMenuItem(serverIpMenuItem);
 	    joinMenu.addMenuItem(backMenuItem);
 	    
 	    
 	    joinMenu.buildAnimations();
 	    joinMenu.setBackgroundEnabled(false);
 	    
-	    float cX = (camera.getWidth()/2) - (joinMenuItem.getWidth()/2);
+	    float cX = (camera.getWidth()/3) - (joinMenuItem.getWidth()/2);
 	    
-	    joinMenuItem.setPosition(cX, (camera.getHeight()/2));
-	    backMenuItem.setPosition(cX, joinMenuItem.getY() + joinMenuItem.getHeight() );
+	    joinMenuItem.setPosition(cX, (camera.getHeight()/2) - (joinMenuItem.getHeight()/3));
+	    serverIpMenuItem.setPosition(cX, joinMenuItem.getY() + joinMenuItem.getHeight() + 5 );
+	    backMenuItem.setPosition(cX, serverIpMenuItem.getY() + serverIpMenuItem.getHeight() + 5 );
 	    
 	    
 	    joinMenu.setOnMenuItemClickListener(this);
@@ -115,8 +123,8 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 	    float cX = (camera.getWidth()/3) - (serverMenuItem.getWidth()/2);
 	    
 	    serverMenuItem.setPosition(cX, (camera.getHeight()/2) - (serverMenuItem.getHeight()/3));
-	    clientMenuItem.setPosition(cX, serverMenuItem.getY() + serverMenuItem.getHeight() );
-	    quitMenuItem.setPosition(cX, clientMenuItem.getY() + clientMenuItem.getHeight() );
+	    clientMenuItem.setPosition(cX, serverMenuItem.getY() + serverMenuItem.getHeight() + 5 );
+	    quitMenuItem.setPosition(cX, clientMenuItem.getY() + clientMenuItem.getHeight() + 5);
 	    
 	    startMenu.setOnMenuItemClickListener(this);	    
 	    
@@ -132,6 +140,7 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 		quit = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "quit.png");
 		join = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "join.png");
 		back = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "back.png");
+		ip = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "ip.png");
 
 		try {
 			this.menuTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
@@ -172,10 +181,10 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 				final EditText input = new EditText(context);
 
 				alert.setView(input);
-				alert.setPositiveButton("Join", new DialogInterface.OnClickListener() {
+				alert.setPositiveButton("Done", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
-						sceneManager.setIpaddress(input.getText().toString().trim());
-						sceneManager.startGame();
+						//sceneManager.setIpaddress(input.getText().toString().trim());
+						//sceneManager.startGame();
 					}
 				});
 
@@ -199,8 +208,8 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 			sceneManager.setCurrentScene(AllScenes.GAME_SERVER);
 			return true;
 		case MENU_CLIENT:
-			//setChildScene(joinMenu);
-			getServerIp(activity);
+			setChildScene(joinMenu);
+			
 			return true;
 		case MENU_QUIT:
 			activity.finish();
@@ -210,6 +219,9 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 			return true;
 		case MENU_BACK:
 			setChildScene(startMenu);
+			return true;
+		case MENU_IP:
+			getServerIp(activity);
 			return true;
 		default:
 			return false;
