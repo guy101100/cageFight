@@ -5,6 +5,7 @@ import org.andengine.engine.camera.Camera;
 import org.andengine.entity.scene.Scene;
 import org.andengine.ui.activity.BaseGameActivity;
 
+import co.nz.splashYay.cagefight.scenes.ClientConnectScene;
 import co.nz.splashYay.cagefight.scenes.ClientGameScene;
 import co.nz.splashYay.cagefight.scenes.MenuScreenScene;
 import co.nz.splashYay.cagefight.scenes.ServerGameScene;
@@ -19,6 +20,7 @@ public class SceneManager {
 	private ClientGameScene clientGameScene;
 	private MenuScreenScene menuScene;
 	private ServerGameScene serverGameScene;
+	private ClientConnectScene clientConnectScene;
 
 	private BaseGameActivity activity;
 	private Engine engine;
@@ -55,7 +57,7 @@ public class SceneManager {
 			break;
 		case GAME_SERVER:
 			engine.setScene(serverGameScene);
-			break;
+			break;		
 		default:
 			break;
 		}
@@ -72,8 +74,10 @@ public class SceneManager {
 	}
 
 	public void loadMenuRes() {
-		menuScene = new MenuScreenScene(activity, engine, camera, this);
+		menuScene = new MenuScreenScene(activity, engine, camera, this);		
 		menuScene.loadMenuRes();
+		
+		
 	}
 
 	public void loadClientGameRes() {
@@ -84,8 +88,8 @@ public class SceneManager {
 	public void loadServerGameRes() {
 		serverGameScene = new ServerGameScene(activity, engine, camera, this);
 		serverGameScene.loadRes();
-
 	}
+	
 	
 	//Create Scenes
 

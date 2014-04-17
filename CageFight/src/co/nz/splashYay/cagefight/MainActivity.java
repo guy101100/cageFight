@@ -42,17 +42,7 @@ public class MainActivity extends BaseGameActivity {
 	@Override
 	public void onCreateResources(OnCreateResourcesCallback pOnCreateResourcesCallback) throws Exception {
 		// TODO Auto-generated method stub
-		sceneManager = new SceneManager(this, mEngine, mCamera);
-		Intent intent = getIntent();
-		boolean server = intent.getExtras().getBoolean("server");
-		String ip = "";
-		if(!server){
-			ip = intent.getExtras().getString("ip");
-			sceneManager.setIpaddress(ip);
-			sceneManager.setServer(false);
-		} else {
-			sceneManager.setServer(true);
-		}
+		sceneManager = new SceneManager(this, mEngine, mCamera);		
 		
 		sceneManager.loadSplashRes();
 
@@ -70,30 +60,21 @@ public class MainActivity extends BaseGameActivity {
 	@Override
 	public void onPopulateScene(Scene pScene, OnPopulateSceneCallback pOnPopulateSceneCallback) throws Exception {
 		// TODO Auto-generated method stub
+		
 		mEngine.registerUpdateHandler(new TimerHandler(3f, new ITimerCallback() {
 
 			@Override
 			public void onTimePassed(TimerHandler pTimerHandler) {
 				// TODO Auto-generated method stub
-				mEngine.unregisterUpdateHandler(pTimerHandler);				
+				mEngine.unregisterUpdateHandler(pTimerHandler);
 				
-				if (sceneManager.isServer()) {
-					//sceneManager.loadServerGameRes();
-					//sceneManager.createServerGameScene();
-					//sceneManager.setCurrentScene(AllScenes.GAME_SERVER);
-					sceneManager.loadMenuRes();
-					sceneManager.createMenuScene();
-					sceneManager.setCurrentScene(AllScenes.MENU);
-					
-				} else {
-					sceneManager.loadClientGameRes();
-					sceneManager.createClientGameScene();
-					sceneManager.setCurrentScene(AllScenes.GAME_CLIENT);
-				}
-				
-				
+				sceneManager.setCurrentScene(AllScenes.MENU);
+
 			}
 		}));
+		
+		sceneManager.loadMenuRes();
+		sceneManager.createMenuScene();
 
 		pOnPopulateSceneCallback.onPopulateSceneFinished();
 

@@ -20,6 +20,13 @@ import org.andengine.opengl.texture.region.TextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.util.debug.Debug;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.os.Handler;
+import android.os.Looper;
+import android.widget.EditText;
+
 import co.nz.splashYay.cagefight.SceneManager;
 import co.nz.splashYay.cagefight.SceneManager.AllScenes;
 
@@ -35,7 +42,21 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 	public ITextureRegion menu_background_region;
 	public ITextureRegion server;
 	public ITextureRegion client;
+	private TextureRegion quit;
+	private TextureRegion join;
+	private TextureRegion back;
 	private BuildableBitmapTextureAtlas menuTextureAtlas;
+	
+	private MenuScene startMenu;
+	private MenuScene joinMenu;
+	
+	
+	private final int MENU_SERVER = 0;
+	private final int MENU_CLIENT = 1;
+	private final int MENU_QUIT = 2;
+	private final int MENU_JOIN = 3;
+	private final int MENU_BACK = 4;
+	
 
 
 	
@@ -46,28 +67,47 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 		this.sceneManager = sceneManager;
 	}
 	
-	private MenuScene menuChildScene;
-	private final int MENU_SERVER = 0;
-	private final int MENU_CLIENT = 1;
-	private final int MENU_QUIT = 2;
-	private TextureRegion quit;
+	private void createJoinMenuScene(){
+		joinMenu = new MenuScene(camera);
+	    joinMenu.setPosition(0, 0);
+	    
+	    final IMenuItem joinMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_JOIN, join, engine.getVertexBufferObjectManager()), 1.2f, 1);	    
+	    final IMenuItem backMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_BACK, back, engine.getVertexBufferObjectManager()), 1.2f, 1);
+	    
+	    
+	    joinMenu.addMenuItem(joinMenuItem);
+	    joinMenu.addMenuItem(backMenuItem);
+	    
+	    
+	    joinMenu.buildAnimations();
+	    joinMenu.setBackgroundEnabled(false);
+	    
+	    float cX = (camera.getWidth()/2) - (joinMenuItem.getWidth()/2);
+	    
+	    joinMenuItem.setPosition(cX, (camera.getHeight()/2));
+	    backMenuItem.setPosition(cX, joinMenuItem.getY() + joinMenuItem.getHeight() );
+	    
+	    
+	    joinMenu.setOnMenuItemClickListener(this);
+	    	    
+	}
 
 	private void createMenuChildScene()
 	{
-	    menuChildScene = new MenuScene(camera);
-	    menuChildScene.setPosition(0, 0);
+	    startMenu = new MenuScene(camera);
+	    startMenu.setPosition(0, 0);
 	    
 	    final IMenuItem serverMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_SERVER, server, engine.getVertexBufferObjectManager()), 1.2f, 1);
 	    final IMenuItem clientMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_CLIENT, client, engine.getVertexBufferObjectManager()), 1.2f, 1);
 	    final IMenuItem quitMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_QUIT, quit, engine.getVertexBufferObjectManager()), 1.2f, 1);
 	    
 	    
-	    menuChildScene.addMenuItem(serverMenuItem);
-	    menuChildScene.addMenuItem(clientMenuItem);
-	    menuChildScene.addMenuItem(quitMenuItem);
+	    startMenu.addMenuItem(serverMenuItem);
+	    startMenu.addMenuItem(clientMenuItem);
+	    startMenu.addMenuItem(quitMenuItem);
 	    
-	    menuChildScene.buildAnimations();
-	    menuChildScene.setBackgroundEnabled(false);
+	    startMenu.buildAnimations();
+	    startMenu.setBackgroundEnabled(false);
 	    
 	    float cX = (camera.getWidth()/2) - (serverMenuItem.getWidth()/2);
 	    
@@ -75,9 +115,9 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 	    clientMenuItem.setPosition(cX, serverMenuItem.getY() + serverMenuItem.getHeight() );
 	    quitMenuItem.setPosition(cX, clientMenuItem.getY() + clientMenuItem.getHeight() );
 	    
-	    menuChildScene.setOnMenuItemClickListener(this);
+	    startMenu.setOnMenuItemClickListener(this);	    
 	    
-	    setChildScene(menuChildScene);
+	    
 	}
 	
 	public void loadMenuRes() {
@@ -87,6 +127,8 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 		server = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "server.png");
 		client = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "client.png");
 		quit = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "quit.png");
+		join = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "join.png");
+		back = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "back.png");
 
 		try {
 			this.menuTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
@@ -99,10 +141,36 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 	
 	public void createMenuScene() {
 		createMenuChildScene();
+		createJoinMenuScene();
+		setChildScene(startMenu);
 		
-		
-		
-		
+	}
+	
+	public void getServerIp(final Context context) {
+		Handler mHandler = new Handler(Looper.getMainLooper());
+
+		mHandler.post(new Runnable() {
+			public void run() {
+				final AlertDialog.Builder alert = new AlertDialog.Builder(context);
+				final EditText input = new EditText(context);
+
+				alert.setView(input);
+				alert.setPositiveButton("Join", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+						sceneManager.setIpaddress(input.getText().toString().trim());
+						sceneManager.startGame();
+					}
+				});
+
+				alert.setNegativeButton("Back", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+						dialog.cancel();
+					}
+				});
+				alert.show();
+			}
+		});
+
 	}
 
 	@Override
@@ -114,8 +182,17 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 			sceneManager.setCurrentScene(AllScenes.GAME_SERVER);
 			return true;
 		case MENU_CLIENT:
+			//setChildScene(joinMenu);
+			getServerIp(activity);
 			return true;
 		case MENU_QUIT:
+			activity.finish();
+			return true;
+		case MENU_JOIN:
+			
+			return true;
+		case MENU_BACK:
+			setChildScene(startMenu);
 			return true;
 		default:
 			return false;
