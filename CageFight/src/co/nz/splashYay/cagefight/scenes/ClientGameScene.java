@@ -74,7 +74,9 @@ public class ClientGameScene extends GameScene {
 		this.camera = cam;
 		this.ipAddress = ipAddress;
 		this.sceneManager = sceneManager;
-		gameData = new GameData();		
+		gameData = new GameData();	
+		
+		
 	}
 
 	public void loadRes() {
@@ -240,5 +242,7 @@ public class ClientGameScene extends GameScene {
 		this.player = player;
 		
 	}
+
+	
 
 }

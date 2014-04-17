@@ -41,4 +41,12 @@ public class SplashScene extends Scene {
 		this.attachChild(splashImage);
 		return this;
 	}
+
+
+
+	public void unloadRes() {
+		// TODO Auto-generated method stub
+		splashTA.unload();
+		
+	}
 }

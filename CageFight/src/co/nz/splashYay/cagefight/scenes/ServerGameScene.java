@@ -134,6 +134,7 @@ public class ServerGameScene extends GameScene {
 				oTCL.updateClients();
 				
 				updateValueBars();
+				
 
 			}
 
@@ -312,6 +313,7 @@ public class ServerGameScene extends GameScene {
 
 		}
 	}
+
 	
 	
 	

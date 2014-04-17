@@ -31,6 +31,7 @@ import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.KeyEvent;
 import android.widget.EditText;
 import android.widget.Toast;
 import co.nz.splashYay.cagefight.SceneManager;
@@ -60,6 +61,7 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 	
 	private MenuScene startMenu;
 	private MenuScene joinMenu;
+	private int currentMenueScene;
 	
 	
 	private final int MENU_SERVER = 0;
@@ -184,6 +186,7 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 		createMenuChildScene();
 		createJoinMenuScene();
 		setChildScene(startMenu);
+		currentMenueScene = 0;
 		
 	}
 	
@@ -250,6 +253,7 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 	
 	
 	
+	
 
 	@Override
 	public boolean onMenuItemClicked(MenuScene pMenuScene, IMenuItem pMenuItem, float pMenuItemLocalX, float pMenuItemLocalY) {
@@ -261,7 +265,7 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 			return true;
 		case MENU_CLIENT:
 			setChildScene(joinMenu);
-			
+			currentMenueScene = 1;
 			return true;
 		case MENU_QUIT:
 			activity.finish();
@@ -285,6 +289,7 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 			return true;
 		case MENU_BACK:
 			setChildScene(startMenu);
+			currentMenueScene = 0;
 			return true;
 		case MENU_IP:
 			getServerIp(activity);
@@ -296,6 +301,27 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 			return false;
 		}
 	}
+
+	public int getCurrentMenueScene() {
+		return currentMenueScene;
+	}
+	
+	public void setMenuScene(int x){
+		if (x == 0) {
+			setChildScene(startMenu);
+			currentMenueScene = 0;
+		} else if (x == 1) {
+			setChildScene(joinMenu);
+			currentMenueScene = 1;
+		}
+	}
+
+	public void unloadRes() {
+		mFont.unload();
+		menuTextureAtlas.unload();
+	}
+
+	
 	
 	
 	

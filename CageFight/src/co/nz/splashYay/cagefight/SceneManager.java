@@ -42,6 +42,27 @@ public class SceneManager {
 	}
 	
 	public void setCurrentScene(AllScenes currentScene) {
+		if (this.currentScene != null) {
+			switch (this.currentScene) {
+			case SPLASH:
+				splashScene.unloadRes();
+				break;
+			case MENU:
+				menuScene.unloadRes();
+				break;
+			case GAME_CLIENT:
+				clientGameScene.unloadRes();
+				break;
+			case GAME_SERVER:
+				serverGameScene.unloadRes();
+				break;		
+			default:
+				break;
+			}
+		}
+		
+		
+		
 		this.currentScene = currentScene;
 		switch (currentScene) {
 		case SPLASH:

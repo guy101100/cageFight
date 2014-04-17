@@ -14,6 +14,9 @@ import org.andengine.ui.activity.BaseGameActivity;
 import android.content.Intent;
 
 import co.nz.splashYay.cagefight.SceneManager.AllScenes;
+import co.nz.splashYay.cagefight.scenes.ClientGameScene;
+import co.nz.splashYay.cagefight.scenes.MenuScreenScene;
+import co.nz.splashYay.cagefight.scenes.ServerGameScene;
 
 public class MainActivity extends BaseGameActivity {
 
@@ -79,5 +82,28 @@ public class MainActivity extends BaseGameActivity {
 		pOnPopulateSceneCallback.onPopulateSceneFinished();
 
 	}
+	
+	@Override
+    public void onBackPressed()
+    {
+        Scene scene = this.mEngine.getScene();
+        if(scene instanceof MenuScreenScene){
+        	int currenScene = ((MenuScreenScene)scene).getCurrentMenueScene();
+            if ( currenScene == 0     ) { // main menu 
+            	finish();
+            	System.exit(0);
+            	
+            } else if ( currenScene == 1 ) { // client menu
+            	((MenuScreenScene)scene).setMenuScene(0);
+            }
+        } else if (scene instanceof ServerGameScene || scene instanceof ClientGameScene ) {
+        	finish();
+        	System.exit(0);
+        }
+        
+        
+    }
+	
+	
 
 }

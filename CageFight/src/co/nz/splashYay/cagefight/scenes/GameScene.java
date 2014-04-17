@@ -267,6 +267,15 @@ public abstract class GameScene extends Scene {
 			
 	}
 	
+	public void unloadRes(){		
+		playerTexture.unload();
+		baseTexture.unload();
+		mBitmapTextureAtlas.unload();
+		mOnScreenControlTexture.unload();
+		hud.detachChildren();
+		this.detachChildren();
+	}
+	
 
 	
 	
