@@ -27,6 +27,7 @@ import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.region.ITextureRegion;
+import org.andengine.opengl.texture.region.TextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.util.color.Color;
 import org.andengine.util.debug.Debug;
@@ -61,6 +62,9 @@ public abstract class GameScene extends Scene {
 	protected ITextureRegion mOnScreenControlBaseTextureRegion;
 	protected ITextureRegion mOnScreenControlKnobTextureRegion;
 	
+	protected BitmapTextureAtlas baseTexture;
+	protected TextureRegion baseTextureRegion;
+	
 	protected Sprite sPlayer;
 	protected Player player;
 	
@@ -70,7 +74,10 @@ public abstract class GameScene extends Scene {
 	private ButtonSprite attack;
 	private AnalogOnScreenControl joyStick;
 	private ValueBar targetInfo;
+	private ValueBar playerInfo;
 	
+	
+	protected Rectangle targetRec;
 	
 	protected void setUpMap() {
 		// Load the TMX level
@@ -166,10 +173,16 @@ public abstract class GameScene extends Scene {
 		setChildScene(joyStick);// attach control joystick
 		
 		//Create target info
-		targetInfo = new ValueBar(camera.getWidth() / 2 - 80, 5, 160, 30, activity.getVertexBufferObjectManager());
-		targetInfo.setVisible(false);
-		
+		targetInfo = new ValueBar(camera.getWidth() / 2 + 40, 5, 160, 30, activity.getVertexBufferObjectManager());
+		targetInfo.setVisible(false);		
 		hud.attachChild(targetInfo);
+		
+		playerInfo = new ValueBar(camera.getWidth() / 2 -140, 5, 160, 30, activity.getVertexBufferObjectManager());
+		//targetInfo.setVisible(false);
+		
+		hud.attachChild(playerInfo);
+		
+		
 		
 		//Set attack button properties
 		attack = new ButtonSprite(camera.getWidth() - 100, camera.getHeight() - 120, mOnScreenControlKnobTextureRegion, this.activity.getVertexBufferObjectManager())
@@ -213,10 +226,17 @@ public abstract class GameScene extends Scene {
 	    this.hud.registerTouchArea(attack);
 		
 		this.camera.setHUD(hud);
+		
+		//setup targeting square
+		targetRec = new Rectangle(0, 0, 64, 64, engine.getVertexBufferObjectManager());
+		targetRec.setColor(Color.RED);
+		this.attachChild(targetRec);
 	}
 	
-	public void updateTargetInfo()
+	public void updateValueBars()
 	{
+		playerInfo.setProgressPercentage(player.getCurrenthealth() / player.getMaxhealth());
+		
 		if(player.hasTarget())
 		{
 			targetInfo.setProgressPercentage((float) (player.getTarget().getCurrenthealth() / player.getTarget().getMaxhealth())); 
@@ -225,6 +245,26 @@ public abstract class GameScene extends Scene {
 		else
 			targetInfo.setVisible(false);
 
+	}
+	
+	protected void updateTargetMarker() {
+		if (playerCommands.getTargetID() != 0) {
+			Sprite targetSprite = gameData.getEntityWithId(playerCommands.getTargetID()).getSprite();
+			targetRec.setSize(targetSprite.getWidth() + 6, targetSprite.getHeight() + 6);
+			targetRec.setPosition(targetSprite.getX() -3, targetSprite.getY()-3);
+		}
+	}
+	
+	/**
+	 * Called whenever an entity sprite is touched
+	 * @param sprite the sprite that was touched
+	 */
+	protected void setTarget(Sprite sprite){
+		Entity touched = gameData.getEntityFromSprite(sprite);
+		if (touched.getTeamID() != player.getTeamID()) {
+			playerCommands.setTargetID(touched.getId());
+		}
+			
 	}
 	
 

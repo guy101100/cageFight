@@ -33,6 +33,7 @@ import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
+import org.andengine.opengl.texture.region.TextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.util.HorizontalAlign;
 import org.andengine.util.color.Color;
@@ -65,6 +66,7 @@ public class ClientGameScene extends GameScene {
 	
 	
 	
+	
 
 	public ClientGameScene(BaseGameActivity act, Engine eng, Camera cam, String ipAddress, SceneManager sceneManager) {
 		this.activity = act;
@@ -81,6 +83,12 @@ public class ClientGameScene extends GameScene {
 		this.playerTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(playerTexture, this.activity, "player.png", 0, 0);
 		playerTexture.load(); // loads the player texture
 		
+		//base
+		this.baseTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 32, 32); // width and height must be factor of two eg:2,4,8,16 etc
+		this.baseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(baseTexture, this.activity, "base.png", 0, 0);
+		baseTexture.load(); // loads the base texture
+		
+		
 		this.mBitmapTextureAtlas = new BitmapTextureAtlas(this.activity.getTextureManager(), 32, 32, TextureOptions.DEFAULT);
 		this.mBitmapTextureAtlas.load();
 		// loads the on screen joystick images
@@ -88,6 +96,8 @@ public class ClientGameScene extends GameScene {
 		this.mOnScreenControlBaseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mOnScreenControlTexture, this.activity, "onscreen_control_base.png", 0, 0);
 		this.mOnScreenControlKnobTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mOnScreenControlTexture, this.activity, "onscreen_control_knob.png", 128, 0);
 		this.mOnScreenControlTexture.load();
+		
+		
 
 	}
 
@@ -116,10 +126,10 @@ public class ClientGameScene extends GameScene {
 				if (sceneManager.isGameStarted() &&
 					gameData.getEntityWithId(player.getId()) != null) {					
 					processEntities();
-					
+					updateTargetMarker();
 					oNC.sendToServer(playerCommands);
 					
-					updateTargetInfo();
+					updateValueBars();
 					
 				}
 			}
@@ -184,7 +194,14 @@ public class ClientGameScene extends GameScene {
 			if (newEntity instanceof Player) {
 				Player newPlayer = (Player) newEntity;
 				gameData.addPlayer(newPlayer);
-				Sprite tempS = new Sprite(camera.getWidth() / 2, camera.getHeight() / 2, playerTextureRegion, this.engine.getVertexBufferObjectManager());
+				Sprite tempS = new Sprite(camera.getWidth() / 2, camera.getHeight() / 2, playerTextureRegion, this.engine.getVertexBufferObjectManager()) {
+					@Override
+					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+						setTarget(this);		
+						
+						return true;
+					}
+				};
 
 				final PhysicsHandler tempPhyHandler = new PhysicsHandler(tempS); // added
 				tempS.registerUpdateHandler(tempPhyHandler); // added
@@ -198,11 +215,18 @@ public class ClientGameScene extends GameScene {
 				}
 			} else if (newEntity instanceof Base) {
 				
-				Base newBase = (Base) newEntity;	
-				gameData.addEntity(newBase);
-				Rectangle baseRec = new Rectangle(newBase.getXPos(), newBase.getYPos(), 150, 150, this.engine.getVertexBufferObjectManager());
-				baseRec.setColor(Color.BLUE);				
-				this.attachChild(baseRec);
+				Base newBase = (Base) newEntity;
+				gameData.addEntity(newBase);				
+				Sprite baseS = new Sprite(newBase.getXPos(), newBase.getYPos(), baseTextureRegion, this.engine.getVertexBufferObjectManager()) {
+					@Override
+					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+						setTarget(this);		
+						
+						return true;
+					}
+				};
+				newBase.setSprite(baseS);				
+				this.attachChild(baseS);
 				
 				
 				

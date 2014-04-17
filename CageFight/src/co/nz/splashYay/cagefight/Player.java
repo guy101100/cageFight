@@ -29,8 +29,8 @@ public class Player extends Entity implements Serializable{
 	private Entity target;
 	
 	
-	public Player(String name, int id, int maxhealth, int currenthealth, int xpos, int ypos) {
-		super(xpos, ypos, maxhealth, currenthealth, id);
+	public Player(String name, int id, int maxhealth, int currenthealth, int xpos, int ypos, int teamId) {
+		super(xpos, ypos, maxhealth, currenthealth, id, teamId);
 		this.name = name;
 		this.level = 1;
 		

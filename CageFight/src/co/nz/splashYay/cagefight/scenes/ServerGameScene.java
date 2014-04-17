@@ -62,6 +62,7 @@ public class ServerGameScene extends GameScene {
 	private InFromClientListener iFCL;
 	private OutToClientListener oTCL;
 	
+	
 
 	
 	
@@ -76,10 +77,13 @@ public class ServerGameScene extends GameScene {
 	public void loadRes() {
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 		this.playerTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 64, 64);
-
 		this.playerTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(playerTexture, this.activity, "player.png", 0, 0);
-
 		playerTexture.load();
+		
+		//base
+		this.baseTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 32, 32); // width and height must be factor of two eg:2,4,8,16 etc
+		this.baseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(baseTexture, this.activity, "base.png", 0, 0);
+		baseTexture.load();
 
 		this.mBitmapTextureAtlas = new BitmapTextureAtlas(this.activity.getTextureManager(), 16, 16, TextureOptions.DEFAULT);
 
@@ -101,6 +105,8 @@ public class ServerGameScene extends GameScene {
 		this.phyWorld = new FixedStepPhysicsWorld(30, 30, new Vector2(0, 0), false);
 		this.registerUpdateHandler(phyWorld);
 		
+		
+		
 		setUpMap();
 		setUpHUD();
 		setUpBases();
@@ -110,7 +116,7 @@ public class ServerGameScene extends GameScene {
 		iFCL.start();
 		oTCL.start();
 		
-		player = new Player("", gameData.getUnusedID(), 10, 10, 50, 50);
+		player = new Player("", gameData.getUnusedID(), 10, 10, 50, 50, 1);
 		addEntityToGameDataObj(player);
 		
 		//game loop
@@ -119,9 +125,10 @@ public class ServerGameScene extends GameScene {
 			public void onUpdate(float pSecondsElapsed) {
 				processServerPlayerControls();
 				processPlayerActions();
+				updateTargetMarker();
 				oTCL.updateClients();
 				
-				updateTargetInfo();
+				updateValueBars();
 
 			}
 
@@ -133,6 +140,8 @@ public class ServerGameScene extends GameScene {
 		
 		
 	}
+	
+	
 	
 	private void processServerPlayerControls() {
 		Player tempPlayer = (Player)gameData.getEntityWithId(player.getId());
@@ -225,10 +234,11 @@ public class ServerGameScene extends GameScene {
 	}
 	
 	private void setUpBases(){
-		Base base1 = new Base(500, 500, 10, 10, gameData.getUnusedID());
+		Base base1 = new Base(500, 500, 10, 10, gameData.getUnusedID(), 1);
 		addEntityToGameDataObj(base1);
-		Base base2 = new Base(100, 100, 10, 10, gameData.getUnusedID());
-		addEntityToGameDataObj(base2);
+		Base base2 = new Base(750, 500, 10, 10, gameData.getUnusedID(), 2);
+		addEntityToGameDataObj(base2);	
+		
 	}
 	
 	
@@ -239,15 +249,28 @@ public class ServerGameScene extends GameScene {
 			if (newEntity instanceof Player) {
 				Player newPlayer = (Player) newEntity;
 				gameData.addPlayer(newPlayer);
-				Sprite tempS = new Sprite(camera.getWidth() / 2, camera.getHeight() / 2, playerTextureRegion, this.engine.getVertexBufferObjectManager());
-
-				//final PhysicsHandler tempPhyHandler = new PhysicsHandler(tempS); // added
-				//tempS.registerUpdateHandler(tempPhyHandler); // added
+				
+				Sprite tempS = new Sprite(camera.getWidth() / 2, camera.getHeight() / 2, playerTextureRegion, this.engine.getVertexBufferObjectManager()) {
+					@Override
+					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+						setTarget(this);		
+						
+						return true;
+					}
+				};
+				
+				
 				
 				final FixtureDef playerFixDef = PhysicsFactory.createFixtureDef(1, 0f, 0.5f);
 				newPlayer.setBody(PhysicsFactory.createCircleBody(phyWorld, tempS, BodyType.DynamicBody, playerFixDef));
 				
-				phyWorld.registerPhysicsConnector(new PhysicsConnector(tempS, newPlayer.getBody(), true, false));			
+				phyWorld.registerPhysicsConnector(new PhysicsConnector(tempS, newPlayer.getBody(), true, false));	
+				
+				
+				registerTouchArea(tempS);
+				setTouchAreaBindingOnActionDownEnabled(true);
+				
+
 				
 				this.attachChild(tempS);			
 				
@@ -263,10 +286,17 @@ public class ServerGameScene extends GameScene {
 				Base newBase = (Base) newEntity;
 				gameData.addEntity(newBase);
 				FixtureDef baseFix = PhysicsFactory.createFixtureDef(0, 0f, 0f);
-				Rectangle baseRec = new Rectangle(newBase.getXPos(), newBase.getYPos(), 150, 150, this.engine.getVertexBufferObjectManager());
-				baseRec.setColor(Color.BLUE);
-				newBase.setBody(PhysicsFactory.createBoxBody(phyWorld, baseRec, BodyType.StaticBody, baseFix));
-				this.attachChild(baseRec);
+				Sprite baseS = new Sprite(newBase.getXPos(), newBase.getYPos(), baseTextureRegion, this.engine.getVertexBufferObjectManager()) {
+					@Override
+					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+						setTarget(this);		
+						
+						return true;
+					}
+				};
+				newBase.setSprite(baseS);
+				newBase.setBody(PhysicsFactory.createBoxBody(phyWorld, baseS, BodyType.StaticBody, baseFix));
+				this.attachChild(baseS);
 				
 				
 				

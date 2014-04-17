@@ -45,6 +45,9 @@ public class ClientInNetCom extends Thread {
 				try {
 					GameData gameDataIn = (GameData) inFromServer.readUnshared();
 					System.out.println("[" + System.currentTimeMillis() + "] recieved data");
+					gameData.getTeam1().updateFromOtherTeamData(gameDataIn.getTeam1());
+					gameData.getTeam2().updateFromOtherTeamData(gameDataIn.getTeam2());
+					
 					
 					for (Entry<Integer, Entity> entry: gameDataIn.getEntities().entrySet()) {					    
 					    Entity entityIn = entry.getValue();
@@ -63,6 +66,8 @@ public class ClientInNetCom extends Thread {
 					    	
 					    }
 					}
+					
+					
 					
 					
 					
