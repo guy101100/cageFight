@@ -8,6 +8,7 @@ import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
 import org.andengine.entity.scene.menu.item.IMenuItem;
 import org.andengine.entity.scene.menu.item.SpriteMenuItem;
 import org.andengine.entity.scene.menu.item.decorator.ScaleMenuItemDecorator;
+import org.andengine.entity.sprite.Sprite;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
@@ -17,6 +18,7 @@ import org.andengine.opengl.texture.atlas.buildable.builder.BlackPawnTextureAtla
 import org.andengine.opengl.texture.atlas.buildable.builder.ITextureAtlasBuilder.TextureAtlasBuilderException;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.TextureRegion;
+import org.andengine.opengl.util.GLState;
 import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.util.debug.Debug;
 
@@ -101,6 +103,7 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 	    final IMenuItem clientMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_CLIENT, client, engine.getVertexBufferObjectManager()), 1.2f, 1);
 	    final IMenuItem quitMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_QUIT, quit, engine.getVertexBufferObjectManager()), 1.2f, 1);
 	    
+	    createBackground();
 	    
 	    startMenu.addMenuItem(serverMenuItem);
 	    startMenu.addMenuItem(clientMenuItem);
@@ -109,7 +112,7 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 	    startMenu.buildAnimations();
 	    startMenu.setBackgroundEnabled(false);
 	    
-	    float cX = (camera.getWidth()/2) - (serverMenuItem.getWidth()/2);
+	    float cX = (camera.getWidth()/3) - (serverMenuItem.getWidth()/2);
 	    
 	    serverMenuItem.setPosition(cX, (camera.getHeight()/2) - (serverMenuItem.getHeight()/3));
 	    clientMenuItem.setPosition(cX, serverMenuItem.getY() + serverMenuItem.getHeight() );
@@ -123,7 +126,7 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 	public void loadMenuRes() {
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 		menuTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR);
-		//menu_background_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "menu_background.png");
+		menu_background_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "Background.png");
 		server = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "server.png");
 		client = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "client.png");
 		quit = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "quit.png");
@@ -145,6 +148,20 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 		setChildScene(startMenu);
 		
 	}
+	
+	private void createBackground()
+	{
+	    attachChild(new Sprite(0, 0, menu_background_region, engine.getVertexBufferObjectManager())
+	    {
+	        @Override
+	        protected void preDraw(GLState pGLState, Camera pCamera) 
+	        {
+	            super.preDraw(pGLState, pCamera);
+	            pGLState.enableDither();
+	        }
+	    });
+	}
+
 	
 	public void getServerIp(final Context context) {
 		Handler mHandler = new Handler(Looper.getMainLooper());
