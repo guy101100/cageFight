@@ -205,7 +205,7 @@ public class ServerGameScene extends GameScene {
 					double distanceSqr = Math.pow((player.getTarget().getXPos() - player.getXPos()), 2) + Math.pow((player.getTarget().getYPos() - player.getYPos()), 2);
 					double distance = Math.sqrt(distanceSqr);
 					
-					if(distance < 150)
+					if(distance < 75)
 					{
 						player.attackTarget();
 						player.setLastAttackTime(System.currentTimeMillis());
@@ -258,7 +258,8 @@ public class ServerGameScene extends GameScene {
 						return true;
 					}
 				};
-				
+				registerTouchArea(tempS);
+				setTouchAreaBindingOnActionDownEnabled(true);
 				
 				
 				final FixtureDef playerFixDef = PhysicsFactory.createFixtureDef(1, 0f, 0.5f);
@@ -267,8 +268,7 @@ public class ServerGameScene extends GameScene {
 				phyWorld.registerPhysicsConnector(new PhysicsConnector(tempS, newPlayer.getBody(), true, false));	
 				
 				
-				registerTouchArea(tempS);
-				setTouchAreaBindingOnActionDownEnabled(true);
+				
 				
 
 				
@@ -294,6 +294,8 @@ public class ServerGameScene extends GameScene {
 						return true;
 					}
 				};
+				registerTouchArea(baseS);
+				setTouchAreaBindingOnActionDownEnabled(true);
 				newBase.setSprite(baseS);
 				newBase.setBody(PhysicsFactory.createBoxBody(phyWorld, baseS, BodyType.StaticBody, baseFix));
 				this.attachChild(baseS);

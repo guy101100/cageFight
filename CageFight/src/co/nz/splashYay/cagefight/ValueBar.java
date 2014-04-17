@@ -31,6 +31,7 @@ public class ValueBar extends Entity
     
     public void setProgressPercentage(float progress)
     {
+    	progress *= 100;
     	if(progress > 100)
     		progress = 100;
     	if(progress < 0)

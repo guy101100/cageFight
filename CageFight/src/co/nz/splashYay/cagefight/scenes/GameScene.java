@@ -235,11 +235,11 @@ public abstract class GameScene extends Scene {
 	
 	public void updateValueBars()
 	{
-		playerInfo.setProgressPercentage(( (float)player.getCurrenthealth() / (float)player.getMaxhealth() ) * 100);
+		playerInfo.setProgressPercentage(( (float)player.getCurrenthealth() / (float)player.getMaxhealth() ));
 		
 		if(player.hasTarget())
 		{
-			targetInfo.setProgressPercentage(( (float)player.getTarget().getCurrenthealth() / (float)player.getTarget().getMaxhealth() ) * 100); 
+			targetInfo.setProgressPercentage(( (float)player.getTarget().getCurrenthealth() / (float)player.getTarget().getMaxhealth() )); 
 			targetInfo.setVisible(true);
 		}
 		else

@@ -95,7 +95,7 @@ public class Player extends Entity implements Serializable{
 
 		for (Entity e : gd.getEntities().values()) {
 			if (e.isAlive()) {
-				if (e.getId() != this.id) {
+				if (e.getId() != this.id && e.getTeamID() != this.teamID) {
 					if (currentClose == null)
 						currentClose = e;
 					else {
