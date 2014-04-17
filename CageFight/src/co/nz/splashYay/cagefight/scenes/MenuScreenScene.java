@@ -2,6 +2,8 @@ package co.nz.splashYay.cagefight.scenes;
 
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
+import org.andengine.engine.handler.timer.ITimerCallback;
+import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
@@ -29,6 +31,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.KeyEvent;
@@ -259,17 +262,31 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 	public boolean onMenuItemClicked(MenuScene pMenuScene, IMenuItem pMenuItem, float pMenuItemLocalX, float pMenuItemLocalY) {
 		switch (pMenuItem.getID()) {
 		case MENU_SERVER:
+			sceneManager.setCurrentScene(AllScenes.LOAD_SCENE);
+			engine.registerUpdateHandler(new TimerHandler(5f, new ITimerCallback() {
+				
+				@Override
+				public void onTimePassed(TimerHandler pTimerHandler) {
+					// TODO Auto-generated method stub
+					engine.unregisterUpdateHandler(pTimerHandler);
+					sceneManager.createServerGameScene();
+					sceneManager.setCurrentScene(AllScenes.GAME_SERVER);				
+
+				}
+			}));	
+			
 			sceneManager.loadServerGameRes();
-			sceneManager.createServerGameScene();
-			sceneManager.setCurrentScene(AllScenes.GAME_SERVER);
 			return true;
+			
 		case MENU_CLIENT:
 			setChildScene(joinMenu);
 			currentMenueScene = 1;
 			return true;
+			
 		case MENU_QUIT:
 			activity.finish();
 			return true;
+			
 		case MENU_JOIN:
 			if (ipAddress.equalsIgnoreCase("")) {
 				makeAToast("Please enter a server IP first.");
@@ -277,8 +294,23 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 				ClientCheckCom checkServer = new ClientCheckCom(ipAddress);
 				checkServer.start();				
 				if (checkServer.checkForServer()) {
+					sceneManager.setCurrentScene(AllScenes.LOAD_SCENE);					
 					sceneManager.setIpaddress(ipAddress);
-					sceneManager.startGame();
+					
+					
+					engine.registerUpdateHandler(new TimerHandler(2f, new ITimerCallback() {
+						
+						@Override
+						public void onTimePassed(TimerHandler pTimerHandler) {
+							// TODO Auto-generated method stub
+							engine.unregisterUpdateHandler(pTimerHandler);
+							sceneManager.createClientGameScene();
+							sceneManager.setCurrentScene(AllScenes.GAME_CLIENT);				
+
+						}
+					}));	
+					sceneManager.loadClientGameRes();
+					
 				} else {
 					makeAToast("No respose from server.");
 				}
@@ -287,16 +319,20 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 			
 			
 			return true;
+			
 		case MENU_BACK:
 			setChildScene(startMenu);
 			currentMenueScene = 0;
 			return true;
+			
 		case MENU_IP:
 			getServerIp(activity);
 			return true;
+			
 		case MENU_TITLE:
 			//easter egg
 			return true;
+			
 		default:
 			return false;
 		}
@@ -320,6 +356,10 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 		mFont.unload();
 		menuTextureAtlas.unload();
 	}
+	
+	
+
+
 
 	
 	

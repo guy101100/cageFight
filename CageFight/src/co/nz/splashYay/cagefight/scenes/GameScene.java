@@ -26,6 +26,7 @@ import org.andengine.extension.tmx.util.exception.TMXLoadException;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
+import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.TextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
@@ -78,6 +79,30 @@ public abstract class GameScene extends Scene {
 	
 	
 	protected Rectangle targetRec;
+	
+	public void loadRes() {
+		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
+		this.playerTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 64, 64);
+		this.playerTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(playerTexture, this.activity, "player.png", 0, 0);
+		playerTexture.load();
+		
+		//base
+		this.baseTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 32, 32); // width and height must be factor of two eg:2,4,8,16 etc
+		this.baseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(baseTexture, this.activity, "base.png", 0, 0);
+		baseTexture.load();
+
+		this.mBitmapTextureAtlas = new BitmapTextureAtlas(this.activity.getTextureManager(), 16, 16, TextureOptions.DEFAULT);
+		this.mBitmapTextureAtlas.load();
+		
+		this.mOnScreenControlTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 256, 128, TextureOptions.BILINEAR);
+		this.mOnScreenControlBaseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mOnScreenControlTexture, this.activity, "onscreen_control_base.png", 0, 0);
+		this.mOnScreenControlKnobTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mOnScreenControlTexture, this.activity, "onscreen_control_knob.png", 128, 0);
+		this.mOnScreenControlTexture.load();
+		
+		
+		
+
+	}
 	
 	protected void setUpMap() {
 		// Load the TMX level
@@ -136,6 +161,9 @@ public abstract class GameScene extends Scene {
 			tempS.setPosition(newPlayer.getXPos(), newPlayer.getYPos());
 
 		}
+	}
+	public void attachHUD(){
+		this.camera.setHUD(hud);
 	}
 	
 	protected void setUpHUD()
@@ -225,7 +253,7 @@ public abstract class GameScene extends Scene {
 	    this.hud.attachChild(attack);
 	    this.hud.registerTouchArea(attack);
 		
-		this.camera.setHUD(hud);
+		//this.camera.setHUD(hud);
 		
 		//setup targeting square
 		targetRec = new Rectangle(0, 0, 64, 64, engine.getVertexBufferObjectManager());

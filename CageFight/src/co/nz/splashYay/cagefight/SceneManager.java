@@ -6,6 +6,7 @@ import org.andengine.entity.scene.Scene;
 import org.andengine.ui.activity.BaseGameActivity;
 
 import co.nz.splashYay.cagefight.scenes.ClientGameScene;
+import co.nz.splashYay.cagefight.scenes.LoadingScene;
 import co.nz.splashYay.cagefight.scenes.MenuScreenScene;
 import co.nz.splashYay.cagefight.scenes.ServerGameScene;
 import co.nz.splashYay.cagefight.scenes.SplashScene;
@@ -18,7 +19,8 @@ public class SceneManager {
 	private SplashScene splashScene;
 	private ClientGameScene clientGameScene;
 	private MenuScreenScene menuScene;
-	private ServerGameScene serverGameScene;	;
+	private ServerGameScene serverGameScene;
+	private LoadingScene loadingScene;
 
 	private BaseGameActivity activity;
 	private Engine engine;
@@ -38,10 +40,11 @@ public class SceneManager {
 	
 	//scene management
 	public enum AllScenes {
-		SPLASH, MENU, GAME_CLIENT, GAME_SERVER
+		SPLASH, MENU, GAME_CLIENT, GAME_SERVER, LOAD_SCENE
 	}
 	
 	public void setCurrentScene(AllScenes currentScene) {
+		/*
 		if (this.currentScene != null) {
 			switch (this.currentScene) {
 			case SPLASH:
@@ -55,11 +58,14 @@ public class SceneManager {
 				break;
 			case GAME_SERVER:
 				serverGameScene.unloadRes();
-				break;		
+				break;
+			case LOAD_SCENE:				
+				break;
 			default:
 				break;
 			}
 		}
+		*/
 		
 		
 		
@@ -71,12 +77,17 @@ public class SceneManager {
 		case MENU:
 			engine.setScene(menuScene);
 			break;
-		case GAME_CLIENT:
+		case GAME_CLIENT:			
 			engine.setScene(clientGameScene);
+			clientGameScene.attachHUD();
 			break;
-		case GAME_SERVER:
+		case GAME_SERVER:			
 			engine.setScene(serverGameScene);
-			break;		
+			serverGameScene.attachHUD();
+			break;	
+		case LOAD_SCENE:
+			engine.setScene(loadingScene);
+			break;
 		default:
 			break;
 		}
@@ -86,7 +97,10 @@ public class SceneManager {
 	
 
 	//load Resources methods for each scene
-
+	public void loadLoadingRes(){
+		loadingScene = new LoadingScene(activity, engine, camera);
+		loadingScene.loadRes();
+	}
 	public void loadSplashRes() {
 		splashScene = new SplashScene(activity, engine, camera);
 		splashScene.loadRes();
@@ -116,6 +130,12 @@ public class SceneManager {
 		splashScene.createScene();
 		return splashScene;
 	}
+	
+	public Scene createLoadingScene() {
+		loadingScene.createScene();
+		return loadingScene;
+	}
+	
 
 	
 	public Scene createClientGameScene() {
@@ -133,11 +153,7 @@ public class SceneManager {
 	
 	
 	//setters	
-	public void startGame() {					
-		loadClientGameRes();
-		createClientGameScene();
-		setCurrentScene(AllScenes.GAME_CLIENT);
-	}
+	
 	
 	public void setIpaddress(String ipAddress){
 		this.ipAddress = ipAddress;

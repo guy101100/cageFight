@@ -76,33 +76,10 @@ public class ServerGameScene extends GameScene {
 		this.sceneManager = sceneManager;
 	}
 
-	public void loadRes() {
-		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
-		this.playerTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 64, 64);
-		this.playerTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(playerTexture, this.activity, "player.png", 0, 0);
-		playerTexture.load();
-		
-		//base
-		this.baseTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 32, 32); // width and height must be factor of two eg:2,4,8,16 etc
-		this.baseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(baseTexture, this.activity, "base.png", 0, 0);
-		baseTexture.load();
-
-		this.mBitmapTextureAtlas = new BitmapTextureAtlas(this.activity.getTextureManager(), 16, 16, TextureOptions.DEFAULT);
-
-		this.mBitmapTextureAtlas.load();
-		
-		this.mOnScreenControlTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 256, 128, TextureOptions.BILINEAR);
-		this.mOnScreenControlBaseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mOnScreenControlTexture, this.activity, "onscreen_control_base.png", 0, 0);
-		this.mOnScreenControlKnobTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mOnScreenControlTexture, this.activity, "onscreen_control_knob.png", 128, 0);
-		this.mOnScreenControlTexture.load();
-		
-		gameData = new GameData();
-		
-
-	}
+	
 
 	public void createScene() {
-
+		gameData = new GameData();
 		this.engine.registerUpdateHandler(new FPSLogger());
 		this.setBackground(new Background(0, 125, 58));
 		this.phyWorld = new FixedStepPhysicsWorld(30, 30, new Vector2(0, 0), false);
@@ -271,23 +248,18 @@ public class ServerGameScene extends GameScene {
 				final FixtureDef playerFixDef = PhysicsFactory.createFixtureDef(1, 0f, 0.5f);
 				newPlayer.setBody(PhysicsFactory.createCircleBody(phyWorld, tempS, BodyType.DynamicBody, playerFixDef));
 				
-				phyWorld.registerPhysicsConnector(new PhysicsConnector(tempS, newPlayer.getBody(), true, false));	
-				
-				
-				
-				
-
-				
+				phyWorld.registerPhysicsConnector(new PhysicsConnector(tempS, newPlayer.getBody(), true, false));					
+								
 				this.attachChild(tempS);			
 				
 				newPlayer.setSprite(tempS);
-				//newPlayer.setPhyHandler(tempPhyHandler);
 				
-				tempS.setPosition(newPlayer.getXPos(), newPlayer.getYPos());
 				
 				if (newPlayer.getId() == player.getId()) {
 					camera.setChaseEntity(tempS);
 				}
+				
+				
 			} else if (newEntity instanceof Base) {
 				Base newBase = (Base) newEntity;
 				gameData.addEntity(newBase);

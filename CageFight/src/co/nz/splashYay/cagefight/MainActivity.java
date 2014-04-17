@@ -48,6 +48,7 @@ public class MainActivity extends BaseGameActivity {
 		sceneManager = new SceneManager(this, mEngine, mCamera);		
 		
 		sceneManager.loadSplashRes();
+		sceneManager.loadLoadingRes();
 
 		pOnCreateResourcesCallback.onCreateResourcesFinished();
 
@@ -56,29 +57,27 @@ public class MainActivity extends BaseGameActivity {
 	@Override
 	public void onCreateScene(OnCreateSceneCallback pOnCreateSceneCallback) throws Exception {
 		// TODO Auto-generated method stub
+		sceneManager.createLoadingScene();
 		pOnCreateSceneCallback.onCreateSceneFinished(sceneManager.createSplashScene());
 
 	}
 
 	@Override
 	public void onPopulateScene(Scene pScene, OnPopulateSceneCallback pOnPopulateSceneCallback) throws Exception {
-		// TODO Auto-generated method stub
-		
-		mEngine.registerUpdateHandler(new TimerHandler(3f, new ITimerCallback() {
+		// TODO Auto-generated method stub		
+		mEngine.registerUpdateHandler(new TimerHandler(1.5f, new ITimerCallback() {
 
 			@Override
 			public void onTimePassed(TimerHandler pTimerHandler) {
 				// TODO Auto-generated method stub
 				mEngine.unregisterUpdateHandler(pTimerHandler);
-				
-				sceneManager.setCurrentScene(AllScenes.MENU);
+				sceneManager.setCurrentScene(AllScenes.MENU);				
 
 			}
 		}));
 		
-		sceneManager.loadMenuRes();
+		sceneManager.loadMenuRes();		
 		sceneManager.createMenuScene();
-
 		pOnPopulateSceneCallback.onPopulateSceneFinished();
 
 	}

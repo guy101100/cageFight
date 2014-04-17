@@ -79,29 +79,7 @@ public class ClientGameScene extends GameScene {
 		
 	}
 
-	public void loadRes() {
-		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/"); // base folder for gfx
-		this.playerTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 64, 64); // width and height must be factor of two eg:2,4,8,16 etc
-		this.playerTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(playerTexture, this.activity, "player.png", 0, 0);
-		playerTexture.load(); // loads the player texture
-		
-		//base
-		this.baseTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 32, 32); // width and height must be factor of two eg:2,4,8,16 etc
-		this.baseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(baseTexture, this.activity, "base.png", 0, 0);
-		baseTexture.load(); // loads the base texture
-		
-		
-		this.mBitmapTextureAtlas = new BitmapTextureAtlas(this.activity.getTextureManager(), 32, 32, TextureOptions.DEFAULT);
-		this.mBitmapTextureAtlas.load();
-		// loads the on screen joystick images
-		this.mOnScreenControlTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 256, 128, TextureOptions.BILINEAR);
-		this.mOnScreenControlBaseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mOnScreenControlTexture, this.activity, "onscreen_control_base.png", 0, 0);
-		this.mOnScreenControlKnobTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mOnScreenControlTexture, this.activity, "onscreen_control_knob.png", 128, 0);
-		this.mOnScreenControlTexture.load();
-		
-		
-
-	}
+	
 
 	public Scene createScene() {
 		this.engine.registerUpdateHandler(new FPSLogger());
@@ -209,8 +187,7 @@ public class ClientGameScene extends GameScene {
 				tempS.registerUpdateHandler(tempPhyHandler); // added
 				this.attachChild(tempS);
 				newPlayer.setSprite(tempS);
-				newPlayer.setPhyHandler(tempPhyHandler);
-				tempS.setPosition(newPlayer.getXPos(), newPlayer.getYPos());
+				newPlayer.setPhyHandler(tempPhyHandler);				
 				if (newPlayer.getId() == player.getId()) {
 					sPlayer = tempS;
 					camera.setChaseEntity(sPlayer);
