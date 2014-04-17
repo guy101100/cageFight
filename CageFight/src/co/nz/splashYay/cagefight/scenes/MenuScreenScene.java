@@ -29,11 +29,15 @@ import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.Looper;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import co.nz.splashYay.cagefight.SceneManager;
 import co.nz.splashYay.cagefight.SceneManager.AllScenes;
+import co.nz.splashYay.cagefight.network.ClientCheckCom;
+import co.nz.splashYay.cagefight.network.ServerCheckCom;
 
 public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
+	
 	
 	
 	
@@ -49,6 +53,7 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 	private TextureRegion join;
 	private TextureRegion back;
 	private TextureRegion ip;
+	private TextureRegion title;
 	
 	private BuildableBitmapTextureAtlas menuTextureAtlas;
 	
@@ -62,6 +67,11 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 	private final int MENU_JOIN = 3;
 	private final int MENU_IP = 4;
 	private final int MENU_BACK = 5;
+	private final int MENU_TITLE = 6;
+	private TextureRegion title2;
+	
+	private String ipAddress = "";
+	
 	
 	
 
@@ -81,8 +91,9 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 	    final IMenuItem joinMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_JOIN, join, engine.getVertexBufferObjectManager()), 1.2f, 1);	    
 	    final IMenuItem backMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_BACK, back, engine.getVertexBufferObjectManager()), 1.2f, 1);
 	    final IMenuItem serverIpMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_IP, ip, engine.getVertexBufferObjectManager()), 1.2f, 1);
+	    final IMenuItem titleItem2 = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_TITLE, title2, engine.getVertexBufferObjectManager()), 1.2f, 1);
 	    
-	    
+	    joinMenu.addMenuItem(titleItem2);
 	    joinMenu.addMenuItem(joinMenuItem);
 	    joinMenu.addMenuItem(serverIpMenuItem);
 	    joinMenu.addMenuItem(backMenuItem);
@@ -92,7 +103,7 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 	    joinMenu.setBackgroundEnabled(false);
 	    
 	    float cX = (camera.getWidth()/3) - (joinMenuItem.getWidth()/2);
-	    
+	    titleItem2.setPosition(0, 25);
 	    joinMenuItem.setPosition(cX, (camera.getHeight()/2) - (joinMenuItem.getHeight()/3));
 	    serverIpMenuItem.setPosition(cX, joinMenuItem.getY() + joinMenuItem.getHeight() + 5 );
 	    backMenuItem.setPosition(cX, serverIpMenuItem.getY() + serverIpMenuItem.getHeight() + 5 );
@@ -110,18 +121,19 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 	    final IMenuItem serverMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_SERVER, server, engine.getVertexBufferObjectManager()), 1.2f, 1);
 	    final IMenuItem clientMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_CLIENT, client, engine.getVertexBufferObjectManager()), 1.2f, 1);
 	    final IMenuItem quitMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_QUIT, quit, engine.getVertexBufferObjectManager()), 1.2f, 1);
-	    
+	    final IMenuItem titleItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_TITLE, title, engine.getVertexBufferObjectManager()), 1.2f, 1);
 	    createBackground();
 	    
 	    startMenu.addMenuItem(serverMenuItem);
 	    startMenu.addMenuItem(clientMenuItem);
 	    startMenu.addMenuItem(quitMenuItem);
+	    startMenu.addMenuItem(titleItem);
 	    
 	    startMenu.buildAnimations();
 	    startMenu.setBackgroundEnabled(false);
 	    
 	    float cX = (camera.getWidth()/3) - (serverMenuItem.getWidth()/2);
-	    
+	    titleItem.setPosition(0, 25);
 	    serverMenuItem.setPosition(cX, (camera.getHeight()/2) - (serverMenuItem.getHeight()/3));
 	    clientMenuItem.setPosition(cX, serverMenuItem.getY() + serverMenuItem.getHeight() + 5 );
 	    quitMenuItem.setPosition(cX, clientMenuItem.getY() + clientMenuItem.getHeight() + 5);
@@ -134,7 +146,11 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 	public void loadMenuRes() {
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 		menuTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR);
-		menu_background_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "Background.png");
+		menu_background_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "BackgroundClient.png");
+		
+		title = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "title.png");
+		title2 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "title2.png");
+		
 		server = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "server.png");
 		client = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "client.png");
 		quit = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "quit.png");
@@ -185,6 +201,7 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 					public void onClick(DialogInterface dialog, int whichButton) {
 						//sceneManager.setIpaddress(input.getText().toString().trim());
 						//sceneManager.startGame();
+						ipAddress = input.getText().toString().trim();
 					}
 				});
 
@@ -197,6 +214,18 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 			}
 		});
 
+	}
+	
+	private void makeAToast(final String toToast){
+		Handler mHandler = new Handler(Looper.getMainLooper());
+
+		mHandler.post(new Runnable() {
+			public void run() {
+				Toast.makeText(activity, toToast, Toast.LENGTH_SHORT).show();				
+			}
+			
+		});
+		
 	}
 
 	@Override
@@ -215,6 +244,20 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 			activity.finish();
 			return true;
 		case MENU_JOIN:
+			if (ipAddress.equalsIgnoreCase("")) {
+				makeAToast("Please enter a server IP first.");
+			} else {
+				ClientCheckCom checkServer = new ClientCheckCom(ipAddress);
+				checkServer.start();				
+				if (checkServer.checkForServer()) {
+					sceneManager.setIpaddress(ipAddress);
+					sceneManager.startGame();
+				} else {
+					makeAToast("No respose from server.");
+				}
+				
+			}
+			
 			
 			return true;
 		case MENU_BACK:
@@ -222,6 +265,9 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 			return true;
 		case MENU_IP:
 			getServerIp(activity);
+			return true;
+		case MENU_TITLE:
+			//easter egg
 			return true;
 		default:
 			return false;

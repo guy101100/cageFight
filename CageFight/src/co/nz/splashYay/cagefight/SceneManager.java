@@ -5,7 +5,6 @@ import org.andengine.engine.camera.Camera;
 import org.andengine.entity.scene.Scene;
 import org.andengine.ui.activity.BaseGameActivity;
 
-import co.nz.splashYay.cagefight.scenes.ClientConnectScene;
 import co.nz.splashYay.cagefight.scenes.ClientGameScene;
 import co.nz.splashYay.cagefight.scenes.MenuScreenScene;
 import co.nz.splashYay.cagefight.scenes.ServerGameScene;
@@ -19,8 +18,7 @@ public class SceneManager {
 	private SplashScene splashScene;
 	private ClientGameScene clientGameScene;
 	private MenuScreenScene menuScene;
-	private ServerGameScene serverGameScene;
-	private ClientConnectScene clientConnectScene;
+	private ServerGameScene serverGameScene;	;
 
 	private BaseGameActivity activity;
 	private Engine engine;

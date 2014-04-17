@@ -48,6 +48,7 @@ import co.nz.splashYay.cagefight.EntityState;
 import co.nz.splashYay.cagefight.ValueBar;
 import co.nz.splashYay.cagefight.network.InFromClientListener;
 import co.nz.splashYay.cagefight.network.OutToClientListener;
+import co.nz.splashYay.cagefight.network.ServerCheckListener;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -61,6 +62,7 @@ public class ServerGameScene extends GameScene {
 	private SceneManager sceneManager;	
 	private InFromClientListener iFCL;
 	private OutToClientListener oTCL;
+	private ServerCheckListener sCL;
 	
 	
 
@@ -114,8 +116,10 @@ public class ServerGameScene extends GameScene {
 
 		iFCL = new InFromClientListener(gameData, this);
 		oTCL = new OutToClientListener(gameData, this);
+		sCL = new ServerCheckListener();
 		iFCL.start();
 		oTCL.start();
+		sCL.start();
 		
 		player = new Player("", gameData.getUnusedID(), 10, 10, 50, 50, 1);
 		addEntityToGameDataObj(player);
