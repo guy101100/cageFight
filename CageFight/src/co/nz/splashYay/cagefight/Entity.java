@@ -53,6 +53,23 @@ public class Entity implements Serializable{
 		this.state = EntityState.IDLE;
 		
 	}
+	
+	public void damagePlayer(int amount){
+		if (amount >= 0) {
+			currenthealth -= amount;
+		}
+	}
+	
+	
+	public void healPlayer(int amount) {
+		if (amount >= 0) {
+			if (currenthealth + amount > maxhealth) {
+				currenthealth = maxhealth;
+			} else {
+				currenthealth += amount;
+			}
+		}
+	}
 
 	/**
 	 * gets the x position

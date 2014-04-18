@@ -100,7 +100,7 @@ public class ServerGameScene extends GameScene {
 		oTCL.start();
 		sCL.start();
 		
-		player = new Player("", gameData.getUnusedID(), 10, 10, 50, 50, 1);
+		player = new Player("", gameData.getUnusedID(), 100, 1, 50, 50, 0);
 		addEntityToGameDataObj(player);
 		
 		//game loop
@@ -226,15 +226,26 @@ public class ServerGameScene extends GameScene {
 		
 		if (tmxTile != null && tmxTile.getGlobalTileID() != 0) {
 			
-			if (tmxTile.getTMXTileProperties(mTMXTiledMap).containsTMXProperty("badHeal", "true") && player.getTeamID() == 1) {
-				player.setSpeed(2);
-				//damage the player
-			} else if (tmxTile.getTMXTileProperties(mTMXTiledMap).containsTMXProperty("goodHeal", "true") && player.getTeamID() == 0) {
-				player.setSpeed(2);
+			if (tmxTile.getTMXTileProperties(mTMXTiledMap).containsTMXProperty("badHeal", "true")) {
+				if (player.getTeamID() == 0) {
+					player.healPlayer(1);
+				} else {
+					player.setSpeed(2);
+					//damage the player
+				}
+				
+				
+			} else if (tmxTile.getTMXTileProperties(mTMXTiledMap).containsTMXProperty("goodHeal", "true")) {
+				if (player.getTeamID() == 1) {
+					player.healPlayer(1);
+				} else {
+					player.setSpeed(2);
+					//damage the player
+				}
 			} 
 			
 			
-		} else { // none of the above, reverse the effects
+		} else { // is not on an effecting tile, reverse any effects on the player
 			player.setSpeed(10);
 		}
 	}
