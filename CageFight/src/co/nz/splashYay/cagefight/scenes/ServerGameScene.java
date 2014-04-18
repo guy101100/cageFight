@@ -164,13 +164,8 @@ public class ServerGameScene extends GameScene {
 		player.setXPos(player.getSprite().getX());// set player position(in data) to the sprites position.
 		player.setYPos(player.getSprite().getY());
 		
-		final TMXTile tmxTile = mTMXTiledMap.getTMXLayers().get(12).getTMXTileAt(player.getXPos(), player.getYPos());
+		checkTileAffect(player);
 		
-		if (tmxTile != null && tmxTile.getGlobalTileID() != 0 && tmxTile.getTMXTileProperties(mTMXTiledMap).containsTMXProperty("badHeal", "true")) {
-			player.setSpeed(2);
-		} else {
-			player.setSpeed(10);
-		}
 		
 		if (player.getPlayerState() == EntityState.MOVING) {
 			player.getBody().setActive(true);
@@ -224,6 +219,24 @@ public class ServerGameScene extends GameScene {
 			
 			
 		}		
+	}
+	
+	private void checkTileAffect(Player player) {
+		final TMXTile tmxTile = mTMXTiledMap.getTMXLayers().get(12).getTMXTileAt(player.getXPos(), player.getYPos());
+		
+		if (tmxTile != null && tmxTile.getGlobalTileID() != 0) {
+			
+			if (tmxTile.getTMXTileProperties(mTMXTiledMap).containsTMXProperty("badHeal", "true") && player.getTeamID() == 1) {
+				player.setSpeed(2);
+				//damage the player
+			} else if (tmxTile.getTMXTileProperties(mTMXTiledMap).containsTMXProperty("goodHeal", "true") && player.getTeamID() == 0) {
+				player.setSpeed(2);
+			} 
+			
+			
+		} else { // none of the above, reverse the effects
+			player.setSpeed(10);
+		}
 	}
 	
 	private void setUpBases(){
