@@ -26,6 +26,7 @@ import org.andengine.extension.physics.box2d.FixedStepPhysicsWorld;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.extension.physics.box2d.util.Vector2Pool;
+import org.andengine.extension.tmx.TMXTile;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.texture.TextureOptions;
@@ -33,6 +34,7 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.TextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
+import org.andengine.util.Constants;
 import org.andengine.util.HorizontalAlign;
 import org.andengine.util.color.Color;
 import org.andengine.util.math.MathUtils;
@@ -106,7 +108,7 @@ public class ServerGameScene extends GameScene {
 			@Override
 			public void onUpdate(float pSecondsElapsed) {
 				processServerPlayerControls();
-				processPlayerActions();
+				processEntityActions();
 				updateTargetMarker();
 				oTCL.updateClients();
 				
@@ -134,7 +136,7 @@ public class ServerGameScene extends GameScene {
 		tempPlayer.setTarget(gameData.getEntityWithId(playerCommands.getTargetID()));
 	}
 	
-	private void processPlayerActions(){
+	private void processEntityActions(){
 		Iterator it = gameData.getEntities().entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry pairs = (Map.Entry) it.next();
@@ -161,6 +163,14 @@ public class ServerGameScene extends GameScene {
 		
 		player.setXPos(player.getSprite().getX());// set player position(in data) to the sprites position.
 		player.setYPos(player.getSprite().getY());
+		
+		final TMXTile tmxTile = mTMXTiledMap.getTMXLayers().get(2).getTMXTileAt(player.getXPos(), player.getYPos());
+		
+		if (tmxTile != null && tmxTile.getGlobalTileID() != 0 && tmxTile.getTMXTileProperties(mTMXTiledMap).containsTMXProperty("heal", "true")) {
+			player.setSpeed(2);
+		} else {
+			player.setSpeed(10);
+		}
 		
 		if (player.getPlayerState() == EntityState.MOVING) {
 			player.getBody().setActive(true);
