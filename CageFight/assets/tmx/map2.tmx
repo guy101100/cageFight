@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="60" height="30" tilewidth="32" tileheight="32">
  <tileset firstgid="1" name="DungeonCrawl_ProjectUtumnoTileset" tilewidth="32" tileheight="32">
-  <image source="gfx/DungeonCrawl_ProjectUtumnoTileset.png" width="2048" height="1536"/>
+  <image source="DungeonCrawl_ProjectUtumnoTileset.png" width="2048" height="1536"/>
   <tile id="11">
    <properties>
     <property name="badDamage" value="true"/>
@@ -124,9 +124,6 @@
   </data>
  </layer>
  <objectgroup name="objects" width="60" height="30">
-  <properties>
-   <property name="wall" value="true"/>
-  </properties>
   <object x="33" y="2" width="150" height="29"/>
   <object x="167" y="34" width="51" height="25"/>
   <object x="198" y="65" width="83" height="25"/>

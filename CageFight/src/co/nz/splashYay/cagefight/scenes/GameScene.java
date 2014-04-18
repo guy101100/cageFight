@@ -124,6 +124,8 @@ public abstract class GameScene extends Scene {
 		}
 
 		for (TMXLayer layer : this.mTMXTiledMap.getTMXLayers()) {
+			layer.setScale(2f);
+			layer.setScaleCenter(0f,0f);
 			this.attachChild(layer);
 		}
 
@@ -137,10 +139,11 @@ public abstract class GameScene extends Scene {
                  if(group.getTMXObjectGroupProperties().containsTMXProperty("wall", "true")){
                          // This is our "wall" layer. Create the boxes from it
                          for(final TMXObject object : group.getTMXObjects()) {
-                                final Rectangle rect = new Rectangle(object.getX(), object.getY(),object.getWidth(), object.getHeight(), this.engine.getVertexBufferObjectManager());
+                                final Rectangle rect = new Rectangle(object.getX()*2, object.getY()*2, object.getWidth()*2, object.getHeight()*2, this.engine.getVertexBufferObjectManager());
                                 final FixtureDef boxFixtureDef = PhysicsFactory.createFixtureDef(0, 0, 1f);
                                 PhysicsFactory.createBoxBody(phyWorld, rect, BodyType.StaticBody, boxFixtureDef);
                                 rect.setVisible(false);
+                                //rect.setColor(Color.GREEN);
                                 this.attachChild(rect);
                          }
                  }

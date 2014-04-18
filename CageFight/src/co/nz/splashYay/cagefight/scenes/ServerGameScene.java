@@ -164,9 +164,9 @@ public class ServerGameScene extends GameScene {
 		player.setXPos(player.getSprite().getX());// set player position(in data) to the sprites position.
 		player.setYPos(player.getSprite().getY());
 		
-		final TMXTile tmxTile = mTMXTiledMap.getTMXLayers().get(2).getTMXTileAt(player.getXPos(), player.getYPos());
+		final TMXTile tmxTile = mTMXTiledMap.getTMXLayers().get(12).getTMXTileAt(player.getXPos(), player.getYPos());
 		
-		if (tmxTile != null && tmxTile.getGlobalTileID() != 0 && tmxTile.getTMXTileProperties(mTMXTiledMap).containsTMXProperty("heal", "true")) {
+		if (tmxTile != null && tmxTile.getGlobalTileID() != 0 && tmxTile.getTMXTileProperties(mTMXTiledMap).containsTMXProperty("badHeal", "true")) {
 			player.setSpeed(2);
 		} else {
 			player.setSpeed(10);
