@@ -6,6 +6,9 @@ import java.util.HashMap;
 
 import org.andengine.entity.sprite.Sprite;
 
+import co.nz.splashYay.cagefight.entities.Entity;
+import co.nz.splashYay.cagefight.entities.Player;
+
 
 public class GameData implements Serializable{
 	

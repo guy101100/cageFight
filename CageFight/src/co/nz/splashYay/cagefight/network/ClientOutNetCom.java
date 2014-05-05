@@ -6,9 +6,9 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import co.nz.splashYay.cagefight.Player;
 import co.nz.splashYay.cagefight.PlayerControlCommands;
 import co.nz.splashYay.cagefight.SceneManager;
+import co.nz.splashYay.cagefight.entities.Player;
 
 public class ClientOutNetCom extends Thread{
 

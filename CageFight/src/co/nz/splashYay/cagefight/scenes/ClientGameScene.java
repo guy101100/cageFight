@@ -41,14 +41,14 @@ import org.andengine.util.math.MathUtils;
 
 import android.graphics.Typeface;
 import android.opengl.GLES20;
-import co.nz.splashYay.cagefight.Base;
-import co.nz.splashYay.cagefight.Entity;
 import co.nz.splashYay.cagefight.GameData;
-import co.nz.splashYay.cagefight.Player;
 import co.nz.splashYay.cagefight.PlayerControlCommands;
 import co.nz.splashYay.cagefight.EntityState;
 import co.nz.splashYay.cagefight.SceneManager;
 import co.nz.splashYay.cagefight.ValueBar;
+import co.nz.splashYay.cagefight.entities.Base;
+import co.nz.splashYay.cagefight.entities.Entity;
+import co.nz.splashYay.cagefight.entities.Player;
 import co.nz.splashYay.cagefight.network.ClientInNetCom;
 import co.nz.splashYay.cagefight.network.ClientOutNetCom;
 

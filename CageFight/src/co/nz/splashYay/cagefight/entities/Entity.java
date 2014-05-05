@@ -1,10 +1,12 @@
-package co.nz.splashYay.cagefight;
+package co.nz.splashYay.cagefight.entities;
 
 import java.io.Serializable;
 
 import org.andengine.engine.handler.physics.PhysicsHandler;
 import org.andengine.entity.modifier.MoveModifier;
 import org.andengine.entity.sprite.Sprite;
+
+import co.nz.splashYay.cagefight.EntityState;
 
 import com.badlogic.gdx.physics.box2d.Body;
 

@@ -5,6 +5,7 @@ import org.andengine.engine.camera.Camera;
 import org.andengine.entity.scene.Scene;
 import org.andengine.ui.activity.BaseGameActivity;
 
+import co.nz.splashYay.cagefight.entities.Player;
 import co.nz.splashYay.cagefight.scenes.ClientGameScene;
 import co.nz.splashYay.cagefight.scenes.LoadingScene;
 import co.nz.splashYay.cagefight.scenes.MenuScreenScene;

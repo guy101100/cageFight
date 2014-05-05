@@ -10,10 +10,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 
-import co.nz.splashYay.cagefight.Base;
-import co.nz.splashYay.cagefight.Entity;
 import co.nz.splashYay.cagefight.GameData;
-import co.nz.splashYay.cagefight.Player;
+import co.nz.splashYay.cagefight.entities.Base;
+import co.nz.splashYay.cagefight.entities.Entity;
+import co.nz.splashYay.cagefight.entities.Player;
 import co.nz.splashYay.cagefight.scenes.ClientGameScene;
 
 

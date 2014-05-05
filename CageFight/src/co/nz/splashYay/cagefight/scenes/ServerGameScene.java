@@ -40,14 +40,14 @@ import org.andengine.util.color.Color;
 import org.andengine.util.math.MathUtils;
 
 import android.opengl.GLES20;
-import co.nz.splashYay.cagefight.Base;
-import co.nz.splashYay.cagefight.Entity;
 import co.nz.splashYay.cagefight.GameData;
-import co.nz.splashYay.cagefight.Player;
 import co.nz.splashYay.cagefight.PlayerControlCommands;
 import co.nz.splashYay.cagefight.SceneManager;
 import co.nz.splashYay.cagefight.EntityState;
 import co.nz.splashYay.cagefight.ValueBar;
+import co.nz.splashYay.cagefight.entities.Base;
+import co.nz.splashYay.cagefight.entities.Entity;
+import co.nz.splashYay.cagefight.entities.Player;
 import co.nz.splashYay.cagefight.network.InFromClientListener;
 import co.nz.splashYay.cagefight.network.OutToClientListener;
 import co.nz.splashYay.cagefight.network.ServerCheckListener;
@@ -100,7 +100,7 @@ public class ServerGameScene extends GameScene {
 		oTCL.start();
 		sCL.start();
 		
-		player = new Player("", gameData.getUnusedID(), 100, 1, 50, 50, 0);
+		player = new Player("", gameData.getUnusedID(), 100, 1, 50, 50, 1);
 		addEntityToGameDataObj(player);
 		
 		//game loop
@@ -251,9 +251,9 @@ public class ServerGameScene extends GameScene {
 	}
 	
 	private void setUpBases(){
-		Base base1 = new Base(500, 500, 10, 10, gameData.getUnusedID(), 1);
+		Base base1 = new Base(898, 770, 10, 10, gameData.getUnusedID(), 1);
 		addEntityToGameDataObj(base1);
-		Base base2 = new Base(750, 500, 10, 10, gameData.getUnusedID(), 2);
+		Base base2 = new Base(2750, 770, 10, 10, gameData.getUnusedID(), 2);
 		addEntityToGameDataObj(base2);	
 		
 	}

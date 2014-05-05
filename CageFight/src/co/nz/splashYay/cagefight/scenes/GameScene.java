@@ -37,11 +37,11 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
 import android.opengl.GLES20;
-import co.nz.splashYay.cagefight.Entity;
 import co.nz.splashYay.cagefight.GameData;
-import co.nz.splashYay.cagefight.Player;
 import co.nz.splashYay.cagefight.PlayerControlCommands;
 import co.nz.splashYay.cagefight.ValueBar;
+import co.nz.splashYay.cagefight.entities.Entity;
+import co.nz.splashYay.cagefight.entities.Player;
 
 public abstract class GameScene extends Scene {
 	protected BaseGameActivity activity;
@@ -87,7 +87,7 @@ public abstract class GameScene extends Scene {
 		playerTexture.load();
 		
 		//base
-		this.baseTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 32, 32); // width and height must be factor of two eg:2,4,8,16 etc
+		this.baseTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 256, 256); // width and height must be factor of two eg:2,4,8,16 etc
 		this.baseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(baseTexture, this.activity, "base.png", 0, 0);
 		baseTexture.load();
 
@@ -190,8 +190,8 @@ public abstract class GameScene extends Scene {
 
 			@Override
 			public void onControlClick(final AnalogOnScreenControl pAnalogOnScreenControl) {
-
-			}
+				System.out.println("Player Coords : " + player.getXPos() + " " + player.getYPos());
+			} 
 		});
 
 		joyStick.getControlBase().setBlendFunction(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);

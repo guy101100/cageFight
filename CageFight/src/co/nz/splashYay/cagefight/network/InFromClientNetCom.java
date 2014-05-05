@@ -8,8 +8,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import co.nz.splashYay.cagefight.GameData;
-import co.nz.splashYay.cagefight.Player;
 import co.nz.splashYay.cagefight.PlayerControlCommands;
+import co.nz.splashYay.cagefight.entities.Player;
 import co.nz.splashYay.cagefight.scenes.ServerGameScene;
 
 

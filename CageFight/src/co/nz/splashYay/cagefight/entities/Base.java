@@ -1,4 +1,6 @@
-package co.nz.splashYay.cagefight;
+package co.nz.splashYay.cagefight.entities;
+
+import co.nz.splashYay.cagefight.EntityState;
 
 public class Base extends Entity{
 	private static final long serialVersionUID = 1L;
