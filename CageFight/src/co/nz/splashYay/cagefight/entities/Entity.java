@@ -7,6 +7,7 @@ import org.andengine.entity.modifier.MoveModifier;
 import org.andengine.entity.sprite.Sprite;
 
 import co.nz.splashYay.cagefight.EntityState;
+import co.nz.splashYay.cagefight.Team.ALL_TEAMS;
 
 import com.badlogic.gdx.physics.box2d.Body;
 
@@ -16,8 +17,7 @@ public class Entity implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	protected int id;
-	protected int teamID;
+	protected int id;	
 	protected float xpos;
 	protected float ypos;
 	protected float direction;
@@ -35,10 +35,11 @@ public class Entity implements Serializable{
 	private transient PhysicsHandler phyHandler;
 	private transient MoveModifier moveModifier;
 	private transient Body body;
+	protected ALL_TEAMS team;
 	
 	
 	
-	public Entity(int xpos, int ypos, int maxhealth, int currenthealth, int id, int teamId)
+	public Entity(int xpos, int ypos, int maxhealth, int currenthealth, int id, ALL_TEAMS team)
 	{
 		this.xpos = xpos;
 		this.ypos = ypos;
@@ -50,7 +51,8 @@ public class Entity implements Serializable{
 		attackCoolDown = 2000;
 		alive = true;
 		this.id = id;
-		this.teamID = teamId;
+		this.team = team;
+		
 		
 		this.state = EntityState.IDLE;
 		
@@ -298,12 +300,12 @@ public class Entity implements Serializable{
 		this.id = id;
 	}
 
-	public int getTeamID() {
-		return teamID;
+	public ALL_TEAMS getTeam() {
+		return team;
 	}
 
-	public void setTeamID(int teamID) {
-		this.teamID = teamID;
+	public void setTeam(ALL_TEAMS team) {
+		this.team = team;
 	}
 	
 	

@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.PlayerControlCommands;
+import co.nz.splashYay.cagefight.Team.ALL_TEAMS;
 import co.nz.splashYay.cagefight.entities.Player;
 import co.nz.splashYay.cagefight.scenes.ServerGameScene;
 
@@ -44,7 +45,7 @@ public class InFromClientNetCom extends Thread {
 			outToClient = new ObjectOutputStream(welcomeSocket.getOutputStream());
 			welcomeSocket.setTcpNoDelay(true);
 			
-			Player newPlayer = new Player("", gameData.getUnusedID(), 5, 5, 10, 10, 2);
+			Player newPlayer = new Player("", gameData.getUnusedID(), 5, 5, 10, 10, ALL_TEAMS.GOOD);
 			this.player = newPlayer; //the player this is connection is to
 			serverScene.addEntityToGameDataObj(newPlayer);
 			outToClient.writeObject(newPlayer);

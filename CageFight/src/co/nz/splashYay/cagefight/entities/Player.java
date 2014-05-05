@@ -8,6 +8,7 @@ import org.andengine.util.math.MathUtils;
 
 import co.nz.splashYay.cagefight.EntityState;
 import co.nz.splashYay.cagefight.GameData;
+import co.nz.splashYay.cagefight.Team.ALL_TEAMS;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -33,7 +34,7 @@ public class Player extends Entity implements Serializable{
 	private Entity target;
 	
 	
-	public Player(String name, int id, int maxhealth, int currenthealth, int xpos, int ypos, int teamId) {
+	public Player(String name, int id, int maxhealth, int currenthealth, int xpos, int ypos, ALL_TEAMS teamId) {
 		super(xpos, ypos, maxhealth, currenthealth, id, teamId);
 		this.name = name;
 		this.level = 1;
@@ -98,7 +99,7 @@ public class Player extends Entity implements Serializable{
 
 		for (Entity e : gd.getEntities().values()) {
 			if (e.isAlive()) {
-				if (e.getId() != this.id && e.getTeamID() != this.teamID) {
+				if (e.getId() != this.id && e.getTeam() != this.team) {
 					if (currentClose == null)
 						currentClose = e;
 					else {

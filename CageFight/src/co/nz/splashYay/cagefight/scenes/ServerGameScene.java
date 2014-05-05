@@ -45,6 +45,7 @@ import co.nz.splashYay.cagefight.PlayerControlCommands;
 import co.nz.splashYay.cagefight.SceneManager;
 import co.nz.splashYay.cagefight.EntityState;
 import co.nz.splashYay.cagefight.ValueBar;
+import co.nz.splashYay.cagefight.Team.ALL_TEAMS;
 import co.nz.splashYay.cagefight.entities.Base;
 import co.nz.splashYay.cagefight.entities.Entity;
 import co.nz.splashYay.cagefight.entities.Player;
@@ -101,7 +102,7 @@ public class ServerGameScene extends GameScene {
 		oTCL.start();
 		sCL.start();
 		
-		player = new Player("", gameData.getUnusedID(), 100, 1, 50, 50, 1);
+		player = new Player("", gameData.getUnusedID(), 100, 1, 50, 50, ALL_TEAMS.EVIL);
 		addEntityToGameDataObj(player);
 		
 		//game loop
@@ -228,7 +229,7 @@ public class ServerGameScene extends GameScene {
 		if (tmxTile != null && tmxTile.getGlobalTileID() != 0) {
 			
 			if (tmxTile.getTMXTileProperties(mTMXTiledMap).containsTMXProperty("badHeal", "true")) {
-				if (player.getTeamID() == 0) {
+				if (player.getTeam() == ALL_TEAMS.EVIL) {
 					player.healPlayer(1);
 				} else {
 					player.setSpeed(2);
@@ -237,7 +238,7 @@ public class ServerGameScene extends GameScene {
 				
 				
 			} else if (tmxTile.getTMXTileProperties(mTMXTiledMap).containsTMXProperty("goodHeal", "true")) {
-				if (player.getTeamID() == 1) {
+				if (player.getTeam() == ALL_TEAMS.GOOD) {
 					player.healPlayer(1);
 				} else {
 					player.setSpeed(2);
@@ -252,15 +253,16 @@ public class ServerGameScene extends GameScene {
 	}
 	
 	private void setUpBasesAndTowers(){
-		Base team1Base = new Base(898, 770, 10, 10, gameData.getUnusedID(), 1);
-		addEntityToGameDataObj(team1Base);
-		Base team2Base = new Base(2750, 770, 10, 10, gameData.getUnusedID(), 2);
-		addEntityToGameDataObj(team2Base);	
+		Base team1Base = new Base(2750, 770, 10, 10, gameData.getUnusedID(), ALL_TEAMS.GOOD);
+		addEntityToGameDataObj(team1Base);	
+		Base team2Base = new Base(898, 770, 10, 10, gameData.getUnusedID(), ALL_TEAMS.EVIL);
+		addEntityToGameDataObj(team2Base);
 		
-		Tower tower1 = new Tower(1474, 838, 10, 10, gameData.getUnusedID(), 1);
+		Tower tower1 = new Tower(2180, 838, 10, 10, gameData.getUnusedID(), ALL_TEAMS.GOOD);
 		addEntityToGameDataObj(tower1);	
-		Tower tower2 = new Tower(2180, 838, 10, 10, gameData.getUnusedID(), 2);
+		Tower tower2 = new Tower(1474, 838, 10, 10, gameData.getUnusedID(), ALL_TEAMS.EVIL);
 		addEntityToGameDataObj(tower2);	
+		
 		
 	}
 	
