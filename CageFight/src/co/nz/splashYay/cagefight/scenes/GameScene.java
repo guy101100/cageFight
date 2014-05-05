@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import org.andengine.audio.music.Music;
 import org.andengine.audio.music.MusicFactory;
+import org.andengine.audio.sound.Sound;
+import org.andengine.audio.sound.SoundFactory;
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.camera.hud.HUD;
@@ -56,6 +58,7 @@ public abstract class GameScene extends Scene {
 	protected ITextureRegion playerTextureRegion;
 	protected FixedStepPhysicsWorld phyWorld;
 	protected Music music;
+	protected Music attackSound;
 	
 	protected TMXTiledMap mTMXTiledMap;
 	protected BitmapTextureAtlas mBitmapTextureAtlas;
@@ -94,6 +97,8 @@ public abstract class GameScene extends Scene {
 	
 	
 	
+	
+	
 	public void loadRes() {
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 		this.playerTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 64, 64);
@@ -127,6 +132,8 @@ public abstract class GameScene extends Scene {
 		
 		try {
 			music = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity, "mfx/FF7.ogg");
+			attackSound = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity, "mfx/attack1.ogg");
+			//attacks[1] = SoundFactory.createSoundFromAsset(engine.getSoundManager(), activity, "mfx/attack2.mp3");
 		} catch (IllegalStateException e) {
 			// TODO Auto-generated catch block
 			System.out.println("error 1");

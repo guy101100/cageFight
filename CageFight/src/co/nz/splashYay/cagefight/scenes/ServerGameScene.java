@@ -189,6 +189,7 @@ public class ServerGameScene extends GameScene {
 					{
 						player.attackTarget();
 						player.setLastAttackTime(System.currentTimeMillis());
+						attackSound.play();
 					}
 				}
 				
