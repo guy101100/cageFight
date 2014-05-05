@@ -48,6 +48,7 @@ import co.nz.splashYay.cagefight.ValueBar;
 import co.nz.splashYay.cagefight.entities.Base;
 import co.nz.splashYay.cagefight.entities.Entity;
 import co.nz.splashYay.cagefight.entities.Player;
+import co.nz.splashYay.cagefight.entities.Tower;
 import co.nz.splashYay.cagefight.network.InFromClientListener;
 import co.nz.splashYay.cagefight.network.OutToClientListener;
 import co.nz.splashYay.cagefight.network.ServerCheckListener;
@@ -91,7 +92,7 @@ public class ServerGameScene extends GameScene {
 		
 		setUpMap();
 		setUpHUD();
-		setUpBases();
+		setUpBasesAndTowers();
 
 		iFCL = new InFromClientListener(gameData, this);
 		oTCL = new OutToClientListener(gameData, this);
@@ -250,11 +251,16 @@ public class ServerGameScene extends GameScene {
 		}
 	}
 	
-	private void setUpBases(){
-		Base base1 = new Base(898, 770, 10, 10, gameData.getUnusedID(), 1);
-		addEntityToGameDataObj(base1);
-		Base base2 = new Base(2750, 770, 10, 10, gameData.getUnusedID(), 2);
-		addEntityToGameDataObj(base2);	
+	private void setUpBasesAndTowers(){
+		Base team1Base = new Base(898, 770, 10, 10, gameData.getUnusedID(), 1);
+		addEntityToGameDataObj(team1Base);
+		Base team2Base = new Base(2750, 770, 10, 10, gameData.getUnusedID(), 2);
+		addEntityToGameDataObj(team2Base);	
+		
+		Tower tower1 = new Tower(1474, 838, 10, 10, gameData.getUnusedID(), 1);
+		addEntityToGameDataObj(tower1);	
+		Tower tower2 = new Tower(2180, 838, 10, 10, gameData.getUnusedID(), 2);
+		addEntityToGameDataObj(tower2);	
 		
 	}
 	
@@ -314,6 +320,23 @@ public class ServerGameScene extends GameScene {
 				
 				
 				
+			} else if (newEntity instanceof Tower) {
+				Tower newTower = (Tower) newEntity;
+				gameData.addEntity(newTower);
+				FixtureDef baseFix = PhysicsFactory.createFixtureDef(0, 0f, 0f);
+				Sprite towerS = new Sprite(newTower.getXPos(), newTower.getYPos(), towerTextureRegion, this.engine.getVertexBufferObjectManager()) {
+					@Override
+					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+						setTarget(this);		
+						
+						return true;
+					}
+				};
+				registerTouchArea(towerS);
+				setTouchAreaBindingOnActionDownEnabled(true);
+				newTower.setSprite(towerS);
+				newTower.setBody(PhysicsFactory.createBoxBody(phyWorld, towerS, BodyType.StaticBody, baseFix));
+				this.attachChild(towerS);
 			}
 			
 

@@ -66,6 +66,9 @@ public abstract class GameScene extends Scene {
 	protected BitmapTextureAtlas baseTexture;
 	protected TextureRegion baseTextureRegion;
 	
+	protected BitmapTextureAtlas towerTexture;
+	protected TextureRegion towerTextureRegion;
+	
 	protected Sprite sPlayer;
 	protected Player player;
 	
@@ -80,6 +83,7 @@ public abstract class GameScene extends Scene {
 	
 	protected Rectangle targetRec;
 	
+	
 	public void loadRes() {
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 		this.playerTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 64, 64);
@@ -90,6 +94,11 @@ public abstract class GameScene extends Scene {
 		this.baseTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 256, 256); // width and height must be factor of two eg:2,4,8,16 etc
 		this.baseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(baseTexture, this.activity, "base.png", 0, 0);
 		baseTexture.load();
+		
+		//tower 
+		this.towerTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 256, 256); // width and height must be factor of two eg:2,4,8,16 etc
+		this.towerTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(towerTexture, this.activity, "tower.png", 0, 0);
+		towerTexture.load();
 
 		this.mBitmapTextureAtlas = new BitmapTextureAtlas(this.activity.getTextureManager(), 16, 16, TextureOptions.DEFAULT);
 		this.mBitmapTextureAtlas.load();

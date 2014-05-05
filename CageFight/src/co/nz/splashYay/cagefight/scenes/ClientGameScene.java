@@ -49,6 +49,7 @@ import co.nz.splashYay.cagefight.ValueBar;
 import co.nz.splashYay.cagefight.entities.Base;
 import co.nz.splashYay.cagefight.entities.Entity;
 import co.nz.splashYay.cagefight.entities.Player;
+import co.nz.splashYay.cagefight.entities.Tower;
 import co.nz.splashYay.cagefight.network.ClientInNetCom;
 import co.nz.splashYay.cagefight.network.ClientOutNetCom;
 
@@ -209,6 +210,19 @@ public class ClientGameScene extends GameScene {
 				
 				
 				
+			} else if (newEntity instanceof Tower) {
+				Tower newTower = (Tower) newEntity;
+				gameData.addEntity(newTower);
+				Sprite towerS = new Sprite(newTower.getXPos(), newTower.getYPos(), towerTextureRegion, this.engine.getVertexBufferObjectManager()) {
+					@Override
+					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+						setTarget(this);
+
+						return true;
+					}
+				};
+				newTower.setSprite(towerS);
+				this.attachChild(towerS);
 			}
 			
 

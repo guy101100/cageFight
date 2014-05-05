@@ -14,6 +14,7 @@ import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.entities.Base;
 import co.nz.splashYay.cagefight.entities.Entity;
 import co.nz.splashYay.cagefight.entities.Player;
+import co.nz.splashYay.cagefight.entities.Tower;
 import co.nz.splashYay.cagefight.scenes.ClientGameScene;
 
 
@@ -60,8 +61,10 @@ public class ClientInNetCom extends Thread {
 						    	actual.updatePlayerInfoFromOtherPlayerData(playerIn);
 					    	
 					    	} else if (entityIn instanceof Base) {
-					    		//update bases info
+					    		//update base info
 					    		
+					    	} else if (entityIn instanceof Tower) {
+					    		//update tower info
 					    	}
 					    	
 					    }
