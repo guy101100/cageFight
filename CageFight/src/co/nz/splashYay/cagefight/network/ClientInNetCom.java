@@ -11,6 +11,8 @@ import java.util.Map.Entry;
 
 
 import co.nz.splashYay.cagefight.GameData;
+import co.nz.splashYay.cagefight.Team.ALL_TEAMS;
+import co.nz.splashYay.cagefight.entities.AIunit;
 import co.nz.splashYay.cagefight.entities.Base;
 import co.nz.splashYay.cagefight.entities.Entity;
 import co.nz.splashYay.cagefight.entities.Player;
@@ -46,8 +48,8 @@ public class ClientInNetCom extends Thread {
 				try {
 					GameData gameDataIn = (GameData) inFromServer.readUnshared();
 					System.out.println("[" + System.currentTimeMillis() + "] recieved data");
-					gameData.getTeam1().updateFromOtherTeamData(gameDataIn.getTeam1());
-					gameData.getTeam2().updateFromOtherTeamData(gameDataIn.getTeam2());
+					gameData.getTeam(ALL_TEAMS.GOOD).updateFromOtherTeamData(gameDataIn.getTeam(ALL_TEAMS.GOOD));
+					gameData.getTeam(ALL_TEAMS.EVIL).updateFromOtherTeamData(gameDataIn.getTeam(ALL_TEAMS.EVIL));
 					
 					
 					for (Entry<Integer, Entity> entry: gameDataIn.getEntities().entrySet()) {					    
@@ -65,6 +67,11 @@ public class ClientInNetCom extends Thread {
 					    		
 					    	} else if (entityIn instanceof Tower) {
 					    		//update tower info
+					    	} else if (entityIn instanceof AIunit) {
+					    		//update AI info
+					    		AIunit aiUnitIn = (AIunit) entityIn;
+					    		AIunit actual = (AIunit)gameData.getEntityWithId(aiUnitIn.getId());
+						    	actual.updateAIDataFromAIUnit(aiUnitIn);
 					    	}
 					    	
 					    }

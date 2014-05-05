@@ -1,5 +1,9 @@
 package co.nz.splashYay.cagefight.scenes;
 
+import java.io.IOException;
+
+import org.andengine.audio.music.Music;
+import org.andengine.audio.music.MusicFactory;
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.camera.hud.HUD;
@@ -51,6 +55,7 @@ public abstract class GameScene extends Scene {
 	protected BitmapTextureAtlas playerTexture;
 	protected ITextureRegion playerTextureRegion;
 	protected FixedStepPhysicsWorld phyWorld;
+	protected Music music;
 	
 	protected TMXTiledMap mTMXTiledMap;
 	protected BitmapTextureAtlas mBitmapTextureAtlas;
@@ -69,6 +74,9 @@ public abstract class GameScene extends Scene {
 	protected BitmapTextureAtlas towerTexture;
 	protected TextureRegion towerTextureRegion;
 	
+	protected BitmapTextureAtlas AITexture;
+	protected TextureRegion AITextureRegion;
+	
 	protected Sprite sPlayer;
 	protected Player player;
 	
@@ -84,11 +92,18 @@ public abstract class GameScene extends Scene {
 	protected Rectangle targetRec;
 	
 	
+	
+	
 	public void loadRes() {
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 		this.playerTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 64, 64);
 		this.playerTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(playerTexture, this.activity, "player.png", 0, 0);
 		playerTexture.load();
+		
+		//ai
+		this.AITexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 64, 64);
+		this.AITextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(AITexture, this.activity, "AI.png", 0, 0);
+		AITexture.load();
 		
 		//base
 		this.baseTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 256, 256); // width and height must be factor of two eg:2,4,8,16 etc
@@ -107,6 +122,21 @@ public abstract class GameScene extends Scene {
 		this.mOnScreenControlBaseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mOnScreenControlTexture, this.activity, "onscreen_control_base.png", 0, 0);
 		this.mOnScreenControlKnobTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mOnScreenControlTexture, this.activity, "onscreen_control_knob.png", 128, 0);
 		this.mOnScreenControlTexture.load();
+		
+		// sounds
+		
+		try {
+			music = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity, "mfx/FF7.ogg");
+		} catch (IllegalStateException e) {
+			// TODO Auto-generated catch block
+			System.out.println("error 1");
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.println("error 2");
+			e.printStackTrace();
+		}
+		
 		
 		
 		
@@ -159,21 +189,7 @@ public abstract class GameScene extends Scene {
          }
 }
 
-	public void addEntityToGameDataObj(Entity newEntity) {
-		if (newEntity != null) {
-			Player newPlayer = (Player) newEntity;
-			gameData.addPlayer(newPlayer);
-			Sprite tempS = new Sprite(camera.getWidth() / 2, camera.getHeight() / 2, playerTextureRegion, this.engine.getVertexBufferObjectManager());
-
-			final PhysicsHandler tempPhyHandler = new PhysicsHandler(tempS); // added
-			tempS.registerUpdateHandler(tempPhyHandler); // added
-			this.attachChild(tempS);
-			newPlayer.setSprite(tempS);
-			newPlayer.setPhyHandler(tempPhyHandler);
-			tempS.setPosition(newPlayer.getXPos(), newPlayer.getYPos());
-
-		}
-	}
+	
 	public void attachHUD(){
 		this.camera.setHUD(hud);
 	}
@@ -315,6 +331,12 @@ public abstract class GameScene extends Scene {
 		hud.detachChildren();
 		this.detachChildren();
 	}
+
+	public Music getMusic() {
+		return music;
+	}
+	
+	
 	
 
 	

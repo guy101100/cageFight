@@ -6,6 +6,8 @@ import java.util.HashMap;
 
 import org.andengine.entity.sprite.Sprite;
 
+import co.nz.splashYay.cagefight.SceneManager.AllScenes;
+import co.nz.splashYay.cagefight.Team.ALL_TEAMS;
 import co.nz.splashYay.cagefight.entities.Entity;
 import co.nz.splashYay.cagefight.entities.Player;
 
@@ -19,12 +21,12 @@ public class GameData implements Serializable{
 	private ArrayList<Integer> IDs = new ArrayList<Integer>();
 	
 	
-	private Team team1;
-	private Team team2;
+	private Team goodTeam;
+	private Team evilTeam;
 	
 	public GameData(){
-		team1 = new Team(1);
-		team2 = new Team(2);
+		goodTeam = new Team(1);
+		evilTeam = new Team(2);
 		
 	}
 	
@@ -82,29 +84,22 @@ public class GameData implements Serializable{
 		return entities;
 		
 	}
-
-
-
-	public Team getTeam1() {
-		return team1;
+	
+	public Team getTeam(ALL_TEAMS team){
+		if (team == ALL_TEAMS.GOOD) {
+			return goodTeam;
+		} else {
+			return evilTeam;
+		}
 	}
 
 
-
-	public void setTeam1(Team team1) {
-		this.team1 = team1;
+	public void setGoodTeam(Team team1) {
+		this.goodTeam = team1;
 	}
 
-
-
-	public Team getTeam2() {
-		return team2;
-	}
-
-
-
-	public void setTeam2(Team team2) {
-		this.team2 = team2;
+	public void setEvilTeam(Team team2) {
+		this.evilTeam = team2;
 	}
 	
 	

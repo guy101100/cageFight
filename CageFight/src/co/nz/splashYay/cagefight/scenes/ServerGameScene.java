@@ -2,25 +2,12 @@ package co.nz.splashYay.cagefight.scenes;
 
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
-import org.andengine.engine.camera.hud.HUD;
-import org.andengine.engine.camera.hud.controls.AnalogOnScreenControl;
-import org.andengine.engine.camera.hud.controls.BaseOnScreenControl;
-import org.andengine.engine.camera.hud.controls.AnalogOnScreenControl.IAnalogOnScreenControlListener;
 import org.andengine.engine.handler.IUpdateHandler;
-import org.andengine.engine.handler.physics.PhysicsHandler;
-import org.andengine.engine.handler.timer.ITimerCallback;
-import org.andengine.engine.handler.timer.TimerHandler;
-import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.background.Background;
-import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
-import org.andengine.entity.text.Text;
-import org.andengine.entity.text.TextOptions;
 import org.andengine.entity.util.FPSLogger;
 import org.andengine.extension.physics.box2d.FixedStepPhysicsWorld;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
@@ -28,24 +15,14 @@ import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.extension.physics.box2d.util.Vector2Pool;
 import org.andengine.extension.tmx.TMXTile;
 import org.andengine.input.touch.TouchEvent;
-import org.andengine.opengl.font.Font;
-import org.andengine.opengl.texture.TextureOptions;
-import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
-import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
-import org.andengine.opengl.texture.region.TextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
-import org.andengine.util.Constants;
-import org.andengine.util.HorizontalAlign;
-import org.andengine.util.color.Color;
 import org.andengine.util.math.MathUtils;
 
-import android.opengl.GLES20;
-import co.nz.splashYay.cagefight.GameData;
-import co.nz.splashYay.cagefight.PlayerControlCommands;
-import co.nz.splashYay.cagefight.SceneManager;
 import co.nz.splashYay.cagefight.EntityState;
-import co.nz.splashYay.cagefight.ValueBar;
+import co.nz.splashYay.cagefight.GameData;
+import co.nz.splashYay.cagefight.SceneManager;
 import co.nz.splashYay.cagefight.Team.ALL_TEAMS;
+import co.nz.splashYay.cagefight.entities.AIunit;
 import co.nz.splashYay.cagefight.entities.Base;
 import co.nz.splashYay.cagefight.entities.Entity;
 import co.nz.splashYay.cagefight.entities.Player;
@@ -86,14 +63,14 @@ public class ServerGameScene extends GameScene {
 		gameData = new GameData();
 		this.engine.registerUpdateHandler(new FPSLogger());
 		this.setBackground(new Background(0, 125, 58));
-		this.phyWorld = new FixedStepPhysicsWorld(30, 30, new Vector2(0, 0), false);
+		this.phyWorld = new FixedStepPhysicsWorld(30, 30, new Vector2(0, 0), false);		
 		this.registerUpdateHandler(phyWorld);
 		
 		
 		
 		setUpMap();
 		setUpHUD();
-		setUpBasesAndTowers();
+		setUpBasesTowersAndAIunits();
 
 		iFCL = new InFromClientListener(gameData, this);
 		oTCL = new OutToClientListener(gameData, this);
@@ -102,7 +79,7 @@ public class ServerGameScene extends GameScene {
 		oTCL.start();
 		sCL.start();
 		
-		player = new Player("", gameData.getUnusedID(), 100, 1, 50, 50, ALL_TEAMS.EVIL);
+		player = new Player("", gameData.getUnusedID(), 100, 1, gameData.getTeam(ALL_TEAMS.EVIL).getSpawnXpos(), gameData.getTeam(ALL_TEAMS.EVIL).getSpawnYpos(), ALL_TEAMS.EVIL);
 		addEntityToGameDataObj(player);
 		
 		//game loop
@@ -150,9 +127,22 @@ public class ServerGameScene extends GameScene {
 			} else if (pairs.getValue() instanceof Base) {
 				Base base = (Base) pairs.getValue();
 				proccessBase(base);
+			} else if (pairs.getValue() instanceof Tower) {
+				
+			} else if (pairs.getValue() instanceof AIunit) {
+				AIunit ai = (AIunit) pairs.getValue();
+				proccessAIunit(ai);
 			}
 			
 		}
+	}
+	
+	private void proccessAIunit(AIunit ai) {
+		//ai.checkState();
+		
+		ai.setXPos(ai.getSprite().getX());
+		ai.setYPos(ai.getSprite().getY());
+		checkTileEffect(ai);
 	}
 	
 	private void proccessBase(Base base) {
@@ -166,7 +156,7 @@ public class ServerGameScene extends GameScene {
 		player.setXPos(player.getSprite().getX());// set player position(in data) to the sprites position.
 		player.setYPos(player.getSprite().getY());
 		
-		checkTileAffect(player);
+		checkTileEffect(player);
 		
 		
 		if (player.getPlayerState() == EntityState.MOVING) {
@@ -195,7 +185,7 @@ public class ServerGameScene extends GameScene {
 					double distanceSqr = Math.pow((player.getTarget().getXPos() - player.getXPos()), 2) + Math.pow((player.getTarget().getYPos() - player.getYPos()), 2);
 					double distance = Math.sqrt(distanceSqr);
 					
-					if(distance < 75)
+					if(distance < 150)
 					{
 						player.attackTarget();
 						player.setLastAttackTime(System.currentTimeMillis());
@@ -223,36 +213,36 @@ public class ServerGameScene extends GameScene {
 		}		
 	}
 	
-	private void checkTileAffect(Player player) {
-		final TMXTile tmxTile = mTMXTiledMap.getTMXLayers().get(12).getTMXTileAt(player.getXPos(), player.getYPos());
+	private void checkTileEffect(Entity entity) {
+		final TMXTile tmxTile = mTMXTiledMap.getTMXLayers().get(12).getTMXTileAt(entity.getXPos(), entity.getYPos());
 		
 		if (tmxTile != null && tmxTile.getGlobalTileID() != 0) {
 			
 			if (tmxTile.getTMXTileProperties(mTMXTiledMap).containsTMXProperty("badHeal", "true")) {
-				if (player.getTeam() == ALL_TEAMS.EVIL) {
-					player.healPlayer(1);
+				if (entity.getTeam() == ALL_TEAMS.EVIL) {
+					entity.healEntity(1);
 				} else {
-					player.setSpeed(2);
+					entity.setSpeed(2);
 					//damage the player
 				}
 				
 				
 			} else if (tmxTile.getTMXTileProperties(mTMXTiledMap).containsTMXProperty("goodHeal", "true")) {
-				if (player.getTeam() == ALL_TEAMS.GOOD) {
-					player.healPlayer(1);
+				if (entity.getTeam() == ALL_TEAMS.GOOD) {
+					entity.healEntity(1);
 				} else {
-					player.setSpeed(2);
+					entity.setSpeed(2);
 					//damage the player
 				}
 			} 
 			
 			
 		} else { // is not on an effecting tile, reverse any effects on the player
-			player.setSpeed(10);
+			entity.setSpeed(10);
 		}
 	}
 	
-	private void setUpBasesAndTowers(){
+	private void setUpBasesTowersAndAIunits(){
 		Base team1Base = new Base(2750, 770, 10, 10, gameData.getUnusedID(), ALL_TEAMS.GOOD);
 		addEntityToGameDataObj(team1Base);	
 		Base team2Base = new Base(898, 770, 10, 10, gameData.getUnusedID(), ALL_TEAMS.EVIL);
@@ -261,46 +251,45 @@ public class ServerGameScene extends GameScene {
 		Tower tower1 = new Tower(2180, 838, 10, 10, gameData.getUnusedID(), ALL_TEAMS.GOOD);
 		addEntityToGameDataObj(tower1);	
 		Tower tower2 = new Tower(1474, 838, 10, 10, gameData.getUnusedID(), ALL_TEAMS.EVIL);
-		addEntityToGameDataObj(tower2);	
+		addEntityToGameDataObj(tower2);
 		
+		
+		for (int i = 0; i < 2; i++) {
+			AIunit unit1 = new AIunit(gameData.getUnusedID(), 10, 10, gameData.getTeam(ALL_TEAMS.GOOD).getSpawnXpos(), gameData.getTeam(ALL_TEAMS.GOOD).getSpawnYpos(), ALL_TEAMS.GOOD);
+			addEntityToGameDataObj(unit1);	
+			AIunit unit2 = new AIunit(gameData.getUnusedID(), 10, 10, gameData.getTeam(ALL_TEAMS.EVIL).getSpawnXpos(), gameData.getTeam(ALL_TEAMS.EVIL).getSpawnYpos(), ALL_TEAMS.EVIL);
+			addEntityToGameDataObj(unit2);
+		}
 		
 	}
 	
 	
 	
-	@Override
+	
 	public void addEntityToGameDataObj(Entity newEntity) {
 		if (newEntity != null) {
 			if (newEntity instanceof Player) {
 				Player newPlayer = (Player) newEntity;
-				gameData.addPlayer(newPlayer);
-				
-				Sprite tempS = new Sprite(camera.getWidth() / 2, camera.getHeight() / 2, playerTextureRegion, this.engine.getVertexBufferObjectManager()) {
+				gameData.addPlayer(newPlayer);				
+				Sprite tempS = new Sprite(newPlayer.getXPos(), newPlayer.getYPos(), playerTextureRegion, this.engine.getVertexBufferObjectManager()) {
 					@Override
 					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-						setTarget(this);		
-						
+						setTarget(this);						
 						return true;
 					}
 				};
 				registerTouchArea(tempS);
-				setTouchAreaBindingOnActionDownEnabled(true);
-				
+				setTouchAreaBindingOnActionDownEnabled(true);				
 				
 				final FixtureDef playerFixDef = PhysicsFactory.createFixtureDef(1, 0f, 0.5f);
-				newPlayer.setBody(PhysicsFactory.createCircleBody(phyWorld, tempS, BodyType.DynamicBody, playerFixDef));
-				
-				phyWorld.registerPhysicsConnector(new PhysicsConnector(tempS, newPlayer.getBody(), true, false));					
-								
+				newPlayer.setBody(PhysicsFactory.createCircleBody(phyWorld, tempS, BodyType.DynamicBody, playerFixDef));				
+				phyWorld.registerPhysicsConnector(new PhysicsConnector(tempS, newPlayer.getBody(), true, false));
 				this.attachChild(tempS);			
-				
-				newPlayer.setSprite(tempS);
-				
+				newPlayer.setSprite(tempS);			
 				
 				if (newPlayer.getId() == player.getId()) {
 					camera.setChaseEntity(tempS);
-				}
-				
+				}				
 				
 			} else if (newEntity instanceof Base) {
 				Base newBase = (Base) newEntity;
@@ -339,7 +328,28 @@ public class ServerGameScene extends GameScene {
 				newTower.setSprite(towerS);
 				newTower.setBody(PhysicsFactory.createBoxBody(phyWorld, towerS, BodyType.StaticBody, baseFix));
 				this.attachChild(towerS);
+			
+			} else if (newEntity instanceof AIunit) {
+				AIunit newAIunit = (AIunit) newEntity;
+				gameData.addEntity(newAIunit);
+				Sprite tempS = new Sprite(newAIunit.getXPos(), newAIunit.getYPos(), AITextureRegion , this.engine.getVertexBufferObjectManager()) {
+					@Override
+					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+						setTarget(this);
+						return true;
+					}
+				};
+				registerTouchArea(tempS);
+				setTouchAreaBindingOnActionDownEnabled(true);
+
+				final FixtureDef AIFixDef = PhysicsFactory.createFixtureDef(1, 0f, 1f);
+				newAIunit.setBody(PhysicsFactory.createCircleBody(phyWorld, tempS, BodyType.DynamicBody, AIFixDef));
+				phyWorld.registerPhysicsConnector(new PhysicsConnector(tempS, newAIunit.getBody(), true, false));
+				this.attachChild(tempS);
+				newAIunit.setSprite(tempS);
+
 			}
+				
 			
 
 		}

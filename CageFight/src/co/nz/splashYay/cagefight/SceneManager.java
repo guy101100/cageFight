@@ -85,6 +85,7 @@ public class SceneManager {
 		case GAME_SERVER:			
 			engine.setScene(serverGameScene);
 			serverGameScene.attachHUD();
+			serverGameScene.getMusic().play();
 			break;	
 		case LOAD_SCENE:
 			engine.setScene(loadingScene);

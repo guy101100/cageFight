@@ -58,14 +58,14 @@ public class Entity implements Serializable{
 		
 	}
 	
-	public void damagePlayer(int amount){
+	public void damageEntity(int amount){
 		if (amount >= 0) {
 			currenthealth -= amount;
 		}
 	}
 	
 	
-	public void healPlayer(int amount) {
+	public void healEntity(int amount) {
 		if (amount >= 0) {
 			if (currenthealth + amount > maxhealth) {
 				currenthealth = maxhealth;

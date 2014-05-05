@@ -271,7 +271,7 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 					engine.unregisterUpdateHandler(pTimerHandler);
 					sceneManager.createServerGameScene();
 					sceneManager.setCurrentScene(AllScenes.GAME_SERVER);				
-
+					
 				}
 			}));	
 			

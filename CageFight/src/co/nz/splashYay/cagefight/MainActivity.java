@@ -39,6 +39,8 @@ public class MainActivity extends BaseGameActivity {
 		mCamera = new Camera(0, 0, CAM_WIDTH, CAM_HEIGHT);		
 		EngineOptions options = new EngineOptions(true, ScreenOrientation.LANDSCAPE_FIXED, new RatioResolutionPolicy(CAM_WIDTH, CAM_HEIGHT), mCamera);
 		options.getTouchOptions().setNeedsMultiTouch(true);
+		options.getAudioOptions().setNeedsMusic(true);
+		options.getAudioOptions().setNeedsSound(true);
 		return options;
 	}
 

@@ -46,6 +46,7 @@ import co.nz.splashYay.cagefight.PlayerControlCommands;
 import co.nz.splashYay.cagefight.EntityState;
 import co.nz.splashYay.cagefight.SceneManager;
 import co.nz.splashYay.cagefight.ValueBar;
+import co.nz.splashYay.cagefight.entities.AIunit;
 import co.nz.splashYay.cagefight.entities.Base;
 import co.nz.splashYay.cagefight.entities.Entity;
 import co.nz.splashYay.cagefight.entities.Player;
@@ -169,7 +170,7 @@ public class ClientGameScene extends GameScene {
 	
 	
 
-	@Override
+	
 	public void addEntityToGameDataObj(Entity newEntity) {
 		if (newEntity != null) {
 			if (newEntity instanceof Player) {
@@ -223,6 +224,25 @@ public class ClientGameScene extends GameScene {
 				};
 				newTower.setSprite(towerS);
 				this.attachChild(towerS);
+				
+			} else if (newEntity instanceof AIunit) {
+				AIunit newAIUnit = (AIunit) newEntity;
+				gameData.addEntity(newAIUnit);
+				Sprite tempS = new Sprite(newAIUnit.getXPos(), newAIUnit.getYPos(), AITextureRegion, this.engine.getVertexBufferObjectManager()) {
+					@Override
+					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+						setTarget(this);		
+						
+						return true;
+					}
+				};
+
+				final PhysicsHandler tempPhyHandler = new PhysicsHandler(tempS); // added
+				tempS.registerUpdateHandler(tempPhyHandler); // added
+				this.attachChild(tempS);
+				newAIUnit.setSprite(tempS);
+				newAIUnit.setPhyHandler(tempPhyHandler);				
+				
 			}
 			
 
