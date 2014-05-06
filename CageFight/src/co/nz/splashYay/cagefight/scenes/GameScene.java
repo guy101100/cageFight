@@ -57,8 +57,6 @@ public abstract class GameScene extends Scene {
 	protected BitmapTextureAtlas playerTexture;
 	protected ITextureRegion playerTextureRegion;
 	protected FixedStepPhysicsWorld phyWorld;
-	protected Music music;
-	protected Music attackSound;
 	
 	protected TMXTiledMap mTMXTiledMap;
 	protected BitmapTextureAtlas mBitmapTextureAtlas;
@@ -128,21 +126,9 @@ public abstract class GameScene extends Scene {
 		this.mOnScreenControlKnobTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mOnScreenControlTexture, this.activity, "onscreen_control_knob.png", 128, 0);
 		this.mOnScreenControlTexture.load();
 		
-		// sounds
 		
-		try {
-			music = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity, "mfx/FF7.ogg");
-			attackSound = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity, "mfx/attack1.ogg");
-			//attacks[1] = SoundFactory.createSoundFromAsset(engine.getSoundManager(), activity, "mfx/attack2.mp3");
-		} catch (IllegalStateException e) {
-			// TODO Auto-generated catch block
-			System.out.println("error 1");
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.out.println("error 2");
-			e.printStackTrace();
-		}
+		
+		
 		
 		
 		
@@ -339,9 +325,7 @@ public abstract class GameScene extends Scene {
 		this.detachChildren();
 	}
 
-	public Music getMusic() {
-		return music;
-	}
+	
 	
 	
 	

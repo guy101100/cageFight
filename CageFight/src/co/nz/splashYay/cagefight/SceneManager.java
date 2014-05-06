@@ -5,6 +5,7 @@ import org.andengine.engine.camera.Camera;
 import org.andengine.entity.scene.Scene;
 import org.andengine.ui.activity.BaseGameActivity;
 
+import co.nz.splashYay.cagefight.SoundManager.MUSIC_TYPE;
 import co.nz.splashYay.cagefight.entities.Player;
 import co.nz.splashYay.cagefight.scenes.ClientGameScene;
 import co.nz.splashYay.cagefight.scenes.LoadingScene;
@@ -31,12 +32,15 @@ public class SceneManager {
 	
 	private boolean gameStarted;
 	private boolean server;
+	
+	private SoundManager soundManager;
 
 	public SceneManager(BaseGameActivity act, Engine eng, Camera cam) {
 		this.activity = act;
 		this.engine = eng;
 		this.camera = cam;
 		gameStarted = false;
+		soundManager = new SoundManager(activity, engine);
 	}
 	
 	//scene management
@@ -77,6 +81,7 @@ public class SceneManager {
 			break;
 		case MENU:
 			engine.setScene(menuScene);
+			soundManager.setMusic(MUSIC_TYPE.MENU);
 			break;
 		case GAME_CLIENT:			
 			engine.setScene(clientGameScene);
@@ -85,7 +90,7 @@ public class SceneManager {
 		case GAME_SERVER:			
 			engine.setScene(serverGameScene);
 			serverGameScene.attachHUD();
-			serverGameScene.getMusic().play();
+			soundManager.setMusic(MUSIC_TYPE.GAME1);
 			break;	
 		case LOAD_SCENE:
 			engine.setScene(loadingScene);
@@ -170,12 +175,20 @@ public class SceneManager {
 
 	//getters
 	
+	
+	
 
 
 
 	public void setServer(boolean b) {
 		this.server = b;
 		
+	}
+
+
+
+	public SoundManager getSoundManager() {
+		return soundManager;
 	}
 
 

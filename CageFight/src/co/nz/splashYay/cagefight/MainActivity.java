@@ -78,7 +78,8 @@ public class MainActivity extends BaseGameActivity {
 			}
 		}));
 		
-		sceneManager.loadMenuRes();		
+		sceneManager.loadMenuRes();	
+		sceneManager.getSoundManager().loadSoundRes();
 		sceneManager.createMenuScene();
 		pOnPopulateSceneCallback.onPopulateSceneFinished();
 
