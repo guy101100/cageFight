@@ -132,6 +132,7 @@ public class Player extends Entity implements Serializable{
 		this.setAlive(false);
 		// TO ADD : remove some gold.
 		// TO ADD : change players sprite to "dead Image".
+		
 		this.getBody().setActive(false);
 		this.setRespawnTime();
 		System.out.println("Player : " + this.getId() + " has Died. Respawn in " + getRespawnTime() + " [" + System.currentTimeMillis() + "]");
