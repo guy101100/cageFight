@@ -64,6 +64,7 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 	
 	private MenuScene startMenu;
 	private MenuScene joinMenu;
+	private MenuScene optionsMenu;
 	private int currentMenueScene;
 	
 	
@@ -90,6 +91,13 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 		this.engine = eng;
 		this.camera = cam;		
 		this.sceneManager = sceneManager;
+	}
+	
+	
+	private void createOptionsMenuScene(){
+		optionsMenu = new MenuScene(camera);
+		optionsMenu.setPosition(0, 0);
+		
 	}
 	
 	private void createJoinMenuScene(){

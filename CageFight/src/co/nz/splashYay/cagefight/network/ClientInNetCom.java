@@ -12,7 +12,7 @@ import java.util.Map.Entry;
 
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.Team.ALL_TEAMS;
-import co.nz.splashYay.cagefight.entities.AIunit;
+import co.nz.splashYay.cagefight.entities.Creep;
 import co.nz.splashYay.cagefight.entities.Base;
 import co.nz.splashYay.cagefight.entities.Entity;
 import co.nz.splashYay.cagefight.entities.Player;
@@ -60,18 +60,22 @@ public class ClientInNetCom extends Thread {
 					    	if (entityIn instanceof Player) {
 					    		Player playerIn = (Player) entityIn;
 					    		Player actual = (Player)gameData.getEntityWithId(playerIn.getId());
-						    	actual.updatePlayerInfoFromOtherPlayerData(playerIn);
+						    	actual.updateFromServer(playerIn);
 					    	
 					    	} else if (entityIn instanceof Base) {
-					    		//update base info
+					    		Base baseIn = (Base) entityIn;
+					    		Base actual = (Base)gameData.getEntityWithId(baseIn.getId());
+						    	actual.updateFromServer(baseIn);
 					    		
 					    	} else if (entityIn instanceof Tower) {
-					    		//update tower info
-					    	} else if (entityIn instanceof AIunit) {
+					    		Tower towerIn = (Tower) entityIn;
+					    		Tower actual = (Tower)gameData.getEntityWithId(towerIn.getId());
+						    	actual.updateFromServer(towerIn);
+					    	} else if (entityIn instanceof Creep) {
 					    		//update AI info
-					    		AIunit aiUnitIn = (AIunit) entityIn;
-					    		AIunit actual = (AIunit)gameData.getEntityWithId(aiUnitIn.getId());
-						    	actual.updateAIDataFromAIUnit(aiUnitIn);
+					    		Creep aiUnitIn = (Creep) entityIn;
+					    		Creep actual = (Creep)gameData.getEntityWithId(aiUnitIn.getId());
+						    	actual.updateFromServer(aiUnitIn);
 					    	}
 					    	
 					    }

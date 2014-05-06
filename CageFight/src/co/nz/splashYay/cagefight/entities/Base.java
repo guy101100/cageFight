@@ -3,7 +3,7 @@ package co.nz.splashYay.cagefight.entities;
 import co.nz.splashYay.cagefight.EntityState;
 import co.nz.splashYay.cagefight.Team.ALL_TEAMS;
 
-public class Base extends Entity{
+public class Base extends AIUnit{
 	private static final long serialVersionUID = 1L;
 	
 	
@@ -15,20 +15,21 @@ public class Base extends Entity{
 	}
 	
 	
-	public void checkState(){
-		boolean atackablePlayers = false;
+	
+	
+	
+	/**
+	 * Used by the ClientInNetCom to update the towers data
+	 * @param base to get data from
+	 */
+	public void updateFromServer(Base base){
+		this.currenthealth = base.getCurrenthealth();
+		this.maxhealth = base.getMaxhealth();
+		this.lastAttackTime = base.getLastAttackTime();
+		this.attackCoolDown = base.getAttackCoolDown();
+		this.state = base.getState();
+		this.alive = base.isAlive();		
 		
-		if (currenthealth <= 0) {
-			state = EntityState.DEAD;
-			
-		} else if (atackablePlayers) { 
-			state = EntityState.ATTACKING;
-		} else {
-			state = EntityState.IDLE;			
-		}
 	}
-	
-	
-	
 
 }

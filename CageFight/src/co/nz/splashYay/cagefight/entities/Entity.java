@@ -5,6 +5,7 @@ import java.io.Serializable;
 import org.andengine.engine.handler.physics.PhysicsHandler;
 import org.andengine.entity.modifier.MoveModifier;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.util.math.MathUtils;
 
 import co.nz.splashYay.cagefight.EntityState;
 import co.nz.splashYay.cagefight.Team.ALL_TEAMS;
@@ -24,8 +25,8 @@ public class Entity implements Serializable{
 	protected int currenthealth;
 	protected int maxhealth;
 	protected int speed;	
-	private long lastAttackTime;	
-	private long attackCoolDown;
+	protected long lastAttackTime;	
+	protected long attackCoolDown;
 	
 	protected boolean alive;
 	
@@ -36,6 +37,14 @@ public class Entity implements Serializable{
 	private transient MoveModifier moveModifier;
 	private transient Body body;
 	protected ALL_TEAMS team;
+	
+	protected Entity lastEntityThatAttackedMe;
+	
+	protected Entity target;
+	protected int damage;
+
+
+	
 	
 	
 	
@@ -53,10 +62,27 @@ public class Entity implements Serializable{
 		this.id = id;
 		this.team = team;
 		
-		
+		lastEntityThatAttackedMe = null;
+		target = null;
+	
+		this.damage = 3;
 		this.state = EntityState.IDLE;
 		
 	}
+	
+	/**
+	 * 
+	 */
+	public void attackTarget() {
+		//cycle annimation
+		getSprite().setRotation(MathUtils.radToDeg((float) Math.atan2( ( getTarget().getXPos() - getXPos() ), -( getTarget().getYPos()- getYPos() ))));		
+		Entity target = getTarget();
+		target.damageEntity(this.getDamage());
+		target.setLastEntityThatAttackedMe(this);
+		
+	}
+	
+	
 	
 	public void damageEntity(int amount){
 		if (amount >= 0) {
@@ -307,9 +333,47 @@ public class Entity implements Serializable{
 	public void setTeam(ALL_TEAMS team) {
 		this.team = team;
 	}
+
+	public EntityState getState() {
+		return state;
+	}
+
+
+
+	public Entity getLastEntityThatAttackedMe() {
+		return lastEntityThatAttackedMe;
+	}
+
+
+
+	public void setLastEntityThatAttackedMe(Entity lastEntityThatAttackedMe) {
+		this.lastEntityThatAttackedMe = lastEntityThatAttackedMe;
+	}
 	
 	
 	
+	
+	
+	public Entity getTarget() {
+		return target;
+	}
+
+	public void setTarget(Entity target) {
+		this.target = target;
+	}
+	
+	public boolean hasTarget()
+	{
+		return target != null;
+	}
+	
+	public int getDamage() {
+		return damage;
+	}
+
+	public void setDamage(int damage) {
+		this.damage = damage;
+	}
 	
 
 

@@ -19,6 +19,7 @@ public class SoundManager {
 	private HashMap<MUSIC_TYPE, Music> musics;
 	private MUSIC_TYPE currentMusic;
 	private Sound[] attackSounds;
+	private Sound[] deathSounds;
 	
 	
 	
@@ -30,6 +31,7 @@ public class SoundManager {
 		
 		musics = new HashMap<SoundManager.MUSIC_TYPE, Music>();
 		attackSounds = new Sound[4];
+		deathSounds = new Sound[3];
 	}
 	
 	public enum MUSIC_TYPE {
@@ -46,6 +48,10 @@ public class SoundManager {
 			attackSounds[1] = SoundFactory.createSoundFromAsset(engine.getSoundManager(), activity, "mfx/attack2.mp3");
 			attackSounds[2] = SoundFactory.createSoundFromAsset(engine.getSoundManager(), activity, "mfx/attack3.mp3");
 			attackSounds[3] = SoundFactory.createSoundFromAsset(engine.getSoundManager(), activity, "mfx/attack4.mp3");
+			
+			deathSounds[0] = SoundFactory.createSoundFromAsset(engine.getSoundManager(), activity, "mfx/death1.mp3");
+			deathSounds[1] = SoundFactory.createSoundFromAsset(engine.getSoundManager(), activity, "mfx/death2.mp3");
+			deathSounds[2] = SoundFactory.createSoundFromAsset(engine.getSoundManager(), activity, "mfx/death3.mp3");
 			
 			
 			for (Music music : musics.values()) {
@@ -66,6 +72,11 @@ public class SoundManager {
 	public void playRandomAttackSound(){
 		int idx = new Random().nextInt(attackSounds.length);
 		attackSounds[idx].play();		
+	}
+	
+	public void playRandomDeathSound(){
+		int idx = new Random().nextInt(deathSounds.length);
+		deathSounds[idx].play();		
 	}
 	
 	public void setMusic(MUSIC_TYPE music) {

@@ -22,7 +22,7 @@ import co.nz.splashYay.cagefight.EntityState;
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.SceneManager;
 import co.nz.splashYay.cagefight.Team.ALL_TEAMS;
-import co.nz.splashYay.cagefight.entities.AIunit;
+import co.nz.splashYay.cagefight.entities.Creep;
 import co.nz.splashYay.cagefight.entities.Base;
 import co.nz.splashYay.cagefight.entities.Entity;
 import co.nz.splashYay.cagefight.entities.Player;
@@ -129,20 +129,42 @@ public class ServerGameScene extends GameScene {
 				proccessBase(base);
 			} else if (pairs.getValue() instanceof Tower) {
 				
-			} else if (pairs.getValue() instanceof AIunit) {
-				AIunit ai = (AIunit) pairs.getValue();
-				proccessAIunit(ai);
+			} else if (pairs.getValue() instanceof Creep) {
+				Creep ai = (Creep) pairs.getValue();
+				proccessCreep(ai);
 			}
 			
 		}
 	}
-	
-	private void proccessAIunit(AIunit ai) {
-		//ai.checkState();
-		
-		ai.setXPos(ai.getSprite().getX());
-		ai.setYPos(ai.getSprite().getY());
-		checkTileEffect(ai);
+
+	private void proccessCreep(Creep creep) {
+		creep.checkState();
+
+		creep.setXPos(creep.getSprite().getX());
+		creep.setYPos(creep.getSprite().getY());
+		checkTileEffect(creep);
+
+		switch (creep.getState()) {
+		case MOVING:
+
+			break;
+		case IDLE:
+
+			break;
+		case ATTACKING:
+
+			break;
+		case DEAD:
+			if (creep.isAlive()) {
+				creep.killCreep();
+				sceneManager.getSoundManager().playRandomDeathSound();
+			}	
+			
+			break;
+
+		default:
+			break;
+		}
 	}
 	
 	private void proccessBase(Base base) {
@@ -203,6 +225,7 @@ public class ServerGameScene extends GameScene {
 				//kill the player and check if when to respawn
 				if (player.isAlive()) {
 					player.killPlayer();
+					sceneManager.getSoundManager().playRandomDeathSound();
 				}	else {
 					if (player.getRespawnTime() <= System.currentTimeMillis()) {
 						player.respawn();
@@ -256,9 +279,9 @@ public class ServerGameScene extends GameScene {
 		
 		
 		for (int i = 0; i < 2; i++) {
-			AIunit unit1 = new AIunit(gameData.getUnusedID(), 10, 10, gameData.getTeam(ALL_TEAMS.GOOD).getSpawnXpos(), gameData.getTeam(ALL_TEAMS.GOOD).getSpawnYpos(), ALL_TEAMS.GOOD);
+			Creep unit1 = new Creep(gameData.getUnusedID(), 10, 10, gameData.getTeam(ALL_TEAMS.GOOD).getSpawnXpos(), gameData.getTeam(ALL_TEAMS.GOOD).getSpawnYpos(), ALL_TEAMS.GOOD);
 			addEntityToGameDataObj(unit1);	
-			AIunit unit2 = new AIunit(gameData.getUnusedID(), 10, 10, gameData.getTeam(ALL_TEAMS.EVIL).getSpawnXpos(), gameData.getTeam(ALL_TEAMS.EVIL).getSpawnYpos(), ALL_TEAMS.EVIL);
+			Creep unit2 = new Creep(gameData.getUnusedID(), 10, 10, gameData.getTeam(ALL_TEAMS.EVIL).getSpawnXpos(), gameData.getTeam(ALL_TEAMS.EVIL).getSpawnYpos(), ALL_TEAMS.EVIL);
 			addEntityToGameDataObj(unit2);
 		}
 		
@@ -330,8 +353,8 @@ public class ServerGameScene extends GameScene {
 				newTower.setBody(PhysicsFactory.createBoxBody(phyWorld, towerS, BodyType.StaticBody, baseFix));
 				this.attachChild(towerS);
 			
-			} else if (newEntity instanceof AIunit) {
-				AIunit newAIunit = (AIunit) newEntity;
+			} else if (newEntity instanceof Creep) {
+				Creep newAIunit = (Creep) newEntity;
 				gameData.addEntity(newAIunit);
 				Sprite tempS = new Sprite(newAIunit.getXPos(), newAIunit.getYPos(), AITextureRegion , this.engine.getVertexBufferObjectManager()) {
 					@Override

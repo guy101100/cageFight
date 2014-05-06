@@ -26,18 +26,18 @@ public class Player extends Entity implements Serializable{
 	//Player Stats
 	private int experience;
 	private int level;
-	private int damage;
+	
 	
 	private long respawnTime = 0;
 	
 	
-	private Entity target;
 	
 	
 	public Player(String name, int id, int maxhealth, int currenthealth, int xpos, int ypos, ALL_TEAMS teamId) {
 		super(xpos, ypos, maxhealth, currenthealth, id, teamId);
 		this.name = name;
 		this.level = 1;
+		
 		
 		
 	}
@@ -53,7 +53,7 @@ public class Player extends Entity implements Serializable{
 	 * Used by the ClientInNetCom to update the players data
 	 * @param player to get data from
 	 */
-	public void updatePlayerInfoFromOtherPlayerData(Player player){
+	public void updateFromServer(Player player){
 		this.experience = player.getExperience();
 		this.movementX = player.getMovementX();
 		this.movementY = player.getMovementY();
@@ -120,15 +120,7 @@ public class Player extends Entity implements Serializable{
 	///////////////////////////////////////////////////////////////////////
 	//                         sever only methods
 	///////////////////////////////////////////////////////////////////////
-	/**
-	 * 
-	 */
-	public void attackTarget() {
-		//cycle annimation
-		getSprite().setRotation(MathUtils.radToDeg((float) Math.atan2( ( getTarget().getXPos() - getXPos() ), -( getTarget().getYPos()- getYPos() ))));
-		getTarget().setCurrenthealth(getTarget().getCurrenthealth() - 1);
-		System.out.println("Player : " + this.getId() + " ATTACKED player : " + getTarget().getId() + " [" + getTarget().getCurrenthealth() + "]");
-	}
+	
 	
 	
 	
@@ -248,13 +240,7 @@ public class Player extends Entity implements Serializable{
 		this.level = level;
 	}
 	
-	public int getDamage() {
-		return damage;
-	}
-
-	public void setDamage(int damage) {
-		this.damage = damage;
-	}
+	
 
 	public EntityState getPlayerState() {
 		return state;
@@ -265,18 +251,6 @@ public class Player extends Entity implements Serializable{
 		this.state = state;
 	}
 	
-	public Entity getTarget() {
-		return target;
-	}
-
-	public void setTarget(Entity target) {
-		this.target = target;
-	}
-	
-	public boolean hasTarget()
-	{
-		return target != null;
-	}
 	
 	
 	/**

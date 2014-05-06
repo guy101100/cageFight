@@ -1,9 +1,11 @@
 package co.nz.splashYay.cagefight.entities;
 
+import java.security.acl.LastOwnerException;
+
 import co.nz.splashYay.cagefight.EntityState;
 import co.nz.splashYay.cagefight.Team.ALL_TEAMS;
 
-public class Tower extends Entity{
+public class Tower extends AIUnit{
 	private static final long serialVersionUID = 1L;
 	
 	
@@ -13,19 +15,20 @@ public class Tower extends Entity{
 		this.speed = 0;
 		
 	}
-	
-	
-	public void checkState(){
-		boolean atackablePlayers = false;
 		
-		if (currenthealth <= 0) {
-			state = EntityState.DEAD;
-			
-		} else if (atackablePlayers) { 
-			state = EntityState.ATTACKING;
-		} else {
-			state = EntityState.IDLE;			
-		}
+		
+	/**
+	 * Used by the ClientInNetCom to update the towers data
+	 * @param tower to get data from
+	 */
+	public void updateFromServer(Tower tower){
+		this.currenthealth = tower.getCurrenthealth();
+		this.maxhealth = tower.getMaxhealth();
+		this.lastAttackTime = tower.getLastAttackTime();
+		this.attackCoolDown = tower.getAttackCoolDown();
+		this.state = tower.getState();
+		this.alive = tower.isAlive();		
+		
 	}
 	
 	
