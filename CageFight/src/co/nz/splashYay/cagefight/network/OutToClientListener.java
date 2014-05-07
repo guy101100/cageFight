@@ -14,14 +14,16 @@ import co.nz.splashYay.cagefight.scenes.ServerGameScene;
 
 public class OutToClientListener extends Thread {
 	
-	private HashSet<OutToClientNetCom> clients;
+	
 	private GameData gameData;
 	private ServerGameScene serverScene;
-
+	private ClientUpdater clientUpdater;
+	
 	public OutToClientListener(GameData gameData, ServerGameScene serverScene) {
-		clients = new HashSet<OutToClientNetCom>();
+		
 		this.gameData = gameData;
 		this.serverScene = serverScene;
+		clientUpdater = new ClientUpdater(gameData, serverScene);
 
 	}
 
@@ -30,6 +32,7 @@ public class OutToClientListener extends Thread {
 		try {
 			System.out.println("Client OUT Listener Started");
 			ServerSocket welcomeSocket = new ServerSocket(6789);
+			clientUpdater.start();
 
 			while (true) {
 				Socket connectionSocket = welcomeSocket.accept(); //when information comes in through that socket accept it for processing
@@ -45,23 +48,13 @@ public class OutToClientListener extends Thread {
 		}
 	}
 
-	public void updateClients() {
-		//long start = System.currentTimeMillis();
-		for (OutToClientNetCom onc : clients) {
-			onc.updateClient();
-		}
-		//long fin = System.currentTimeMillis();
-		//System.out.println("time : " + (fin - start));
-	}
+	
 
 	public void removeClient(OutToClientNetCom netCom) {
-		clients.remove(netCom);
+		clientUpdater.removeClient(netCom);
 	}
 
 	public void addClient(OutToClientNetCom netCom) {
-		if (!clients.contains(netCom)) {
-			clients.add(netCom);
-		}
-
+		clientUpdater.addClient(netCom);
 	}
 }

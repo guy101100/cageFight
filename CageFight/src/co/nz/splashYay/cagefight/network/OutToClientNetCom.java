@@ -57,8 +57,12 @@ public class OutToClientNetCom extends Thread {
 
 	public void updateClient() {
 
-		try {			
-			outToClient.writeObject(gameData);
+		try {		
+			
+			GameData toSend = new GameData(gameData);
+			outToClient.writeObject(toSend);
+			
+			
 			outToClient.reset();
 			//System.out.println(" [" + System.currentTimeMillis() + "] Sent : data..... ??");
 		} catch (IOException ex) {

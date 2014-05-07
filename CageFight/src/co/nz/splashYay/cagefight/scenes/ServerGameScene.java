@@ -1,11 +1,13 @@
 package co.nz.splashYay.cagefight.scenes;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.handler.IUpdateHandler;
+import org.andengine.entity.modifier.SkewYModifier;
 import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.util.FPSLogger;
@@ -86,10 +88,12 @@ public class ServerGameScene extends GameScene {
 		this.registerUpdateHandler(new IUpdateHandler() {
 			@Override
 			public void onUpdate(float pSecondsElapsed) {
+				
 				processServerPlayerControls();
 				processEntityActions();
 				updateTargetMarker();
-				oTCL.updateClients();
+				
+				//oTCL.updateClients();
 				
 				updateValueBars();
 				
@@ -116,7 +120,12 @@ public class ServerGameScene extends GameScene {
 	}
 	
 	private void processEntityActions(){
-		Iterator it = gameData.getEntities().entrySet().iterator();
+		
+		
+		HashMap temp = (HashMap) gameData.getEntities().clone();
+		
+		Iterator it = temp.entrySet().iterator();
+		
 		while (it.hasNext()) {
 			Map.Entry pairs = (Map.Entry) it.next();
 			
@@ -135,6 +144,7 @@ public class ServerGameScene extends GameScene {
 			}
 			
 		}
+		
 	}
 
 	private void proccessCreep(Creep creep) {
@@ -291,6 +301,17 @@ public class ServerGameScene extends GameScene {
 	
 	
 	public void addEntityToGameDataObj(Entity newEntity) {
+		/*
+		boolean done = false;
+		do{
+			if(done){
+				
+			}
+		} while (!done) ;
+		
+		*/
+			
+			
 		if (newEntity != null) {
 			if (newEntity instanceof Player) {
 				Player newPlayer = (Player) newEntity;
@@ -374,12 +395,12 @@ public class ServerGameScene extends GameScene {
 
 			}
 				
-			
-
 		}
+		
 	}
 
-	
+		
+		
 	
 	
 	

@@ -56,7 +56,7 @@ public class Team implements Serializable {
 	}
 
 	public void updateFromOtherTeamData(Team updateFrom) {
-		this.id = updateFrom.getTeamId();
+		//this.id = updateFrom.getTeamId();
 	}
 	
 	

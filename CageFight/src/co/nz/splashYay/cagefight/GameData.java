@@ -18,6 +18,7 @@ public class GameData implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private HashMap<Integer, Entity> entities = new HashMap<Integer, Entity>();
+	
 	private ArrayList<Integer> IDs = new ArrayList<Integer>();
 	
 	
@@ -28,6 +29,13 @@ public class GameData implements Serializable{
 		goodTeam = new Team(1);
 		evilTeam = new Team(2);
 		
+	}
+	
+	public GameData(GameData gD) {
+		this.goodTeam = gD.getTeam(ALL_TEAMS.GOOD);
+		this.goodTeam = gD.getTeam(ALL_TEAMS.EVIL);
+		this.entities = (HashMap<Integer, Entity>) gD.getEntities().clone();
+		this.IDs = (ArrayList<Integer>) gD.getIDs().clone();
 	}
 	
 	
@@ -101,6 +109,12 @@ public class GameData implements Serializable{
 	public void setEvilTeam(Team team2) {
 		this.evilTeam = team2;
 	}
+
+	public ArrayList<Integer> getIDs() {
+		return IDs;
+	}
+	
+	
 	
 	
 	
