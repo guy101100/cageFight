@@ -1,6 +1,11 @@
 package co.nz.splashYay.cagefight.scenes;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 
 import org.andengine.audio.music.Music;
 import org.andengine.audio.music.MusicFactory;
@@ -42,7 +47,9 @@ import org.andengine.util.debug.Debug;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
+import android.content.Context;
 import android.opengl.GLES20;
+import android.os.Environment;
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.PlayerControlCommands;
 import co.nz.splashYay.cagefight.ValueBar;
@@ -208,7 +215,22 @@ public abstract class GameScene extends Scene {
 
 			@Override
 			public void onControlClick(final AnalogOnScreenControl pAnalogOnScreenControl) {
-				System.out.println("Player Coords : " + player.getXPos() + " " + player.getYPos());
+				
+				
+			    
+				
+		        try {
+		        	ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(new File(Environment.getExternalStorageDirectory(), "/data.dat") ));
+					os.writeObject(gameData);
+					os.close();
+			        System.out.println("Sucess");
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		        
+		        
+		        
 			} 
 		});
 
