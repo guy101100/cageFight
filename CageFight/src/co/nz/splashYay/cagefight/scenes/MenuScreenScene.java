@@ -129,8 +129,8 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 	    
 	    
 	    
-	    ipText.setText("192.168.0.96");
-	    ipAddress = "192.168.0.96";
+	    ipText.setText("192.168.43.1");
+	    ipAddress = "192.168.43.1";
 	    
 	    joinMenu.setOnMenuItemClickListener(this);
 	    	    

@@ -2,63 +2,31 @@ package co.nz.splashYay.cagefight.scenes;
 
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
-import org.andengine.engine.camera.hud.HUD;
-import org.andengine.engine.camera.hud.controls.AnalogOnScreenControl;
-import org.andengine.engine.camera.hud.controls.AnalogOnScreenControl.IAnalogOnScreenControlListener;
-import org.andengine.engine.camera.hud.controls.BaseOnScreenControl;
 import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.engine.handler.physics.PhysicsHandler;
-import org.andengine.engine.handler.timer.ITimerCallback;
-import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.modifier.MoveModifier;
-import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.background.Background;
-import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
-import org.andengine.entity.text.Text;
-import org.andengine.entity.text.TextOptions;
 import org.andengine.entity.util.FPSLogger;
 import org.andengine.extension.physics.box2d.FixedStepPhysicsWorld;
-import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.input.touch.TouchEvent;
-import org.andengine.opengl.font.Font;
-import org.andengine.opengl.font.FontFactory;
-import org.andengine.opengl.texture.TextureOptions;
-import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
-import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
-import org.andengine.opengl.texture.region.ITextureRegion;
-import org.andengine.opengl.texture.region.TextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
-import org.andengine.util.HorizontalAlign;
-import org.andengine.util.color.Color;
-import org.andengine.util.math.MathUtils;
 
-import android.graphics.Typeface;
-import android.opengl.GLES20;
 import co.nz.splashYay.cagefight.GameData;
-import co.nz.splashYay.cagefight.PlayerControlCommands;
-import co.nz.splashYay.cagefight.EntityState;
 import co.nz.splashYay.cagefight.SceneManager;
-import co.nz.splashYay.cagefight.ValueBar;
-import co.nz.splashYay.cagefight.entities.Creep;
 import co.nz.splashYay.cagefight.entities.Base;
+import co.nz.splashYay.cagefight.entities.Creep;
 import co.nz.splashYay.cagefight.entities.Entity;
 import co.nz.splashYay.cagefight.entities.Player;
 import co.nz.splashYay.cagefight.entities.Tower;
-import co.nz.splashYay.cagefight.network.ClientInNetCom;
 import co.nz.splashYay.cagefight.network.ClientOutNetCom;
 import co.nz.splashYay.cagefight.network.UDPReciver;
-import co.nz.splashYay.cagefight.network.UDPServer;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
 public class ClientGameScene extends GameScene {
 

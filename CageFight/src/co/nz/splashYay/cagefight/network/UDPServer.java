@@ -53,9 +53,9 @@ public class UDPServer extends Thread {
 				for (Object clientObj : clients.toArray().clone()) {
 					Client client = (Client) clientObj;
 					
-					bStream = new ByteArrayOutputStream();
-					oo = new ObjectOutputStream(bStream);
 					gameData.setSendTime(System.currentTimeMillis());
+					bStream = new ByteArrayOutputStream();
+					oo = new ObjectOutputStream(bStream);					
 					oo.writeObject(gameData);
 
 					outObj = bStream.toByteArray();

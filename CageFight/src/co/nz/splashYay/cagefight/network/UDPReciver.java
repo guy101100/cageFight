@@ -54,8 +54,7 @@ public class UDPReciver extends Thread {
 
 			inBuf = new byte[4096];
 
-			while (true) {
-				System.out.println("Started");
+			while (true) {				
 				inPacket = new DatagramPacket(inBuf, inBuf.length);
 				socket.receive(inPacket);
 				processPacket(inPacket);
@@ -77,10 +76,11 @@ public class UDPReciver extends Thread {
 	    	baos.close();
 	    	oos.close();
 	    	
-	    	System.out.println("[" + System.currentTimeMillis() + "] recieved data");
+	    	
 	    	
 	    	if (gameDataIn.getSendTime() > gameData.getSendTime()) { // if new send time is greater than gameDatas send time, the the data is new, if not data is old and should be ignored.
-	    		
+	    		System.out.println("[" + System.currentTimeMillis() + "] recieved data");
+	    		gameData.setSendTime(gameDataIn.getSendTime());
 	    		gameData.getTeam(ALL_TEAMS.GOOD).updateFromOtherTeamData(gameDataIn.getTeam(ALL_TEAMS.GOOD));
 				gameData.getTeam(ALL_TEAMS.EVIL).updateFromOtherTeamData(gameDataIn.getTeam(ALL_TEAMS.EVIL));
 				
@@ -113,6 +113,8 @@ public class UDPReciver extends Thread {
 				    	
 				    }
 				}
+	    	} else {
+	    		System.out.println("Recieved old data");
 	    	}
 			
 	    	

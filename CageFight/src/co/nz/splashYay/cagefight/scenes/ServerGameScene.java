@@ -7,7 +7,6 @@ import java.util.Map;
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.handler.IUpdateHandler;
-import org.andengine.entity.modifier.SkewYModifier;
 import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.util.FPSLogger;
@@ -24,14 +23,13 @@ import co.nz.splashYay.cagefight.EntityState;
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.SceneManager;
 import co.nz.splashYay.cagefight.Team.ALL_TEAMS;
-import co.nz.splashYay.cagefight.entities.Creep;
 import co.nz.splashYay.cagefight.entities.Base;
+import co.nz.splashYay.cagefight.entities.Creep;
 import co.nz.splashYay.cagefight.entities.Entity;
 import co.nz.splashYay.cagefight.entities.Player;
 import co.nz.splashYay.cagefight.entities.Tower;
 import co.nz.splashYay.cagefight.network.Client;
 import co.nz.splashYay.cagefight.network.InFromClientListener;
-import co.nz.splashYay.cagefight.network.OutToClientListener;
 import co.nz.splashYay.cagefight.network.ServerCheckListener;
 import co.nz.splashYay.cagefight.network.UDPServer;
 
@@ -49,6 +47,8 @@ public class ServerGameScene extends GameScene {
 	//private OutToClientListener oTCL;
 	private ServerCheckListener sCL;
 	UDPServer udp;
+	
+	private int bugCounterTileIsNull = 0;
 	
 	
 
@@ -256,24 +256,30 @@ public class ServerGameScene extends GameScene {
 		final TMXTile tmxTile = mTMXTiledMap.getTMXLayers().get(12).getTMXTileAt(entity.getXPos(), entity.getYPos());
 		
 		if (tmxTile != null && tmxTile.getGlobalTileID() != 0) {
-			
-			if (tmxTile.getTMXTileProperties(mTMXTiledMap).containsTMXProperty("badHeal", "true")) {
-				if (entity.getTeam() == ALL_TEAMS.EVIL) {
-					entity.healEntity(1);
-				} else {
-					entity.setSpeed(2);
-					//damage the player
-				}
+			try {
+				if (tmxTile.getTMXTileProperties(mTMXTiledMap).containsTMXProperty("badHeal", "true")) {
+					if (entity.getTeam() == ALL_TEAMS.EVIL) {
+						entity.healEntity(1);
+					} else {
+						entity.setSpeed(2);
+						//damage the player
+					}
+					
+					
+				} else if (tmxTile.getTMXTileProperties(mTMXTiledMap).containsTMXProperty("goodHeal", "true")) {
+					if (entity.getTeam() == ALL_TEAMS.GOOD) {
+						entity.healEntity(1);
+					} else {
+						entity.setSpeed(2);
+						//damage the player
+					}
+				} 
+			} catch (NullPointerException np) {
 				
+				bugCounterTileIsNull++;
+				System.err.println("Null pointer on the tile again : " + bugCounterTileIsNull + " Times");
 				
-			} else if (tmxTile.getTMXTileProperties(mTMXTiledMap).containsTMXProperty("goodHeal", "true")) {
-				if (entity.getTeam() == ALL_TEAMS.GOOD) {
-					entity.healEntity(1);
-				} else {
-					entity.setSpeed(2);
-					//damage the player
-				}
-			} 
+			}
 			
 			
 		} else { // is not on an effecting tile, reverse any effects on the player
