@@ -72,9 +72,8 @@ public class InFromClientNetCom extends Thread {
 
 		} catch (IOException ex) {
 			closeThisConnection();
-			System.out.println(ex);
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
+			System.err.println(ex);
+		} catch (ClassNotFoundException e) {			
 			e.printStackTrace();
 		}
 	}
@@ -84,7 +83,7 @@ public class InFromClientNetCom extends Thread {
 			welcomeSocket.close();
 			this.interrupt();
 		} catch (IOException ex1) {
-			Logger.getLogger(InFromClientNetCom.class.getName()).log(Level.SEVERE, null, ex1);
+			System.err.println(ex1);
 		}
 	}
 }
