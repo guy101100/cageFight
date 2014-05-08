@@ -81,8 +81,8 @@ public class Player extends Entity implements Serializable{
 					if (currentClose == null)
 						currentClose = p;
 					else {
-						double distanceToPlayerCurrent = Math.pow((currentClose.getXPos() - this.getXPos()), 2) + Math.pow((currentClose.getYPos() - this.getYPos()), 2);
-						double distanceToPlayerNext = Math.pow((p.getXPos() - this.getXPos()), 2) + Math.pow((p.getYPos() - this.getYPos()), 2);
+						double distanceToPlayerCurrent = Math.pow((currentClose.getCenterXpos() - this.getCenterXpos()), 2) + Math.pow((currentClose.getCenterYpos() - this.getCenterYpos()), 2);
+						double distanceToPlayerNext = Math.pow((p.getCenterXpos() - this.getCenterXpos()), 2) + Math.pow((p.getCenterYpos() - this.getCenterYpos()), 2);
 
 						if (distanceToPlayerNext < distanceToPlayerCurrent)
 							currentClose = p;
@@ -103,8 +103,8 @@ public class Player extends Entity implements Serializable{
 					if (currentClose == null)
 						currentClose = e;
 					else {
-						double distanceToPlayerCurrent = Math.pow((currentClose.getXPos() - this.getXPos()), 2) + Math.pow((currentClose.getYPos() - this.getYPos()), 2);
-						double distanceToPlayerNext = Math.pow((e.getXPos() - this.getXPos()), 2) + Math.pow((e.getYPos() - this.getYPos()), 2);
+						double distanceToPlayerCurrent = Math.pow((currentClose.getCenterXpos() - this.getCenterXpos()), 2) + Math.pow((currentClose.getCenterYpos() - this.getCenterYpos()), 2);
+						double distanceToPlayerNext = Math.pow((e.getCenterXpos() - this.getCenterXpos()), 2) + Math.pow((e.getCenterYpos() - this.getCenterYpos()), 2);
 
 						if (distanceToPlayerNext < distanceToPlayerCurrent)
 							currentClose = e;

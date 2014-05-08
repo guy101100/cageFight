@@ -132,7 +132,7 @@ public class ClientGameScene extends GameScene {
 		float moveTime = 0.125f; // time in seconds it takes to move to actual position
 
 		if (player.getSprite().getEntityModifierCount() == 0) { // if there is no move modifier add one
-			MoveModifier moveModifier = new MoveModifier(moveTime, player.getSprite().getX(), player.getXPos(), player.getSprite().getY(), player.getYPos());
+			MoveModifier moveModifier = new MoveModifier(moveTime, player.getSprite().getX(), player.getXPos() , player.getSprite().getY(), player.getYPos()   );
 			player.setMoveModifier(moveModifier);
 			player.getSprite().registerEntityModifier(moveModifier);
 		} else {
