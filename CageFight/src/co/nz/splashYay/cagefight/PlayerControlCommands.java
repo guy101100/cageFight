@@ -1,6 +1,7 @@
 package co.nz.splashYay.cagefight;
 
 import java.io.Serializable;
+import java.net.InetAddress;
 
 public class PlayerControlCommands implements Serializable {
 
@@ -17,6 +18,9 @@ public class PlayerControlCommands implements Serializable {
 	private float clientPosX;
 	private float clientPosY;
 	
+	private InetAddress inetAddr;
+	private int port;
+	
 	
 	public PlayerControlCommands(){
 		movementX =0;
@@ -26,6 +30,41 @@ public class PlayerControlCommands implements Serializable {
 		attackCommand = false;
 		
 	}
+	
+	
+	
+
+
+	public InetAddress getInetAddr() {
+		return inetAddr;
+	}
+
+
+
+
+
+	public void setInetAddr(InetAddress inetAddr) {
+		this.inetAddr = inetAddr;
+	}
+
+
+
+
+
+	public int getPort() {
+		return port;
+	}
+
+
+
+
+
+	public void setPort(int port) {
+		this.port = port;
+	}
+
+
+
 
 
 	public float getMovementX() {

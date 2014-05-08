@@ -39,13 +39,14 @@ public class ClientOutNetCom extends Thread{
 			Player player = (Player) inFromServer.readUnshared();
 			sceneManager.setPlayer(player);
 			sceneManager.setGameStarted(true);
+			
 			outToServer.reset();
 						
 
 		} catch (UnknownHostException ex) {
 			System.out.println("Unknown Host");
 		} catch (IOException ex) {
-			System.out.println("IO Error");
+			System.out.println("ex");
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -55,6 +56,7 @@ public class ClientOutNetCom extends Thread{
 	
 	public void sendToServer(PlayerControlCommands cmds){
 		if (sceneManager.isGameStarted()) {
+			
 			try {
 				outToServer.flush();
 				outToServer.writeObject(cmds);

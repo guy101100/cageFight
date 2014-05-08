@@ -10,9 +10,9 @@ import java.util.logging.Logger;
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.PlayerControlCommands;
 import co.nz.splashYay.cagefight.Team.ALL_TEAMS;
+import co.nz.splashYay.cagefight.entities.Entity;
 import co.nz.splashYay.cagefight.entities.Player;
 import co.nz.splashYay.cagefight.scenes.ServerGameScene;
-
 
 public class InFromClientNetCom extends Thread {
 
@@ -25,13 +25,15 @@ public class InFromClientNetCom extends Thread {
 	private GameData gameData;
 	private ServerGameScene serverScene;
 
+	private boolean clientAddedToSendList;
+
 	public InFromClientNetCom(Socket socket, InFromClientListener iFCL, GameData gameData, ServerGameScene serverScene) {
 		welcomeSocket = socket;
 		System.out.println("infromclientstarted");
 		this.iFCL = iFCL;
 		this.gameData = gameData;
 		this.serverScene = serverScene;
-
+		
 	}
 
 	/*
@@ -44,26 +46,24 @@ public class InFromClientNetCom extends Thread {
 			inFromClient = new ObjectInputStream(welcomeSocket.getInputStream());
 			outToClient = new ObjectOutputStream(welcomeSocket.getOutputStream());
 			welcomeSocket.setTcpNoDelay(true);
-			
+
 			Player newPlayer = new Player("", gameData.getUnusedID(), 100, 1, gameData.getTeam(ALL_TEAMS.EVIL).getSpawnXpos(), gameData.getTeam(ALL_TEAMS.EVIL).getSpawnXpos(), ALL_TEAMS.GOOD);
 			this.player = newPlayer; //the player this is connection is to
 			serverScene.addEntityToGameDataObj(newPlayer);
 			outToClient.writeObject(newPlayer);
-			
-			
+			serverScene.addClient(new Client(welcomeSocket.getInetAddress(), 6790));
+
 			while (!interrupted()) {
 
 				Object obj = inFromClient.readUnshared();
 				if (obj instanceof PlayerControlCommands) {
 					PlayerControlCommands receivedCommands = (PlayerControlCommands) obj;
-					Player tempPlayer = (Player)gameData.getEntityWithId(player.getId());
+					Player tempPlayer = (Player) gameData.getEntityWithId(player.getId());
 					tempPlayer.setMovementX(receivedCommands.getMovementX());
 					tempPlayer.setMovementY(receivedCommands.getMovementY());
 					tempPlayer.setAttackCommand(receivedCommands.isAttackCommand());
-					tempPlayer.setTarget((Player)gameData.getEntityWithId(receivedCommands.getTargetID()));
-					
-					
-					//System.out.println(" [" + System.currentTimeMillis() + "] Player : " + player.getId() + " " + recieved.getMovementX() + " " + recieved.getMovementY() + " " + recieved.getDirection());
+					tempPlayer.setTarget((Entity) gameData.getEntityWithId(receivedCommands.getTargetID()));
+
 				} else {
 					System.err.println("error reciveving");
 				}
@@ -72,6 +72,7 @@ public class InFromClientNetCom extends Thread {
 
 		} catch (IOException ex) {
 			closeThisConnection();
+			System.out.println(ex);
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

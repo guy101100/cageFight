@@ -347,6 +347,11 @@ public abstract class GameScene extends Scene {
 		this.detachChildren();
 	}
 
+	public PlayerControlCommands getPlayerCommands() {
+		return playerCommands;
+	}
+
+	
 	
 	
 	

@@ -20,7 +20,7 @@ public class GameData implements Serializable{
 	private HashMap<Integer, Entity> entities = new HashMap<Integer, Entity>();
 	
 	private ArrayList<Integer> IDs = new ArrayList<Integer>();
-	
+	private long sendTime;
 	
 	private Team goodTeam;
 	private Team evilTeam;
@@ -112,6 +112,14 @@ public class GameData implements Serializable{
 
 	public ArrayList<Integer> getIDs() {
 		return IDs;
+	}
+
+	public long getSendTime() {
+		return sendTime;
+	}
+
+	public void setSendTime(long sendTime) {
+		this.sendTime = sendTime;
 	}
 	
 	

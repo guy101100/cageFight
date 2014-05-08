@@ -29,9 +29,11 @@ import co.nz.splashYay.cagefight.entities.Base;
 import co.nz.splashYay.cagefight.entities.Entity;
 import co.nz.splashYay.cagefight.entities.Player;
 import co.nz.splashYay.cagefight.entities.Tower;
+import co.nz.splashYay.cagefight.network.Client;
 import co.nz.splashYay.cagefight.network.InFromClientListener;
 import co.nz.splashYay.cagefight.network.OutToClientListener;
 import co.nz.splashYay.cagefight.network.ServerCheckListener;
+import co.nz.splashYay.cagefight.network.UDPServer;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -44,8 +46,9 @@ public class ServerGameScene extends GameScene {
 	// networking
 	private SceneManager sceneManager;	
 	private InFromClientListener iFCL;
-	private OutToClientListener oTCL;
+	//private OutToClientListener oTCL;
 	private ServerCheckListener sCL;
+	UDPServer udp;
 	
 	
 
@@ -75,11 +78,13 @@ public class ServerGameScene extends GameScene {
 		setUpBasesTowersAndAIunits();
 
 		iFCL = new InFromClientListener(gameData, this);
-		oTCL = new OutToClientListener(gameData, this);
+		//oTCL = new OutToClientListener(gameData, this);
 		sCL = new ServerCheckListener();
+		udp = new UDPServer(gameData);
 		iFCL.start();
-		oTCL.start();
+		//oTCL.start();
 		sCL.start();
+		udp.start();
 		
 		player = new Player("", gameData.getUnusedID(), 100, 1, gameData.getTeam(ALL_TEAMS.EVIL).getSpawnXpos(), gameData.getTeam(ALL_TEAMS.EVIL).getSpawnYpos(), ALL_TEAMS.EVIL);
 		addEntityToGameDataObj(player);
@@ -397,6 +402,12 @@ public class ServerGameScene extends GameScene {
 				
 		}
 		
+	}
+
+
+
+	public void addClient(Client client) {
+		udp.addClient(client);		
 	}
 
 		

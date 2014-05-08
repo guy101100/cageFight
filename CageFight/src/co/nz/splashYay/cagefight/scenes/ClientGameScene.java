@@ -53,6 +53,8 @@ import co.nz.splashYay.cagefight.entities.Player;
 import co.nz.splashYay.cagefight.entities.Tower;
 import co.nz.splashYay.cagefight.network.ClientInNetCom;
 import co.nz.splashYay.cagefight.network.ClientOutNetCom;
+import co.nz.splashYay.cagefight.network.UDPReciver;
+import co.nz.splashYay.cagefight.network.UDPServer;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -63,8 +65,9 @@ public class ClientGameScene extends GameScene {
 	// networking
 	private SceneManager sceneManager;
 	private ClientOutNetCom oNC;
-	private ClientInNetCom iNC;
+	//private ClientInNetCom iNC;
 	private String ipAddress;
+	UDPReciver udpr;
 	
 	
 	
@@ -87,7 +90,8 @@ public class ClientGameScene extends GameScene {
 		this.engine.registerUpdateHandler(new FPSLogger());
 
 		oNC = new ClientOutNetCom(ipAddress, sceneManager);
-		iNC = new ClientInNetCom(ipAddress, gameData, this);
+		//iNC = new ClientInNetCom(ipAddress, gameData, this);
+		udpr = new UDPReciver(this, ipAddress, gameData);
 
 		this.setBackground(new Background(0, 125, 58));
 		this.phyWorld = new FixedStepPhysicsWorld(30, 30, new Vector2(0, 0), false); // Gravity! //sensorManager.Gavity_earth
@@ -99,14 +103,14 @@ public class ClientGameScene extends GameScene {
 
 		// start networking threads
 		oNC.start();
-		iNC.start();
+		//iNC.start();
+		udpr.start();
 
 		// game loop
 		this.registerUpdateHandler(new IUpdateHandler() {
 			@Override
 			public void onUpdate(float pSecondsElapsed) {
-				if (sceneManager.isGameStarted() &&
-					gameData.getEntityWithId(player.getId()) != null) {					
+				if (sceneManager.isGameStarted() &&	gameData.getEntityWithId(player.getId()) != null) {					
 					processEntities();
 					updateTargetMarker();
 					oNC.sendToServer(playerCommands);

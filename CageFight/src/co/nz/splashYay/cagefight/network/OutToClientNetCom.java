@@ -64,7 +64,7 @@ public class OutToClientNetCom extends Thread {
 			
 			
 			outToClient.reset();
-			//System.out.println(" [" + System.currentTimeMillis() + "] Sent : data..... ??");
+			//System.out.println(" [" + System.currentTimeMillis() + "] Sent : data.");
 		} catch (IOException ex) {
 			oTCL.removeClient(this);
 			try {
