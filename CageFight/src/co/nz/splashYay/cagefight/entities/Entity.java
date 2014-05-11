@@ -100,19 +100,26 @@ public class Entity implements Serializable{
 			}
 		}
 	}
+	
+	
+	public float getCenterXpos(){
+		return (xpos - (getSprite().getWidth()/2));
+	}
+	
+	public float getCenterYpos(){
+		return (ypos - (getSprite().getHeight()/2));
+	}
 
 	/**
 	 * gets the x position
 	 * @return x position
 	 */
 	public float getXPos() {
-		if (sprite == null) {
-			return xpos;
-		} else {
-			return xpos + (sprite.getWidth()/2);
-		}
+		return xpos;
 		
 	}
+	
+	
 	
 	/**
 	 * sets the x position
@@ -127,11 +134,7 @@ public class Entity implements Serializable{
 	 * @return
 	 */
 	public float getYPos() {
-		if (sprite == null) {
-			return ypos;
-		} else {
-			return ypos + (sprite.getHeight()/2);
-		}
+		return ypos;
 	}
 	
 	/**

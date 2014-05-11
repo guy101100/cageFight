@@ -219,7 +219,7 @@ public class ServerGameScene extends GameScene {
 			if (player.getPlayerState() == EntityState.ATTACKING) {
 				if (player.getTarget() != null && System.currentTimeMillis() >= (player.getLastAttackTime() + player.getAttackCoolDown())  ) {
 					
-					double distanceSqr = Math.pow((player.getTarget().getXPos() - player.getXPos()), 2) + Math.pow((player.getTarget().getYPos() - player.getYPos()), 2);
+					double distanceSqr = Math.pow((player.getTarget().getCenterXpos() - player.getCenterXpos()), 2) + Math.pow((player.getTarget().getCenterYpos() - player.getCenterYpos()), 2);
 					double distance = Math.sqrt(distanceSqr);
 					
 					if(distance < 150)
@@ -253,7 +253,7 @@ public class ServerGameScene extends GameScene {
 	}
 	
 	private void checkTileEffect(Entity entity) {
-		final TMXTile tmxTile = mTMXTiledMap.getTMXLayers().get(12).getTMXTileAt(entity.getXPos(), entity.getYPos());
+		final TMXTile tmxTile = mTMXTiledMap.getTMXLayers().get(12).getTMXTileAt(entity.getCenterXpos(), entity.getCenterYpos());
 		
 		if (tmxTile != null && tmxTile.getGlobalTileID() != 0) {
 			try {
