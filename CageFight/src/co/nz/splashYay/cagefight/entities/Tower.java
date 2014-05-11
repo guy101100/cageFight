@@ -3,6 +3,7 @@ package co.nz.splashYay.cagefight.entities;
 import java.security.acl.LastOwnerException;
 
 import co.nz.splashYay.cagefight.EntityState;
+import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.Team.ALL_TEAMS;
 
 public class Tower extends AIUnit{
@@ -10,8 +11,8 @@ public class Tower extends AIUnit{
 	
 	
 	
-	public Tower(int xpos, int ypos, int maxhealth, int currenthealth, int id, ALL_TEAMS teamId) {
-		super(xpos, ypos, maxhealth, currenthealth, id, teamId);
+	public Tower(int xpos, int ypos, int maxhealth, int currenthealth, int id, ALL_TEAMS teamId, GameData gd) {
+		super(xpos, ypos, maxhealth, currenthealth, id, teamId, gd);
 		this.speed = 0;
 		
 	}

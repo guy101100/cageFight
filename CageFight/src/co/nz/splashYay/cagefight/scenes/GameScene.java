@@ -264,7 +264,7 @@ public abstract class GameScene extends Scene {
 	            {
 	                attack.setColor(Color.RED);
 	                
-	                Entity target = player.targetNearestEntity(gameData);
+	                Entity target = player.targetNearestEnemyEntity(gameData);
 	                
 	                if(target != null)
 	                {

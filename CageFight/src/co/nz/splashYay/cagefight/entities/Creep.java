@@ -1,5 +1,6 @@
 package co.nz.splashYay.cagefight.entities;
 
+import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.Team.ALL_TEAMS;
 
 public class Creep extends AIUnit {
@@ -10,8 +11,8 @@ public class Creep extends AIUnit {
 	
 	
 	
-	public Creep(int id, int maxhealth, int currenthealth, int xpos, int ypos, ALL_TEAMS teamId) {
-		super(xpos, ypos, maxhealth, currenthealth, id, teamId);
+	public Creep(int id, int maxhealth, int currenthealth, int xpos, int ypos, ALL_TEAMS teamId, GameData gd) {
+		super(xpos, ypos, maxhealth, currenthealth, id, teamId, gd);
 		
 		
 	}

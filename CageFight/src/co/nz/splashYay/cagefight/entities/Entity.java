@@ -8,6 +8,7 @@ import org.andengine.entity.sprite.Sprite;
 import org.andengine.util.math.MathUtils;
 
 import co.nz.splashYay.cagefight.EntityState;
+import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.Team.ALL_TEAMS;
 
 import com.badlogic.gdx.physics.box2d.Body;
@@ -68,6 +69,29 @@ public class Entity implements Serializable{
 		this.damage = 3;
 		this.state = EntityState.IDLE;
 		
+	}
+	
+	public Entity targetNearestEnemyEntity(GameData gd) {
+		Entity currentClose = null;
+
+		for (Entity e : gd.getEntities().values()) {
+			
+			if (e.isAlive()) {
+				if (e.getId() != this.id && e.getTeam() != this.team) {
+					if (currentClose == null)
+						currentClose = e;
+					else {
+						double distanceToPlayerCurrent = Math.pow((currentClose.getCenterXpos() - this.getCenterXpos()), 2) + Math.pow((currentClose.getCenterYpos() - this.getCenterYpos()), 2);
+						double distanceToPlayerNext = Math.pow((e.getCenterXpos() - this.getCenterXpos()), 2) + Math.pow((e.getCenterYpos() - this.getCenterYpos()), 2);
+
+						if (distanceToPlayerNext < distanceToPlayerCurrent)
+							currentClose = e;
+					}
+				}
+			}
+		}
+
+		return currentClose;
 	}
 	
 	/**
