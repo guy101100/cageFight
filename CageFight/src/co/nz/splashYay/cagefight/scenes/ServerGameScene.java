@@ -172,10 +172,7 @@ public class ServerGameScene extends GameScene {
 			float x = creep.getXdirectionToTarget();
 			float y = creep.getYdirectionToTarget();
 			
-			
-			
-			
-			final Vector2 velocity = Vector2Pool.obtain((x / 20 )%15, (y /20)%15);
+			final Vector2 velocity = Vector2Pool.obtain(creep.distanceToMoveWithAngle(creep.GetAngleOfLineBetweenTwoPoints(), creep.getSpeed()));
 
 			creepBody.setLinearVelocity(velocity);
 			Vector2Pool.recycle(velocity);

@@ -14,7 +14,7 @@ public class Creep extends AIUnit {
 	
 	public Creep(int id, int maxhealth, int currenthealth, int xpos, int ypos, ALL_TEAMS teamId) {
 		super(xpos, ypos, maxhealth, currenthealth, id, teamId);
-		setSpeed(1);
+		setSpeed(5);
 		
 	}
 	

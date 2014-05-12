@@ -1,6 +1,9 @@
 package co.nz.splashYay.cagefight.entities;
 
+import org.andengine.extension.physics.box2d.util.Vector2Pool;
 import org.andengine.util.math.MathUtils;
+
+import com.badlogic.gdx.math.Vector2;
 
 import co.nz.splashYay.cagefight.EntityState;
 import co.nz.splashYay.cagefight.GameData;
@@ -38,6 +41,50 @@ public abstract class AIUnit extends Entity{
 		return getTarget().getCenterYpos() - this.getCenterYpos();
 	}
 	
+	//
+	public double GetAngleOfLineBetweenTwoPoints() {
+        float xDiff = getTarget().getCenterXpos() - getCenterXpos();
+        float yDiff = getTarget().getCenterYpos() - getCenterYpos();
+        return Math.toDegrees(Math.atan2(xDiff, -yDiff));
+    }
+    public double LengthBetweenTwoPoints() {
+        float s1 = getTarget().getCenterXpos() - getCenterXpos();
+        float s2 = getTarget().getCenterYpos() - getCenterYpos();
+        return Math.sqrt(s1 * s1 + s2 * s2);
+    }
+	
+    
+    public Vector2 distanceToMoveWithAngle(double angle, int distance) {
+        int xDir = 0;
+        int yDir = 0;
+        angle = Math.toRadians(angle);
+        xDir = (int) (Math.sin(angle) * distance);
+        yDir = (int) (Math.cos(angle) * distance);
+        Vector2 direction = Vector2Pool.obtain(xDir, -yDir);
+        System.out.println(xDir + " " + -yDir);
+        return direction;
+    }
+    
+    /*
+    public static void main(String[] args) {
+        Vector enemy = new Vector(0, 0);
+        Vector player = new Vector(100, 100);
+        int minAttackingDistance = 50;
+        int aggroDistance = 2000;
+        int enemySpeed = 100;
+        
+        
+        double lengthFromEnemyToPlayer = LengthBetweenTwoPoints(enemy, player);
+        if (lengthFromEnemyToPlayer > minAttackingDistance && lengthFromEnemyToPlayer < aggroDistance) {
+            Vector distanceToMove = distanceToMoveWithAngle(enemy, GetAngleOfLineBetweenTwoPoints(enemy, player), enemySpeed);
+            System.out.println(distanceToMove.getX() + " " + distanceToMove.getY());
+        }
+    }
+    */
+    
+    
+    
+    //
 	public float getDirectionToTarget(){
 		if (hasTarget()) {
 			float x = getTarget().getCenterXpos() - this.getCenterXpos();
