@@ -203,7 +203,7 @@ public abstract class GameScene extends Scene {
 			@Override
 			public void onControlChange(final BaseOnScreenControl pBaseOnScreenControl, final float pValueX, final float pValueY) {
 
-				
+				//System.out.println(pValueX + " " + pValueY);
 				
 				playerCommands.setMovementX(pValueX);
 				playerCommands.setMovementY(pValueY);				
@@ -264,7 +264,7 @@ public abstract class GameScene extends Scene {
 	            {
 	                attack.setColor(Color.RED);
 	                
-	                Entity target = player.targetNearestEnemyEntity(gameData);
+	                Entity target = player.getNearestEnemyEntity(gameData);
 	                
 	                if(target != null)
 	                {

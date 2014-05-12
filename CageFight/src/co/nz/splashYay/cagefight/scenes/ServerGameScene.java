@@ -39,8 +39,6 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
 public class ServerGameScene extends GameScene {
-	
-
 	// networking
 	private SceneManager sceneManager;	
 	private InFromClientListener iFCL;
@@ -154,6 +152,11 @@ public class ServerGameScene extends GameScene {
 
 	private void proccessCreep(Creep creep) {
 		creep.checkState();
+		
+		creep.checkAndUpdateObjective(gameData);
+		
+		creep.getSprite().setRotation(creep.getDirectionToTarget());
+		creep.setDirection(creep.getDirectionToTarget());
 
 		creep.setXPos(creep.getSprite().getX());
 		creep.setYPos(creep.getSprite().getY());
@@ -161,15 +164,38 @@ public class ServerGameScene extends GameScene {
 
 		switch (creep.getState()) {
 		case MOVING:
-
+			
+			creep.getBody().setActive(true);
+			final Body creepBody = creep.getBody();
+			
+			float x = creep.getXdirectionToTarget();
+			float y = creep.getYdirectionToTarget();
+			
+			float x1 = x / (x+1);
+			float y1 = y / (y+1);
+			
+			if (x < 0) {
+				x1 = x1 * -1;
+			}
+			if ( y < 0) {
+				y1 = y1 * -1;
+			}
+			
+			
+			final Vector2 velocity = Vector2Pool.obtain( x1 * (creep.getSpeed()/3) , y1 * (creep.getSpeed()/3));
+			
+			creepBody.setLinearVelocity(velocity);
+			Vector2Pool.recycle(velocity);
+					
 			break;
 		case IDLE:
-
+			creep.stopEntity();
 			break;
 		case ATTACKING:
-
+			creep.stopEntity();
 			break;
 		case DEAD:
+			creep.stopEntity();
 			if (creep.isAlive()) {
 				creep.killCreep();
 				sceneManager.getSoundManager().playRandomDeathSound();
@@ -211,10 +237,7 @@ public class ServerGameScene extends GameScene {
 			}
 		}  else {
 			//stops players from moving
-			final Body playerBody = player.getBody();
-			final Vector2 velocity = Vector2Pool.obtain(0, 0);
-			playerBody.setLinearVelocity(velocity);
-			Vector2Pool.recycle(velocity);
+			player.stopEntity();
 			
 			if (player.getPlayerState() == EntityState.ATTACKING) {
 				if (player.getTarget() != null && System.currentTimeMillis() >= (player.getLastAttackTime() + player.getAttackCoolDown())  ) {
@@ -288,21 +311,21 @@ public class ServerGameScene extends GameScene {
 	}
 	
 	private void setUpBasesTowersAndAIunits(){
-		Base team1Base = new Base(2750, 770, 10, 10, gameData.getUnusedID(), ALL_TEAMS.GOOD, gameData);
+		Base team1Base = new Base(2750, 770, 10, 10, gameData.getUnusedID(), ALL_TEAMS.GOOD);
 		addEntityToGameDataObj(team1Base);	
-		Base team2Base = new Base(898, 770, 10, 10, gameData.getUnusedID(), ALL_TEAMS.EVIL, gameData);
+		Base team2Base = new Base(898, 770, 10, 10, gameData.getUnusedID(), ALL_TEAMS.EVIL);
 		addEntityToGameDataObj(team2Base);
 		
-		Tower tower1 = new Tower(2180, 838, 10, 10, gameData.getUnusedID(), ALL_TEAMS.GOOD, gameData);
+		Tower tower1 = new Tower(2180, 838, 10, 10, gameData.getUnusedID(), ALL_TEAMS.GOOD);
 		addEntityToGameDataObj(tower1);	
-		Tower tower2 = new Tower(1474, 838, 10, 10, gameData.getUnusedID(), ALL_TEAMS.EVIL, gameData);
+		Tower tower2 = new Tower(1474, 838, 10, 10, gameData.getUnusedID(), ALL_TEAMS.EVIL);
 		addEntityToGameDataObj(tower2);
 		
 		
 		for (int i = 0; i < 2; i++) {
-			Creep unit1 = new Creep(gameData.getUnusedID(), 10, 10, gameData.getTeam(ALL_TEAMS.GOOD).getSpawnXpos(), gameData.getTeam(ALL_TEAMS.GOOD).getSpawnYpos(), ALL_TEAMS.GOOD, gameData);
+			Creep unit1 = new Creep(gameData.getUnusedID(), 10, 10, gameData.getTeam(ALL_TEAMS.GOOD).getSpawnXpos(), gameData.getTeam(ALL_TEAMS.GOOD).getSpawnYpos(), ALL_TEAMS.GOOD);
 			addEntityToGameDataObj(unit1);	
-			Creep unit2 = new Creep(gameData.getUnusedID(), 10, 10, gameData.getTeam(ALL_TEAMS.EVIL).getSpawnXpos(), gameData.getTeam(ALL_TEAMS.EVIL).getSpawnYpos(), ALL_TEAMS.EVIL, gameData);
+			Creep unit2 = new Creep(gameData.getUnusedID(), 10, 10, gameData.getTeam(ALL_TEAMS.EVIL).getSpawnXpos(), gameData.getTeam(ALL_TEAMS.EVIL).getSpawnYpos(), ALL_TEAMS.EVIL);
 			addEntityToGameDataObj(unit2);
 		}
 		

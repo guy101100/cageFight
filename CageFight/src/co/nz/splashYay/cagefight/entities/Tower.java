@@ -11,8 +11,8 @@ public class Tower extends AIUnit{
 	
 	
 	
-	public Tower(int xpos, int ypos, int maxhealth, int currenthealth, int id, ALL_TEAMS teamId, GameData gd) {
-		super(xpos, ypos, maxhealth, currenthealth, id, teamId, gd);
+	public Tower(int xpos, int ypos, int maxhealth, int currenthealth, int id, ALL_TEAMS teamId) {
+		super(xpos, ypos, maxhealth, currenthealth, id, teamId);
 		this.speed = 0;
 		
 	}
