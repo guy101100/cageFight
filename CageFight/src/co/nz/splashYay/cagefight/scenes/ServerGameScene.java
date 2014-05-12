@@ -19,6 +19,7 @@ import org.andengine.input.touch.TouchEvent;
 import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.util.math.MathUtils;
 
+import android.speech.SpeechRecognizer;
 import co.nz.splashYay.cagefight.EntityState;
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.SceneManager;
@@ -171,21 +172,14 @@ public class ServerGameScene extends GameScene {
 			float x = creep.getXdirectionToTarget();
 			float y = creep.getYdirectionToTarget();
 			
-			float x1 = x / (x+1);
-			float y1 = y / (y+1);
-			
-			if (x < 0) {
-				x1 = x1 * -1;
-			}
-			if ( y < 0) {
-				y1 = y1 * -1;
-			}
 			
 			
-			final Vector2 velocity = Vector2Pool.obtain( x1 * (creep.getSpeed()/3) , y1 * (creep.getSpeed()/3));
 			
+			final Vector2 velocity = Vector2Pool.obtain((x / 20 )%15, (y /20)%15);
+
 			creepBody.setLinearVelocity(velocity);
 			Vector2Pool.recycle(velocity);
+			
 					
 			break;
 		case IDLE:
