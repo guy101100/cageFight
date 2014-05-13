@@ -37,7 +37,8 @@ public class Player extends Entity implements Serializable{
 		super(xpos, ypos, maxhealth, currenthealth, id, teamId);
 		this.name = name;
 		this.level = 1;
-		
+		setMaxSpeed(8);
+		setSpeed(8);
 		
 		
 	}
@@ -124,7 +125,7 @@ public class Player extends Entity implements Serializable{
 	/**
 	 * Reactivates body, teleports body to spawn point, heals player, set state to idle
 	 */
-	public void respawn(){
+	public void respawn(GameData gd){
 		this.setPlayerState(EntityState.IDLE);
 		setAlive(true);
 		
@@ -136,9 +137,10 @@ public class Player extends Entity implements Serializable{
 		
 		//teleports the body to the respawn position	    
 	    final float angle = getBody().getAngle(); // keeps the body angle
-	    int x = 100; // x & y need to be replaced with team.getRespawnPosition()
-	    int y = 100;
+	    int x = gd.getTeam(getTeam()).getSpawnXpos();
+	    int y = gd.getTeam(getTeam()).getSpawnYpos();
 	    final Vector2 v2 = Vector2Pool.obtain(x / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT, y / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT);
+	    
 	    getBody().setTransform(v2, angle);
 	    Vector2Pool.recycle(v2);
 	    System.out.println("Player : " + this.getId() + " has respawned [" + System.currentTimeMillis() + "]");

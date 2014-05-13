@@ -18,10 +18,14 @@ import org.andengine.engine.camera.hud.controls.AnalogOnScreenControl;
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl;
 import org.andengine.engine.camera.hud.controls.AnalogOnScreenControl.IAnalogOnScreenControlListener;
 import org.andengine.engine.handler.physics.PhysicsHandler;
+import org.andengine.engine.handler.timer.ITimerCallback;
+import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.entity.text.Text;
+import org.andengine.entity.util.FPSCounter;
 import org.andengine.extension.physics.box2d.FixedStepPhysicsWorld;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.extension.tmx.TMXLayer;
@@ -35,6 +39,8 @@ import org.andengine.extension.tmx.TMXTiledMap;
 import org.andengine.extension.tmx.TMXLoader.ITMXTilePropertiesListener;
 import org.andengine.extension.tmx.util.exception.TMXLoadException;
 import org.andengine.input.touch.TouchEvent;
+import org.andengine.opengl.font.FontFactory;
+import org.andengine.opengl.font.IFont;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
@@ -48,6 +54,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.opengl.GLES20;
 import android.os.Environment;
 import co.nz.splashYay.cagefight.GameData;
@@ -98,6 +105,7 @@ public abstract class GameScene extends Scene {
 	
 	
 	protected Rectangle targetRec;
+	private IFont mFont;
 	
 	
 	
@@ -133,7 +141,8 @@ public abstract class GameScene extends Scene {
 		this.mOnScreenControlKnobTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mOnScreenControlTexture, this.activity, "onscreen_control_knob.png", 128, 0);
 		this.mOnScreenControlTexture.load();
 		
-		
+		this.mFont = FontFactory.create(activity.getFontManager(), activity.getTextureManager(), 256, 256, Typeface.create(Typeface.DEFAULT, Typeface.NORMAL), 24);
+		this.mFont.load();
 		
 		
 		
@@ -218,17 +227,7 @@ public abstract class GameScene extends Scene {
 				
 				
 			    
-				
-		        try {
-		        	ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(new File(Environment.getExternalStorageDirectory(), "/data.dat") ));
-					os.writeObject(gameData);
-					os.close();
-			        System.out.println("Sucess");
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-		        
+					        
 		        
 		        
 			} 
@@ -296,7 +295,9 @@ public abstract class GameScene extends Scene {
 	    this.hud.attachChild(attack);
 	    this.hud.registerTouchArea(attack);
 		
-		//this.camera.setHUD(hud);
+		
+	    
+	    
 		
 		//setup targeting square
 		targetRec = new Rectangle(0, 0, 64, 64, engine.getVertexBufferObjectManager());

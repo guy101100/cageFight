@@ -9,6 +9,7 @@ import java.net.UnknownHostException;
 import co.nz.splashYay.cagefight.PlayerControlCommands;
 import co.nz.splashYay.cagefight.SceneManager;
 import co.nz.splashYay.cagefight.entities.Player;
+import co.nz.splashYay.cagefight.scenes.ClientGameScene;
 
 public class ClientOutNetCom extends Thread{
 
@@ -17,10 +18,12 @@ public class ClientOutNetCom extends Thread{
 	private Socket clientSocket;
 	private SceneManager sceneManager;
 	private ObjectInputStream inFromServer;
+	private ClientGameScene cGS;
 
-	public ClientOutNetCom(String ipAddress, SceneManager sceneManager) {	
+	public ClientOutNetCom(String ipAddress, SceneManager sceneManager, ClientGameScene cGS) {	
 		this.ipAddress = ipAddress;
 		this.sceneManager = sceneManager;
+		this.cGS = cGS;
 	}
 	
 	
@@ -41,6 +44,11 @@ public class ClientOutNetCom extends Thread{
 			sceneManager.setGameStarted(true);
 			
 			outToServer.reset();
+			
+			while (true) {
+				sendToServer();
+				sleep(30);
+			}
 						
 
 		} catch (UnknownHostException ex) {
@@ -50,17 +58,20 @@ public class ClientOutNetCom extends Thread{
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} 
 
 	}
 	
-	public void sendToServer(PlayerControlCommands cmds){
+	public void sendToServer(){
 		if (sceneManager.isGameStarted()) {
 			
 			try {
 				outToServer.flush();
-				outToServer.writeObject(cmds);
-				System.out.println("[" + System.currentTimeMillis() + "] Send : " + cmds.getMovementX() + " " + cmds.getMovementY());
+				outToServer.writeObject(cGS.getPlayerCommands());
+				//System.out.println("[" + System.currentTimeMillis() + "] Send : " + cmds.getMovementX() + " " + cmds.getMovementY());
 				outToServer.reset();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block

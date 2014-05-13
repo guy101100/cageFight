@@ -57,7 +57,7 @@ public class ClientGameScene extends GameScene {
 	public Scene createScene() {
 		this.engine.registerUpdateHandler(new FPSLogger());
 
-		oNC = new ClientOutNetCom(ipAddress, sceneManager);
+		oNC = new ClientOutNetCom(ipAddress, sceneManager, this);
 		//iNC = new ClientInNetCom(ipAddress, gameData, this);
 		udpr = new UDPReciver(this, ipAddress, gameData);
 
@@ -80,9 +80,7 @@ public class ClientGameScene extends GameScene {
 			public void onUpdate(float pSecondsElapsed) {
 				if (sceneManager.isGameStarted() &&	gameData.getEntityWithId(player.getId()) != null) {					
 					processEntities();
-					updateTargetMarker();
-					oNC.sendToServer(playerCommands);
-					
+					updateTargetMarker();	
 					updateValueBars();
 					
 				}
@@ -114,6 +112,9 @@ public class ClientGameScene extends GameScene {
 			if (pairs.getValue() instanceof Player) {
 				Player player = (Player) pairs.getValue();
 				processPlayer(player);
+			} else if (pairs.getValue() instanceof Creep) {
+				Creep creep = (Creep) pairs.getValue();
+				processCreep(creep);
 			}
 			
 			
@@ -124,9 +125,13 @@ public class ClientGameScene extends GameScene {
 	
 	private void processPlayer(Player player) {
 		// move player			
-		if (player.getMovementX() != 0 && player.getMovementY() != 0) {
+		//if (player.getMovementX() != 0 && player.getMovementY() != 0) {
 			player.getSprite().setRotation(player.getDirection());
-		}
+		//}
+		
+		//player.getSprite().setPosition(player.getXPos(), player.getYPos());
+		
+		
 
 		// if player is not moving and is out of sync, move to actual position.
 		float moveTime = 0.125f; // time in seconds it takes to move to actual position
@@ -137,6 +142,25 @@ public class ClientGameScene extends GameScene {
 			player.getSprite().registerEntityModifier(moveModifier);
 		} else {
 			player.getMoveModifier().reset(moveTime, player.getSprite().getX(), player.getXPos(), player.getSprite().getY(), player.getYPos()); // move player to where actual coords are
+		}
+		
+		
+	}
+	
+	private void processCreep(Creep creep) {
+		// move creep
+				
+		creep.getSprite().setRotation(creep.getDirection());		
+
+		
+		float moveTime = 0.125f; // time in seconds it takes to move to actual position
+
+		if (creep.getSprite().getEntityModifierCount() == 0) { // if there is no move modifier add one
+			MoveModifier moveModifier = new MoveModifier(moveTime, creep.getSprite().getX(), creep.getXPos() , creep.getSprite().getY(), creep.getYPos()   );
+			creep.setMoveModifier(moveModifier);
+			creep.getSprite().registerEntityModifier(moveModifier);
+		} else {
+			creep.getMoveModifier().reset(moveTime, creep.getSprite().getX(), creep.getXPos(), creep.getSprite().getY(), creep.getYPos()); // move player to where actual coords are
 		}
 	}
 	
@@ -152,7 +176,7 @@ public class ClientGameScene extends GameScene {
 					@Override
 					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 						setTarget(this);		
-						
+						System.out.println("PLAYER TOUCHED");
 						return true;
 					}
 				};
@@ -167,44 +191,48 @@ public class ClientGameScene extends GameScene {
 					camera.setChaseEntity(sPlayer);
 				}
 			} else if (newEntity instanceof Base) {
-				
+				System.out.println("Base Added");
 				Base newBase = (Base) newEntity;
-				gameData.addEntity(newBase);				
+				
 				Sprite baseS = new Sprite(newBase.getXPos(), newBase.getYPos(), baseTextureRegion, this.engine.getVertexBufferObjectManager()) {
 					@Override
 					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 						setTarget(this);		
-						
+						System.out.println("BASE TOUCHED");
 						return true;
 					}
 				};
 				newBase.setSprite(baseS);				
 				this.attachChild(baseS);
+				gameData.addEntity(newBase);				
 				
 				
 				
 			} else if (newEntity instanceof Tower) {
+				System.out.println("Tower Added");
 				Tower newTower = (Tower) newEntity;
-				gameData.addEntity(newTower);
+				
 				Sprite towerS = new Sprite(newTower.getXPos(), newTower.getYPos(), towerTextureRegion, this.engine.getVertexBufferObjectManager()) {
 					@Override
 					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 						setTarget(this);
-
+						System.out.println("TOWER TOUCHED");
 						return true;
 					}
 				};
 				newTower.setSprite(towerS);
 				this.attachChild(towerS);
+				gameData.addEntity(newTower);
 				
 			} else if (newEntity instanceof Creep) {
+				System.out.println("Creep Added");
 				Creep newAIUnit = (Creep) newEntity;
-				gameData.addEntity(newAIUnit);
+				
 				Sprite tempS = new Sprite(newAIUnit.getXPos(), newAIUnit.getYPos(), AITextureRegion, this.engine.getVertexBufferObjectManager()) {
 					@Override
 					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 						setTarget(this);		
-						
+						System.out.println("CREEP TOUCHED");
 						return true;
 					}
 				};
@@ -213,7 +241,8 @@ public class ClientGameScene extends GameScene {
 				tempS.registerUpdateHandler(tempPhyHandler); // added
 				this.attachChild(tempS);
 				newAIUnit.setSprite(tempS);
-				newAIUnit.setPhyHandler(tempPhyHandler);				
+				newAIUnit.setPhyHandler(tempPhyHandler);
+				gameData.addEntity(newAIUnit);
 				
 			}
 			

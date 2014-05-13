@@ -19,7 +19,6 @@ import org.andengine.input.touch.TouchEvent;
 import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.util.math.MathUtils;
 
-import android.speech.SpeechRecognizer;
 import co.nz.splashYay.cagefight.EntityState;
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.SceneManager;
@@ -161,7 +160,7 @@ public class ServerGameScene extends GameScene {
 
 		creep.setXPos(creep.getSprite().getX());
 		creep.setYPos(creep.getSprite().getY());
-		checkTileEffect(creep);
+		//checkTileEffect(creep);
 
 		switch (creep.getState()) {
 		case MOVING:
@@ -210,7 +209,7 @@ public class ServerGameScene extends GameScene {
 		player.setXPos(player.getSprite().getX());// set player position(in data) to the sprites position.
 		player.setYPos(player.getSprite().getY());
 		
-		checkTileEffect(player);
+		//checkTileEffect(player);
 		
 		
 		if (player.getPlayerState() == EntityState.MOVING) {
@@ -257,7 +256,7 @@ public class ServerGameScene extends GameScene {
 					sceneManager.getSoundManager().playRandomDeathSound();
 				}	else {
 					if (player.getRespawnTime() <= System.currentTimeMillis()) {
-						player.respawn();
+						player.respawn(gameData);
 					}
 				}
 			}			
@@ -297,7 +296,7 @@ public class ServerGameScene extends GameScene {
 			
 			
 		} else { // is not on an effecting tile, reverse any effects on the player
-			entity.setSpeed(10);
+			entity.setSpeed(entity.getMaxSpeed());
 		}
 	}
 	

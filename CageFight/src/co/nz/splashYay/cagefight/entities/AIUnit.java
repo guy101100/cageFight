@@ -54,36 +54,17 @@ public abstract class AIUnit extends Entity{
     }
 	
     
-    public Vector2 distanceToMoveWithAngle(double angle, int distance) {
+    public Vector2 distanceToMoveWithAngle(double angle, float distance) {
         int xDir = 0;
         int yDir = 0;
         angle = Math.toRadians(angle);
         xDir = (int) (Math.sin(angle) * distance);
         yDir = (int) (Math.cos(angle) * distance);
-        Vector2 direction = Vector2Pool.obtain(xDir, -yDir);
-        System.out.println(xDir + " " + -yDir);
+        Vector2 direction = Vector2Pool.obtain(xDir, -yDir);        
         return direction;
     }
     
-    /*
-    public static void main(String[] args) {
-        Vector enemy = new Vector(0, 0);
-        Vector player = new Vector(100, 100);
-        int minAttackingDistance = 50;
-        int aggroDistance = 2000;
-        int enemySpeed = 100;
         
-        
-        double lengthFromEnemyToPlayer = LengthBetweenTwoPoints(enemy, player);
-        if (lengthFromEnemyToPlayer > minAttackingDistance && lengthFromEnemyToPlayer < aggroDistance) {
-            Vector distanceToMove = distanceToMoveWithAngle(enemy, GetAngleOfLineBetweenTwoPoints(enemy, player), enemySpeed);
-            System.out.println(distanceToMove.getX() + " " + distanceToMove.getY());
-        }
-    }
-    */
-    
-    
-    
     //
 	public float getDirectionToTarget(){
 		if (hasTarget()) {

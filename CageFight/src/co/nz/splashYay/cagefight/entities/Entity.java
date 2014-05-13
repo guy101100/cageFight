@@ -27,7 +27,13 @@ public class Entity implements Serializable{
 	protected float direction;
 	protected int currenthealth;
 	protected int maxhealth;
-	protected int speed;	
+	
+	protected float maxSpeed;
+	protected float speed;	
+	
+	protected int maxDamage;
+	protected int damage;
+	
 	protected long lastAttackTime;	
 	protected long attackCoolDown;
 	
@@ -44,7 +50,7 @@ public class Entity implements Serializable{
 	protected Entity lastEntityThatAttackedMe;
 	
 	protected Entity target;
-	protected int damage;
+
 
 
 	
@@ -55,20 +61,28 @@ public class Entity implements Serializable{
 	{
 		this.xpos = xpos;
 		this.ypos = ypos;
+		this.direction = 0;
+		
 		this.maxhealth = maxhealth;
 		this.currenthealth = currenthealth;
-		this.speed = 4;
-		this.direction = 0;
-		lastAttackTime = 0;
-		attackCoolDown = 2000;
-		alive = true;
+		
+		this.maxSpeed = 5;
+		this.speed = maxSpeed;
+		
+		this.maxDamage = 3;
+		this.damage = maxDamage;
+		
+		this.lastAttackTime = 0;
+		this.attackCoolDown = 2000;
+		
+		this.alive = true;
 		this.id = id;
 		this.team = team;
 		
-		lastEntityThatAttackedMe = null;
-		target = null;
+		this.lastEntityThatAttackedMe = null;
+		this.target = null;
 	
-		this.damage = 3;
+		
 		this.state = EntityState.IDLE;
 		
 	}
@@ -83,6 +97,7 @@ public class Entity implements Serializable{
 					if (currentClose == null)
 						currentClose = e;
 					else {
+						//System.out.println("target : " + e.getClass().toString() + " : " + this.getClass().toString());
 						double distanceToPlayerCurrent = Math.pow((currentClose.getCenterXpos() - this.getCenterXpos()), 2) + Math.pow((currentClose.getCenterYpos() - this.getCenterYpos()), 2);
 						double distanceToPlayerNext = Math.pow((e.getCenterXpos() - this.getCenterXpos()), 2) + Math.pow((e.getCenterYpos() - this.getCenterYpos()), 2);
 
@@ -135,11 +150,22 @@ public class Entity implements Serializable{
 	
 	
 	public float getCenterXpos(){
-		return (xpos - (getSprite().getWidth()/2));
+		if (getSprite() == null) {
+			return xpos;
+		} else {
+			return (xpos - (getSprite().getWidth()/2));
+		}
+		
 	}
 	
 	public float getCenterYpos(){
-		return (ypos - (getSprite().getHeight()/2));
+		
+		
+		if (getSprite() == null) {
+			return ypos;
+		} else {
+			return (ypos - (getSprite().getHeight()/2));
+		}
 	}
 
 	/**
@@ -262,16 +288,22 @@ public class Entity implements Serializable{
 	 * gets the entitys speed
 	 * @return speed
 	 */
-	public int getSpeed() {
+	public float getSpeed() {
 		return speed;
 	}
 
 	/**
 	 * sets the speed of the entity
-	 * @param speed
+	 * @param f
 	 */
-	public void setSpeed(int speed) {
-		this.speed = speed;
+	public void setSpeed(float f) {
+		if (f > maxSpeed) {
+			speed = maxSpeed;
+		} else if (f < 0) {
+			speed = 0;
+		} else {
+			this.speed = f;
+		}
 	}
 
 	/**
@@ -409,6 +441,25 @@ public class Entity implements Serializable{
 	public void setDamage(int damage) {
 		this.damage = damage;
 	}
+
+	public float getMaxSpeed() {
+		return maxSpeed;
+	}
+
+	public void setMaxSpeed(float maxSpeed) {
+		this.maxSpeed = maxSpeed;
+		
+	}
+
+	public int getMaxDamage() {
+		return maxDamage;
+	}
+
+	public void setMaxDamage(int maxDamage) {
+		this.maxDamage = maxDamage;
+	}
+	
+	
 	
 
 
