@@ -94,10 +94,7 @@ public class ServerGameScene extends GameScene {
 				
 				processServerPlayerControls();
 				processEntityActions();
-				updateTargetMarker();
-				
-				//oTCL.updateClients();
-				
+				updateTargetMarker();		
 				updateValueBars();
 				
 
@@ -152,29 +149,22 @@ public class ServerGameScene extends GameScene {
 
 	private void proccessCreep(Creep creep) {
 		creep.checkState();
-		
 		creep.checkAndUpdateObjective(gameData);
 		
-		creep.getSprite().setRotation(creep.getDirectionToTarget());
-		creep.setDirection(creep.getDirectionToTarget());
 
 		creep.setXPos(creep.getSprite().getX());
 		creep.setYPos(creep.getSprite().getY());
-		//checkTileEffect(creep);
+		checkTileEffect(creep);
 
 		switch (creep.getState()) {
 		case MOVING:
 			
-			creep.getBody().setActive(true);
-			final Body creepBody = creep.getBody();
 			
-			float x = creep.getXdirectionToTarget();
-			float y = creep.getYdirectionToTarget();
 			
-			final Vector2 velocity = Vector2Pool.obtain(creep.distanceToMoveWithAngle(creep.GetAngleOfLineBetweenTwoPoints(), creep.getSpeed()));
-
-			creepBody.setLinearVelocity(velocity);
-			Vector2Pool.recycle(velocity);
+			creep.getSprite().setRotation(creep.getDirectionToTarget());
+			creep.setDirection(creep.getDirectionToTarget());			
+			
+			creep.moveTowardsObjective();
 			
 					
 			break;
@@ -209,7 +199,7 @@ public class ServerGameScene extends GameScene {
 		player.setXPos(player.getSprite().getX());// set player position(in data) to the sprites position.
 		player.setYPos(player.getSprite().getY());
 		
-		//checkTileEffect(player);
+		checkTileEffect(player);
 		
 		
 		if (player.getPlayerState() == EntityState.MOVING) {
@@ -275,7 +265,7 @@ public class ServerGameScene extends GameScene {
 						entity.healEntity(1);
 					} else {
 						entity.setSpeed(2);
-						//damage the player
+						//damage the entity
 					}
 					
 					
@@ -284,7 +274,7 @@ public class ServerGameScene extends GameScene {
 						entity.healEntity(1);
 					} else {
 						entity.setSpeed(2);
-						//damage the player
+						//damage the entity
 					}
 				} 
 			} catch (NullPointerException np) {

@@ -37,8 +37,8 @@ public class Player extends Entity implements Serializable{
 		super(xpos, ypos, maxhealth, currenthealth, id, teamId);
 		this.name = name;
 		this.level = 1;
-		setMaxSpeed(8);
-		setSpeed(8);
+		setMaxSpeed(10);
+		setSpeed(10);
 		
 		
 	}

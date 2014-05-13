@@ -4,6 +4,7 @@ import org.andengine.extension.physics.box2d.util.Vector2Pool;
 import org.andengine.util.math.MathUtils;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 
 import co.nz.splashYay.cagefight.EntityState;
 import co.nz.splashYay.cagefight.GameData;
@@ -42,6 +43,16 @@ public abstract class AIUnit extends Entity{
 	}
 	
 	//
+	
+	public void moveTowardsObjective(){
+		final Body creepBody = getBody();			
+		float x = getXdirectionToTarget();
+		float y = getYdirectionToTarget();			
+		final Vector2 velocity = Vector2Pool.obtain(distanceToMoveWithAngle(GetAngleOfLineBetweenTwoPoints(), getSpeed()));
+		creepBody.setLinearVelocity(velocity);
+		Vector2Pool.recycle(velocity);
+	}
+	
 	public double GetAngleOfLineBetweenTwoPoints() {
         float xDiff = getTarget().getCenterXpos() - getCenterXpos();
         float yDiff = getTarget().getCenterYpos() - getCenterYpos();
