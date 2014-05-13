@@ -48,21 +48,12 @@ public abstract class AIUnit extends Entity{
 		final Body creepBody = getBody();			
 		float x = getXdirectionToTarget();
 		float y = getYdirectionToTarget();			
-		final Vector2 velocity = Vector2Pool.obtain(distanceToMoveWithAngle(GetAngleOfLineBetweenTwoPoints(), getSpeed()));
+		final Vector2 velocity = Vector2Pool.obtain(distanceToMoveWithAngle(getAngleOfLineToTarget(), getSpeed()));
 		creepBody.setLinearVelocity(velocity);
 		Vector2Pool.recycle(velocity);
 	}
 	
-	public double GetAngleOfLineBetweenTwoPoints() {
-        float xDiff = getTarget().getCenterXpos() - getCenterXpos();
-        float yDiff = getTarget().getCenterYpos() - getCenterYpos();
-        return Math.toDegrees(Math.atan2(xDiff, -yDiff));
-    }
-    public double LengthBetweenTwoPoints() {
-        float s1 = getTarget().getCenterXpos() - getCenterXpos();
-        float s2 = getTarget().getCenterYpos() - getCenterYpos();
-        return Math.sqrt(s1 * s1 + s2 * s2);
-    }
+	
 	
     
     public Vector2 distanceToMoveWithAngle(double angle, float distance) {
@@ -77,17 +68,7 @@ public abstract class AIUnit extends Entity{
     
         
     //
-	public float getDirectionToTarget(){
-		if (hasTarget()) {
-			float x = getTarget().getCenterXpos() - this.getCenterXpos();
-			float y = getTarget().getCenterYpos() - this.getCenterYpos();
-			return MathUtils.radToDeg((float) Math.atan2(x, -y));			
-		} else {
-			return 0;			
-		}
-				
-		
-	}
+	
 	
 	/**
 	 * checks if there are enemy units inside the AI units agro radius
@@ -124,51 +105,33 @@ public abstract class AIUnit extends Entity{
 		if (hasTarget() && getTarget().isAlive()) {
 			
 			if (getTarget() instanceof Base || getTarget() instanceof Tower) {
-				
 				if (checkAgroRadius(gd)) { //check if there is a enemy to target
-					getNearestEnemyEntity(gd);
-				} 
+					setTarget(getNearestEnemyEntity(gd));
+				}	
 				
 			} else {
-				
-				double distanceFromTarget = Math.pow((getTarget().getCenterXpos() - this.getCenterXpos()), 2) + Math.pow((getTarget().getCenterYpos() - this.getCenterYpos()), 2);
-				
-				if (distanceFromTarget < loseTargetDistance) {
-					//keep current target
-					
-				} else {
-					
+				if (getDistanceToTarget() > loseTargetDistance) {
 					if (checkAgroRadius(gd)) { //check if there is a enemy to target
-						getNearestEnemyEntity(gd);
-						
+						setTarget(getNearestEnemyEntity(gd));
+
 					} else {
 						//set to a default objective
-						
+
 					}
+
 				}
-				
 			}
-			
-			
-			
+
 		} else {
-			
-			
 			if (checkAgroRadius(gd)) { //check if there is a enemy to target
 				setTarget(getNearestEnemyEntity(gd));
-				
+
 			} else {
 				//set to a default objective
-				
-			}
-			
-			
-		}
-		
-		
-		
-	}
 
-	
+			}
+		}
+
+	}
 
 }

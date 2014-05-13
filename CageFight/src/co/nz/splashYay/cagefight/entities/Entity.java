@@ -37,6 +37,8 @@ public class Entity implements Serializable{
 	protected long lastAttackTime;	
 	protected long attackCoolDown;
 	
+	protected int attackRange;
+	
 	protected boolean alive;
 	
 	protected EntityState state;
@@ -71,6 +73,8 @@ public class Entity implements Serializable{
 		
 		this.maxDamage = 3;
 		this.damage = maxDamage;
+		
+		this.attackRange = 75;
 		
 		this.lastAttackTime = 0;
 		this.attackCoolDown = 2000;
@@ -201,6 +205,30 @@ public class Entity implements Serializable{
 	 */
 	public void setYPos(float ypos) {
 		this.ypos = ypos;
+	}
+	
+	
+	public double getAngleOfLineToTarget() {
+		float xDiff = getTarget().getCenterXpos() - getCenterXpos();
+		float yDiff = getTarget().getCenterYpos() - getCenterYpos();
+		return Math.toDegrees(Math.atan2(xDiff, -yDiff));
+	}
+
+	public double getDistanceToTarget() {
+		float s1 = getTarget().getCenterXpos() - getCenterXpos();
+		float s2 = getTarget().getCenterYpos() - getCenterYpos();
+		return Math.sqrt(s1 * s1 + s2 * s2);
+	}
+
+	public float getDirectionToTarget() {
+		if (hasTarget()) {
+			float x = getTarget().getCenterXpos() - this.getCenterXpos();
+			float y = getTarget().getCenterYpos() - this.getCenterYpos();
+			return MathUtils.radToDeg((float) Math.atan2(x, -y));
+		} else {
+			return 0;
+		}
+
 	}
 	
 	/**
@@ -458,6 +486,15 @@ public class Entity implements Serializable{
 	public void setMaxDamage(int maxDamage) {
 		this.maxDamage = maxDamage;
 	}
+
+	public int getAttackRange() {
+		return attackRange;
+	}
+
+	public void setAttackRange(int attackRange) {
+		this.attackRange = attackRange;
+	}
+	
 	
 	
 	

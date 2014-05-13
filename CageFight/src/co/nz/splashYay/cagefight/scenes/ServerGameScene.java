@@ -84,7 +84,7 @@ public class ServerGameScene extends GameScene {
 		sCL.start();
 		udp.start();
 		
-		player = new Player("", gameData.getUnusedID(), 100, 1, gameData.getTeam(ALL_TEAMS.EVIL).getSpawnXpos(), gameData.getTeam(ALL_TEAMS.EVIL).getSpawnYpos(), ALL_TEAMS.EVIL);
+		player = new Player("", gameData.getUnusedID(), 100, 50, gameData.getTeam(ALL_TEAMS.EVIL).getSpawnXpos(), gameData.getTeam(ALL_TEAMS.EVIL).getSpawnYpos(), ALL_TEAMS.EVIL);
 		addEntityToGameDataObj(player);
 		
 		//game loop
@@ -173,6 +173,13 @@ public class ServerGameScene extends GameScene {
 			break;
 		case ATTACKING:
 			creep.stopEntity();
+			if (creep.getTarget() != null && System.currentTimeMillis() >= (creep.getLastAttackTime() + creep.getAttackCoolDown())) {
+
+				creep.attackTarget();
+				creep.setLastAttackTime(System.currentTimeMillis());
+				sceneManager.getSoundManager().playRandomAttackSound();
+			}
+
 			break;
 		case DEAD:
 			creep.stopEntity();
@@ -221,11 +228,8 @@ public class ServerGameScene extends GameScene {
 			
 			if (player.getPlayerState() == EntityState.ATTACKING) {
 				if (player.getTarget() != null && System.currentTimeMillis() >= (player.getLastAttackTime() + player.getAttackCoolDown())  ) {
-					
-					double distanceSqr = Math.pow((player.getTarget().getCenterXpos() - player.getCenterXpos()), 2) + Math.pow((player.getTarget().getCenterYpos() - player.getCenterYpos()), 2);
-					double distance = Math.sqrt(distanceSqr);
-					
-					if(distance < 150)
+										
+					if(player.getDistanceToTarget() < player.getAttackRange())
 					{
 						player.attackTarget();
 						player.setLastAttackTime(System.currentTimeMillis());

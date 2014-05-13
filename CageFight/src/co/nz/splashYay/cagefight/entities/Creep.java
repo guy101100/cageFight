@@ -40,17 +40,23 @@ public class Creep extends AIUnit {
 	
 	@Override
 	public void checkState(){
-		boolean atackablePlayers = false;
+		
 		
 		if (currenthealth <= 0) {
 			state = EntityState.DEAD;
 			
-		} else if (atackablePlayers) { 
-			state = EntityState.ATTACKING;
 		} else if (hasTarget() && getTarget().isAlive()) {
-			state = EntityState.MOVING;			
+			
+			if (getDistanceToTarget() < getAttackRange()) {
+				state = EntityState.ATTACKING;
+			} else {
+				state = EntityState.MOVING;
+			}
+					
+			
 		} else {
 			state = EntityState.IDLE;
+			
 		}
 	}
 
