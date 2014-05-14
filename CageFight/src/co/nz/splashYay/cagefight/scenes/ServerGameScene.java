@@ -177,7 +177,7 @@ public class ServerGameScene extends GameScene {
 		case ATTACKING:
 			creep.stopEntity();
 			if (creep.getTarget() != null && System.currentTimeMillis() >= (creep.getLastAttackTime() + creep.getAttackCoolDown())) {
-
+							
 				creep.attackTarget();
 				creep.setLastAttackTime(System.currentTimeMillis());
 				sceneManager.getSoundManager().playRandomAttackSound();
@@ -309,7 +309,7 @@ public class ServerGameScene extends GameScene {
 		addEntityToGameDataObj(tower2);
 		
 		
-		for (int i = 0; i < 1; i++) {
+		for (int i = 0; i < 3; i++) {
 			Creep unit1 = new Creep(gameData.getUnusedID(), 10, 10, gameData.getTeam(ALL_TEAMS.GOOD).getSpawnXpos(), gameData.getTeam(ALL_TEAMS.GOOD).getSpawnYpos(), ALL_TEAMS.GOOD);
 			addEntityToGameDataObj(unit1);	
 			Creep unit2 = new Creep(gameData.getUnusedID(), 10, 10, gameData.getTeam(ALL_TEAMS.EVIL).getSpawnXpos(), gameData.getTeam(ALL_TEAMS.EVIL).getSpawnYpos(), ALL_TEAMS.EVIL);
@@ -340,7 +340,7 @@ public class ServerGameScene extends GameScene {
 				Sprite tempS = new Sprite(newPlayer.getXPos(), newPlayer.getYPos(), playerTextureRegion, this.engine.getVertexBufferObjectManager()) {
 					@Override
 					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-						setTarget(this);						
+						setTargetFromSpriteTouch(this);						
 						return true;
 					}
 				};
@@ -364,7 +364,7 @@ public class ServerGameScene extends GameScene {
 				Sprite baseS = new Sprite(newBase.getXPos(), newBase.getYPos(), baseTextureRegion, this.engine.getVertexBufferObjectManager()) {
 					@Override
 					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-						setTarget(this);		
+						setTargetFromSpriteTouch(this);		
 						
 						return true;
 					}
@@ -384,7 +384,7 @@ public class ServerGameScene extends GameScene {
 				Sprite towerS = new Sprite(newTower.getXPos(), newTower.getYPos(), towerTextureRegion, this.engine.getVertexBufferObjectManager()) {
 					@Override
 					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-						setTarget(this);		
+						setTargetFromSpriteTouch(this);		
 						
 						return true;
 					}
@@ -401,7 +401,7 @@ public class ServerGameScene extends GameScene {
 				Sprite tempS = new Sprite(newAIunit.getXPos(), newAIunit.getYPos(), AITextureRegion , this.engine.getVertexBufferObjectManager()) {
 					@Override
 					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-						setTarget(this);
+						setTargetFromSpriteTouch(this);
 						return true;
 					}
 				};

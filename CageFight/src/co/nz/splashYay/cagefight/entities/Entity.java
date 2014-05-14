@@ -101,7 +101,7 @@ public class Entity implements Serializable{
 					if (currentClose == null)
 						currentClose = e;
 					else {
-						//System.out.println("target : " + e.getClass().toString() + " : " + this.getClass().toString());
+						
 						double distanceToPlayerCurrent = Math.pow((currentClose.getCenterXpos() - this.getCenterXpos()), 2) + Math.pow((currentClose.getCenterYpos() - this.getCenterYpos()), 2);
 						double distanceToPlayerNext = Math.pow((e.getCenterXpos() - this.getCenterXpos()), 2) + Math.pow((e.getCenterYpos() - this.getCenterYpos()), 2);
 
@@ -112,10 +112,7 @@ public class Entity implements Serializable{
 			}
 		}
 		
-		//if (this.getTeam() == ALL_TEAMS.EVIL) {
-			System.out.println("CC : " + currentClose.getClass().toString() + " " + getDistanceToTarget());
-		//}
-
+		
 		return currentClose;
 	}
 	
@@ -128,6 +125,10 @@ public class Entity implements Serializable{
 		Entity target = getTarget();
 		target.damageEntity(this.getDamage());
 		target.setLastEntityThatAttackedMe(this);
+		if (target instanceof Creep) {
+			target.setTarget(this);
+		}
+		
 		
 	}
 	
