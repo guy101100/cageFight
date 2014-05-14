@@ -111,6 +111,10 @@ public class Entity implements Serializable{
 				}
 			}
 		}
+		
+		//if (this.getTeam() == ALL_TEAMS.EVIL) {
+			System.out.println("CC : " + currentClose.getClass().toString() + " " + getDistanceToTarget());
+		//}
 
 		return currentClose;
 	}
@@ -215,9 +219,14 @@ public class Entity implements Serializable{
 	}
 
 	public double getDistanceToTarget() {
-		float s1 = getTarget().getCenterXpos() - getCenterXpos();
-		float s2 = getTarget().getCenterYpos() - getCenterYpos();
-		return Math.sqrt(s1 * s1 + s2 * s2);
+		if (hasTarget()) {
+			float s1 = getTarget().getCenterXpos() - getCenterXpos();
+			float s2 = getTarget().getCenterYpos() - getCenterYpos();
+			return Math.sqrt(s1 * s1 + s2 * s2);
+		} else {
+			return 9999;
+		}
+		
 	}
 
 	public float getDirectionToTarget() {

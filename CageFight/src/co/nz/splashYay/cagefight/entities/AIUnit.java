@@ -45,12 +45,14 @@ public abstract class AIUnit extends Entity{
 	//
 	
 	public void moveTowardsObjective(){
-		final Body creepBody = getBody();			
-		float x = getXdirectionToTarget();
-		float y = getYdirectionToTarget();			
-		final Vector2 velocity = Vector2Pool.obtain(distanceToMoveWithAngle(getAngleOfLineToTarget(), getSpeed()));
-		creepBody.setLinearVelocity(velocity);
-		Vector2Pool.recycle(velocity);
+		if (hasTarget()) {
+			final Body creepBody = getBody();			
+			float x = getXdirectionToTarget();
+			float y = getYdirectionToTarget();			
+			final Vector2 velocity = Vector2Pool.obtain(distanceToMoveWithAngle(getAngleOfLineToTarget(), getSpeed()));
+			creepBody.setLinearVelocity(velocity);
+			Vector2Pool.recycle(velocity);
+		}		
 	}
 	
 	
@@ -76,7 +78,7 @@ public abstract class AIUnit extends Entity{
 	 */
 	private boolean checkAgroRadius(GameData gd){
 		for (Entity e : gd.getEntities().values()) {
-			if (e.isAlive() && e instanceof Player) {
+			if (e.isAlive()) {
 				if (e.getId() != this.id && e.getTeam() != this.team) {
 					float x = getCenterXpos() - e.getCenterXpos();
 					x *= x;
@@ -97,12 +99,20 @@ public abstract class AIUnit extends Entity{
 		
 	}
 	
+	private void msgOut(String out) {
+		if (getTeam() == ALL_TEAMS.EVIL) {
+			System.out.println(out);
+		}
+	}
+	
 	/**
 	 * checks and updates the AI units objective
 	 * @param gd
 	 */
 	public void checkAndUpdateObjective(GameData gd) {
 		if (hasTarget() && getTarget().isAlive()) {
+			
+			msgOut("Has target : " + getTarget().getClass().toString());
 			
 			if (getTarget() instanceof Base || getTarget() instanceof Tower) {
 				if (checkAgroRadius(gd)) { //check if there is a enemy to target
@@ -111,23 +121,28 @@ public abstract class AIUnit extends Entity{
 				
 			} else {
 				if (getDistanceToTarget() > loseTargetDistance) {
-					if (checkAgroRadius(gd)) { //check if there is a enemy to target
+					msgOut("Target is outside of agrorange");
+					if (checkAgroRadius(gd)) { //check if there is a enemy to target						
 						setTarget(getNearestEnemyEntity(gd));
-
+						msgOut("there is another target in range : " + getTarget().getClass().toString());
+						
 					} else {
 						//set to a default objective
-
+						msgOut("no target in range, reset to default target" );
+						setTarget(null);
 					}
 
 				}
 			}
 
 		} else {
+			msgOut("Does not have target : ");
 			if (checkAgroRadius(gd)) { //check if there is a enemy to target
 				setTarget(getNearestEnemyEntity(gd));
-
+				msgOut("there is another target in range : " + getTarget().getClass().toString());
 			} else {
-				//set to a default objective
+				msgOut("no target in range, reset to default target" );
+				setTarget(null);
 
 			}
 		}

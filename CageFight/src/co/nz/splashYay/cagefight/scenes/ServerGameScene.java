@@ -47,6 +47,7 @@ public class ServerGameScene extends GameScene {
 	UDPServer udp;
 	
 	private int bugCounterTileIsNull = 0;
+	private int count;
 	
 	
 
@@ -58,6 +59,7 @@ public class ServerGameScene extends GameScene {
 		this.engine = eng;
 		this.camera = cam;		
 		this.sceneManager = sceneManager;
+		count = 0;
 	}
 
 	
@@ -149,8 +151,8 @@ public class ServerGameScene extends GameScene {
 
 	private void proccessCreep(Creep creep) {
 		creep.checkState();
+
 		creep.checkAndUpdateObjective(gameData);
-		
 
 		creep.setXPos(creep.getSprite().getX());
 		creep.setYPos(creep.getSprite().getY());
@@ -163,6 +165,7 @@ public class ServerGameScene extends GameScene {
 			
 			creep.getSprite().setRotation(creep.getDirectionToTarget());
 			creep.setDirection(creep.getDirectionToTarget());			
+			
 			
 			creep.moveTowardsObjective();
 			
@@ -306,7 +309,7 @@ public class ServerGameScene extends GameScene {
 		addEntityToGameDataObj(tower2);
 		
 		
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < 1; i++) {
 			Creep unit1 = new Creep(gameData.getUnusedID(), 10, 10, gameData.getTeam(ALL_TEAMS.GOOD).getSpawnXpos(), gameData.getTeam(ALL_TEAMS.GOOD).getSpawnYpos(), ALL_TEAMS.GOOD);
 			addEntityToGameDataObj(unit1);	
 			Creep unit2 = new Creep(gameData.getUnusedID(), 10, 10, gameData.getTeam(ALL_TEAMS.EVIL).getSpawnXpos(), gameData.getTeam(ALL_TEAMS.EVIL).getSpawnYpos(), ALL_TEAMS.EVIL);
