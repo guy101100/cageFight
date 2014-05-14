@@ -331,9 +331,9 @@ public abstract class GameScene extends Scene {
 	 * Called whenever an entity sprite is touched
 	 * @param sprite the sprite that was touched
 	 */
-	protected void setTarget(Sprite sprite){
+	protected void setTargetFromSpriteTouch(Sprite sprite){
 		Entity touched = gameData.getEntityFromSprite(sprite);
-		if (touched.getTeam() != player.getTeam()) {
+		if (touched.isAlive() && touched.getTeam() != player.getTeam()) {
 			playerCommands.setTargetID(touched.getId());
 		}
 			
