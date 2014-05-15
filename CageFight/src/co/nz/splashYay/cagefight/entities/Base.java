@@ -16,6 +16,16 @@ public class Base extends AIUnit{
 	}
 	
 	
+	public void destroyBase(){
+		setAlive(false);
+		
+		//cycle annimation
+		
+		
+		
+	}
+	
+	
 	
 	
 	

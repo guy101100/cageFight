@@ -93,7 +93,7 @@ public class ServerGameScene extends GameScene {
 		this.registerUpdateHandler(new IUpdateHandler() {
 			@Override
 			public void onUpdate(float pSecondsElapsed) {
-				
+				checkVictoryConditions();
 				processServerPlayerControls();
 				processEntityActions();
 				updateTargetMarker();		
@@ -109,6 +109,14 @@ public class ServerGameScene extends GameScene {
 		//end game loop
 		
 		
+	}
+	
+	public void checkVictoryConditions(){
+		if (!gameData.getEvilBase().isAlive()) {
+			//set good victory
+		} else if (!gameData.getGoodBase().isAlive()) {
+			//set Evil victory
+		}
 	}
 	
 	
@@ -139,7 +147,8 @@ public class ServerGameScene extends GameScene {
 				Base base = (Base) pairs.getValue();
 				proccessBase(base);
 			} else if (pairs.getValue() instanceof Tower) {
-				
+				Tower tower = (Tower) pairs.getValue();
+				proccessTower(tower);
 			} else if (pairs.getValue() instanceof Creep) {
 				Creep ai = (Creep) pairs.getValue();
 				proccessCreep(ai);
@@ -200,8 +209,47 @@ public class ServerGameScene extends GameScene {
 	
 	private void proccessBase(Base base) {
 		base.checkState();
+		
+		switch (base.getState()) {
+		case IDLE:
+			//do nothing
+			break;
+			
+		case DEAD:
+			if (base.isAlive()) {
+				base.destroyBase();
+				//play base destroy sound, change music
+			}
+			break;
+
+		default:
+			break;
+		}
+		
 	}
-	
+
+	private void proccessTower(Tower tower) {
+		tower.checkState();
+
+		tower.checkState();
+
+		switch (tower.getState()) {
+		case IDLE:
+			//do nothing
+			break;
+
+		case DEAD:
+			if (tower.isAlive()) {
+				tower.destroyTower();
+				//play base destroy sound, change music
+			}
+			break;
+
+		default:
+			break;
+		}
+	}
+
 	private void proccessPlayer(Player player) {		
 		
 		player.checkState();// checks and updates the players state
@@ -299,14 +347,20 @@ public class ServerGameScene extends GameScene {
 	
 	private void setUpBasesTowersAndAIunits(){
 		Base team1Base = new Base(2750, 770, 10, 10, gameData.getUnusedID(), ALL_TEAMS.GOOD);
-		addEntityToGameDataObj(team1Base);	
+		addEntityToGameDataObj(team1Base);
+		gameData.setGoodBase(team1Base);
+		
 		Base team2Base = new Base(898, 770, 10, 10, gameData.getUnusedID(), ALL_TEAMS.EVIL);
 		addEntityToGameDataObj(team2Base);
+		gameData.setEvilBase(team2Base);
 		
 		Tower tower1 = new Tower(2180, 838, 10, 10, gameData.getUnusedID(), ALL_TEAMS.GOOD);
 		addEntityToGameDataObj(tower1);	
+		gameData.setGoodTower(tower1);
+		
 		Tower tower2 = new Tower(1474, 838, 10, 10, gameData.getUnusedID(), ALL_TEAMS.EVIL);
 		addEntityToGameDataObj(tower2);
+		gameData.setEvilTower(tower2);
 		
 		
 		for (int i = 0; i < 3; i++) {

@@ -16,6 +16,17 @@ public class Tower extends AIUnit{
 		this.speed = 0;
 		
 	}
+	
+	public void destroyTower(){
+		setAlive(false);
+		if (getLastEntityThatAttackedMe() instanceof Player) {
+			//give gold
+			//give xp			
+		}
+		// cycle annimation
+		
+		
+	}
 		
 		
 	/**
