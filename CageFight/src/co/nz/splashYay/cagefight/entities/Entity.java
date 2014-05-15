@@ -91,12 +91,18 @@ public class Entity implements Serializable{
 		
 	}
 	
+	
+	/**
+	 * 
+	 * @param gd
+	 * @return s the closest non base or tower entity
+	 */
 	public Entity getNearestEnemyEntity(GameData gd) {
 		Entity currentClose = null;
 
 		for (Entity e : gd.getEntities().values()) {
 			
-			if (e.isAlive()) {
+			if (e.isAlive() && !(e instanceof Tower) && !(e instanceof Base)) {
 				if (e.getId() != this.id && e.getTeam() != this.team) {
 					if (currentClose == null)
 						currentClose = e;

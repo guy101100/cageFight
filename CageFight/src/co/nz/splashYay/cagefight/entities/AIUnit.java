@@ -22,15 +22,10 @@ public abstract class AIUnit extends Entity{
 	}
 	
 	public void checkState(){
-		boolean atackablePlayers = false;
-		
-		if (currenthealth <= 0) {
+		if (getCurrenthealth() <= 0) {
 			state = EntityState.DEAD;
-			
-		} else if (atackablePlayers) { 
-			state = EntityState.ATTACKING;
 		} else {
-			state = EntityState.IDLE;			
+			state = EntityState.IDLE;
 		}
 	}
 	
@@ -78,7 +73,7 @@ public abstract class AIUnit extends Entity{
 	 */
 	private boolean checkAgroRadius(GameData gd){
 		for (Entity e : gd.getEntities().values()) {
-			if (e.isAlive()) {
+			if (e.isAlive() && !(e instanceof Tower) && !(e instanceof Base)) {
 				if (e.getId() != this.id && e.getTeam() != this.team) {
 					float x = getCenterXpos() - e.getCenterXpos();
 					x *= x;
@@ -97,6 +92,25 @@ public abstract class AIUnit extends Entity{
 		return false;
 		
 		
+	}
+	
+	private Entity updateDefaultObjective(GameData gd){			
+		
+		if (this.team == ALL_TEAMS.GOOD) {
+			if (gd.getEvilTower().isAlive()) {
+				return gd.getEvilTower();
+			} else {
+				return gd.getEvilBase();
+			}
+			
+			
+		} else {
+			if (gd.getGoodTower().isAlive()) {
+				return gd.getGoodTower();
+			} else {
+				return gd.getGoodBase();
+			}
+		}
 	}
 	
 	
@@ -122,12 +136,11 @@ public abstract class AIUnit extends Entity{
 						
 						
 					} else {
-						//set to a default objective
-						
-						setTarget(null);
+						//set to a default objective						
+						setTarget(updateDefaultObjective(gd));
 					}
 
-				}
+				} // else keep target
 			}
 
 		} else {
@@ -135,10 +148,9 @@ public abstract class AIUnit extends Entity{
 			if (checkAgroRadius(gd)) { //check if there is a enemy to target
 				setTarget(getNearestEnemyEntity(gd));
 				
-			} else {
-				
-				setTarget(null);
-
+			} else {				
+				//set to a default objective						
+				setTarget(updateDefaultObjective(gd));
 			}
 		}
 

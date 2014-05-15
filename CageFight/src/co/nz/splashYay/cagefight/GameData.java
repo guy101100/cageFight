@@ -8,12 +8,19 @@ import org.andengine.entity.sprite.Sprite;
 
 import co.nz.splashYay.cagefight.SceneManager.AllScenes;
 import co.nz.splashYay.cagefight.Team.ALL_TEAMS;
+import co.nz.splashYay.cagefight.entities.Base;
 import co.nz.splashYay.cagefight.entities.Entity;
 import co.nz.splashYay.cagefight.entities.Player;
+import co.nz.splashYay.cagefight.entities.Tower;
 
 
 public class GameData implements Serializable{
 	
+	private transient Base evilBase;
+	private transient Base goodBase;
+	
+	private transient Tower evilTower;
+	private transient Tower goodTower;
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -122,6 +129,40 @@ public class GameData implements Serializable{
 	public void setSendTime(long sendTime) {
 		this.sendTime = sendTime;
 	}
+
+	public Base getEvilBase() {
+		return evilBase;
+	}
+
+	public void setEvilBase(Base evilBase) {
+		this.evilBase = evilBase;
+	}
+
+	public Base getGoodBase() {
+		return goodBase;
+	}
+
+	public void setGoodBase(Base goodBase) {
+		this.goodBase = goodBase;
+	}
+
+	public Tower getEvilTower() {
+		return evilTower;
+	}
+
+	public void setEvilTower(Tower evilTower) {
+		this.evilTower = evilTower;
+	}
+
+	public Tower getGoodTower() {
+		return goodTower;
+	}
+
+	public void setGoodTower(Tower goodTower) {
+		this.goodTower = goodTower;
+	}
+	
+	
 	
 	
 	
