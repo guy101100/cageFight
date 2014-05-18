@@ -239,12 +239,15 @@ public abstract class GameScene extends Scene {
 		playerInfo = new ValueBar(camera.getWidth() / 2 -180, 5, 160, 30, activity.getVertexBufferObjectManager());
 		//targetInfo.setVisible(false);
 		
+		/*
 		playerExpBar = new ValueBar(camera.getWidth() / 2 -180, 5, 160, 30, activity.getVertexBufferObjectManager());
 
 		playerGoldInfo = new Text(camera.getWidth() / 2 -400, 5, font, "" + player.getGold(), activity.getVertexBufferObjectManager());
 		
+		
 		hud.attachChild(playerExpBar);
 		hud.attachChild(playerGoldInfo);
+		*/
 		hud.attachChild(playerInfo);
 		
 		
@@ -297,12 +300,12 @@ public abstract class GameScene extends Scene {
 		targetRec.setColor(Color.RED);
 		this.attachChild(targetRec);
 	}
-	
+	/*
 	public void updateExpBar()
 	{
 		playerExpBar.setProgressPercentage((float) player.getExperience() / (float) player.getLevelExp());
 	}
-	
+	*/
 	public void updateValueBars()
 	{
 		playerInfo.setProgressPercentage(( (float)player.getCurrenthealth() / (float)player.getMaxhealth() ));
