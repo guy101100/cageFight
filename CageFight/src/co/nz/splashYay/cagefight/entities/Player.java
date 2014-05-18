@@ -17,6 +17,7 @@ public class Player extends Entity implements Serializable{
 
 	
 	private static final long serialVersionUID = 1L;
+	private static final int MAXLEVEL = 20;
 	private String name;
 	
 	private float movementX = 0;
@@ -26,13 +27,19 @@ public class Player extends Entity implements Serializable{
 	//Player Stats
 	private int experience;
 	private int level;
-	
-	
 	private long respawnTime = 0;
+	private int LevelExp;
+	private int gold;
+	
+	//points a player has to level up abilities
+
+	private int abilityPoints;
 	
 	
 	
 	
+
+
 	public Player(String name, int id, int maxhealth, int currenthealth, int xpos, int ypos, ALL_TEAMS teamId) {
 		super(xpos, ypos, maxhealth, currenthealth, id, teamId);
 		this.name = name;
@@ -130,14 +137,17 @@ public class Player extends Entity implements Serializable{
 	 */
 	public void killPlayer(){
 		this.setAlive(false);
-		// TO ADD : remove some gold.
 		// TO ADD : change players sprite to "dead Image".
 		
 		this.getBody().setActive(false);
 		this.setRespawnTime();
 		System.out.println("Player : " + this.getId() + " has Died. Respawn in " + getRespawnTime() + " [" + System.currentTimeMillis() + "]");
 		
-		
+		this.setGold(this.getGold() - this.getLevel() * 10);
+		if (this.getGold() < 0)
+		{
+			this.setGold(0);
+		}
 	}
 	
 	/**
@@ -169,6 +179,21 @@ public class Player extends Entity implements Serializable{
 	    
 
 		
+	}
+	
+	public void levelUp()
+	{
+		if (this.getLevel() < MAXLEVEL)
+		{
+			this.level++;
+			System.out.println("Player : " + this.getId() + " has leveled up to level " + this.getLevel() + "!");
+			
+			int extraExp = this.getExperience() - this.getLevelExp();
+			
+			this.setExperience(0 + extraExp);
+			
+			this.setAbilityPoints(this.getAbilityPoints() + 1);
+		}
 	}
 	
 	/**
@@ -207,6 +232,16 @@ public class Player extends Entity implements Serializable{
 
 	public void setExperience(int experience) {
 		this.experience = experience;
+	}
+	
+	public int getLevelExp()
+	{
+		return LevelExp;
+	}
+	
+	public void setNextLevelExp(int LevelExp)
+	{
+		this.LevelExp = LevelExp;
 	}
 	
 	public int getId() {
@@ -252,6 +287,27 @@ public class Player extends Entity implements Serializable{
 		this.state = state;
 	}
 	
+	public int getAbilityPoints() {
+		return abilityPoints;
+	}
+
+
+
+	public void setAbilityPoints(int abilityPoints) {
+		this.abilityPoints = abilityPoints;
+	}
+	
+	public int getGold() {
+		return gold;
+	}
+
+
+
+	public void setGold(int gold) {
+		this.gold = gold;
+	}
+
+	
 	
 	
 	/**
@@ -282,6 +338,8 @@ public class Player extends Entity implements Serializable{
 		long respawnLength = this.level * 10000;
 		this.respawnTime = (System.currentTimeMillis() + respawnLength);
 	}
+
+
 	
 	
 

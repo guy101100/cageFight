@@ -88,6 +88,7 @@ public abstract class GameScene extends Scene {
 	private AnalogOnScreenControl joyStick;
 	private ValueBar targetInfo;
 	private ValueBar playerInfo;
+	private ValueBar playerExpBar;
 	
 	
 	protected Rectangle targetRec;
@@ -226,8 +227,12 @@ public abstract class GameScene extends Scene {
 		targetInfo.setVisible(false);		
 		hud.attachChild(targetInfo);
 		
+		
+		//Create player info
 		playerInfo = new ValueBar(camera.getWidth() / 2 -180, 5, 160, 30, activity.getVertexBufferObjectManager());
 		//targetInfo.setVisible(false);
+		
+		playerExpBar = new ValueBar(camera.getWidth() / 2 -180, 5, 160, 30, activity.getVertexBufferObjectManager());
 		
 		hud.attachChild(playerInfo);
 		
@@ -280,6 +285,11 @@ public abstract class GameScene extends Scene {
 		targetRec = new Rectangle(0, 0, 64, 64, engine.getVertexBufferObjectManager());
 		targetRec.setColor(Color.RED);
 		this.attachChild(targetRec);
+	}
+	
+	public void updateExpBar()
+	{
+		playerExpBar.setProgressPercentage((float) player.getExperience() / (float) player.getNextLevelExp());
 	}
 	
 	public void updateValueBars()
