@@ -17,6 +17,8 @@ import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.entity.text.Text;
+import org.andengine.entity.text.TextOptions;
 import org.andengine.extension.physics.box2d.FixedStepPhysicsWorld;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.extension.tmx.TMXLayer;
@@ -30,12 +32,14 @@ import org.andengine.extension.tmx.TMXTiledMap;
 import org.andengine.extension.tmx.TMXLoader.ITMXTilePropertiesListener;
 import org.andengine.extension.tmx.util.exception.TMXLoadException;
 import org.andengine.input.touch.TouchEvent;
+import org.andengine.opengl.font.Font;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.TextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
+import org.andengine.util.HorizontalAlign;
 import org.andengine.util.color.Color;
 import org.andengine.util.debug.Debug;
 
@@ -43,6 +47,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
 import android.opengl.GLES20;
+import android.widget.TextView;
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.PlayerControlCommands;
 import co.nz.splashYay.cagefight.ValueBar;
@@ -92,6 +97,8 @@ public abstract class GameScene extends Scene {
 	
 	
 	protected Rectangle targetRec;
+	private Text playerGoldInfo;
+	private Font font;
 	
 	
 	
@@ -233,7 +240,11 @@ public abstract class GameScene extends Scene {
 		//targetInfo.setVisible(false);
 		
 		playerExpBar = new ValueBar(camera.getWidth() / 2 -180, 5, 160, 30, activity.getVertexBufferObjectManager());
+
+		playerGoldInfo = new Text(camera.getWidth() / 2 -400, 5, font, "" + player.getGold(), activity.getVertexBufferObjectManager());
 		
+		hud.attachChild(playerExpBar);
+		hud.attachChild(playerGoldInfo);
 		hud.attachChild(playerInfo);
 		
 		
@@ -289,7 +300,7 @@ public abstract class GameScene extends Scene {
 	
 	public void updateExpBar()
 	{
-		playerExpBar.setProgressPercentage((float) player.getExperience() / (float) player.getNextLevelExp());
+		playerExpBar.setProgressPercentage((float) player.getExperience() / (float) player.getLevelExp());
 	}
 	
 	public void updateValueBars()

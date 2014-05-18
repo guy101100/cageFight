@@ -1,6 +1,7 @@
 package co.nz.splashYay.cagefight.entities;
 
 import java.io.Serializable;
+import java.util.Timer;
 
 import org.andengine.extension.physics.box2d.util.Vector2Pool;
 import org.andengine.extension.physics.box2d.util.constants.PhysicsConstants;
@@ -30,6 +31,7 @@ public class Player extends Entity implements Serializable{
 	private long respawnTime = 0;
 	private int LevelExp;
 	private int gold;
+	private Timer goldTimer;
 	
 	//points a player has to level up abilities
 
@@ -307,7 +309,17 @@ public class Player extends Entity implements Serializable{
 		this.gold = gold;
 	}
 
-	
+
+	public void initialiseGoldTimer()
+	{
+		try {
+			goldTimer.wait(1000);
+			this.setGold(this.getGold() + 1);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 	
 	/**
@@ -338,7 +350,6 @@ public class Player extends Entity implements Serializable{
 		long respawnLength = this.level * 10000;
 		this.respawnTime = (System.currentTimeMillis() + respawnLength);
 	}
-
 
 	
 	
