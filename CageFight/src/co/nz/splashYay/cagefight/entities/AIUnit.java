@@ -44,7 +44,7 @@ public abstract class AIUnit extends Entity{
 			final Body creepBody = getBody();			
 			float x = getXdirectionToTarget();
 			float y = getYdirectionToTarget();			
-			final Vector2 velocity = Vector2Pool.obtain(distanceToMoveWithAngle(getAngleOfLineToTarget(), getSpeed()));
+			final Vector2 velocity = distanceToMoveWithAngle(getAngleOfLineToTarget(), getSpeed());
 			creepBody.setLinearVelocity(velocity);
 			Vector2Pool.recycle(velocity);
 		}		

@@ -75,6 +75,9 @@ public abstract class GameScene extends Scene {
 	protected Engine engine;
 	protected Camera camera;
 	
+	private ShopMenuScene shopMenu;
+	private boolean shopUp = false;
+	
 	protected BitmapTextureAtlas playerTexture;
 	protected ITextureRegion playerTextureRegion;
 	protected FixedStepPhysicsWorld phyWorld;
@@ -115,7 +118,8 @@ public abstract class GameScene extends Scene {
 	protected Rectangle targetRec;
 
 	private IFont mFont;
-	private Text playerGoldInfo;	
+	private Text playerGoldInfo;
+	private ButtonSprite shop;	
 
 	
 	
@@ -125,6 +129,7 @@ public abstract class GameScene extends Scene {
 	
 	public void loadRes() {
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
+		
 		this.playerTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 64, 64);
 		this.playerTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(playerTexture, this.activity, "player.png", 0, 0);
 		playerTexture.load();
@@ -156,7 +161,10 @@ public abstract class GameScene extends Scene {
 		this.mFont.load();
 		
 		
-		
+		this.shopMenu = new ShopMenuScene(activity, engine, camera, this);
+		shopMenu.setCamera(camera);
+		shopMenu.loadResources();
+		shopMenu.createScene();
 		
 		
 		
@@ -214,6 +222,20 @@ public abstract class GameScene extends Scene {
 		this.camera.setHUD(hud);
 	}
 	
+	public void toggleShopMenu(){
+		if (shopUp) {
+			shopUp = false;
+			this.clearChildScene();
+			hud.setVisible(true);
+			
+		} else {
+			shopUp = true;
+			this.setChildScene(shopMenu);
+			hud.setVisible(false);
+			
+		}
+	}
+	
 	protected void setUpHUD()
 	{
 		//Setup HUD components	
@@ -236,13 +258,11 @@ public abstract class GameScene extends Scene {
 			@Override
 			public void onControlClick(final AnalogOnScreenControl pAnalogOnScreenControl) {
 				
-				
-			    
-					        
-		        
 		        
 			} 
 		});
+		
+		
 
 		joyStick.getControlBase().setBlendFunction(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 		joyStick.getControlBase().setAlpha(0.5f);
@@ -251,7 +271,10 @@ public abstract class GameScene extends Scene {
 		joyStick.getControlKnob().setScale(1.25f);
 		joyStick.refreshControlKnobPosition();
 
-		setChildScene(joyStick);// attach control joystick
+		this.hud.attachChild(joyStick);// attach control joystick
+		this.hud.registerTouchArea(joyStick.getControlBase());
+		
+		
 		
 		//Create target info
 		targetInfo = new ValueBar(camera.getWidth() / 2 + 80, 5, 160, 30, activity.getVertexBufferObjectManager());
@@ -316,6 +339,25 @@ public abstract class GameScene extends Scene {
 	    
 	    this.hud.attachChild(attack);
 	    this.hud.registerTouchArea(attack);
+	    
+	    
+	    //shop button
+	    shop = new ButtonSprite(camera.getWidth() - 100, 120, mOnScreenControlKnobTextureRegion, this.activity.getVertexBufferObjectManager())
+	    {
+	        public boolean onAreaTouched(TouchEvent touchEvent, float X, float Y)
+	        {	        	
+	        	shopUp = true;
+				setChildScene(shopMenu);
+				hud.setVisible(false);
+	            return true;
+	        };
+	    };
+	    
+	    shop.setColor(Color.GREEN);
+	    shop.setScale(2.0f);
+	    
+	    this.hud.attachChild(shop);
+	    this.hud.registerTouchArea(shop);
 		
 		
 	    
