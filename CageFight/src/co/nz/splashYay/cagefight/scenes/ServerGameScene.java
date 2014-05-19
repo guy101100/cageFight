@@ -8,6 +8,7 @@ import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.entity.scene.background.Background;
+import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.util.FPSLogger;
 import org.andengine.extension.physics.box2d.FixedStepPhysicsWorld;
@@ -266,7 +267,7 @@ public class ServerGameScene extends GameScene {
 			final Vector2 velocity = Vector2Pool.obtain(player.getMovementX() * player.getSpeed(), player.getMovementY() * player.getSpeed());
 			playerBody.setLinearVelocity(velocity);
 			Vector2Pool.recycle(velocity);
-			
+			player.getSprite().a
 
 			if (player.getMovementX() != 0 && player.getMovementY() != 0) {
 				float direction = MathUtils.radToDeg((float) Math.atan2(player.getMovementX(), -player.getMovementY()));
@@ -391,13 +392,14 @@ public class ServerGameScene extends GameScene {
 			if (newEntity instanceof Player) {
 				Player newPlayer = (Player) newEntity;
 				gameData.addPlayer(newPlayer);				
-				Sprite tempS = new Sprite(newPlayer.getXPos(), newPlayer.getYPos(), playerTextureRegion, this.engine.getVertexBufferObjectManager()) {
+				AnimatedSprite tempS = new AnimatedSprite(newPlayer.getXPos(), newPlayer.getYPos(), playerTextureRegion, this.engine.getVertexBufferObjectManager()) {
 					@Override
 					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 						setTargetFromSpriteTouch(this);						
 						return true;
 					}
 				};
+				tempS.animate(1000);
 				registerTouchArea(tempS);
 				setTouchAreaBindingOnActionDownEnabled(true);				
 				
@@ -415,7 +417,7 @@ public class ServerGameScene extends GameScene {
 				Base newBase = (Base) newEntity;
 				gameData.addEntity(newBase);
 				FixtureDef baseFix = PhysicsFactory.createFixtureDef(0, 0f, 0f);
-				Sprite baseS = new Sprite(newBase.getXPos(), newBase.getYPos(), baseTextureRegion, this.engine.getVertexBufferObjectManager()) {
+				AnimatedSprite baseS = new AnimatedSprite(newBase.getXPos(), newBase.getYPos(), baseTextureRegion, this.engine.getVertexBufferObjectManager()) {
 					@Override
 					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 						setTargetFromSpriteTouch(this);		
@@ -423,6 +425,7 @@ public class ServerGameScene extends GameScene {
 						return true;
 					}
 				};
+				baseS.animate(100);
 				registerTouchArea(baseS);
 				setTouchAreaBindingOnActionDownEnabled(true);
 				newBase.setSprite(baseS);
@@ -435,7 +438,7 @@ public class ServerGameScene extends GameScene {
 				Tower newTower = (Tower) newEntity;
 				gameData.addEntity(newTower);
 				FixtureDef baseFix = PhysicsFactory.createFixtureDef(0, 0f, 0f);
-				Sprite towerS = new Sprite(newTower.getXPos(), newTower.getYPos(), towerTextureRegion, this.engine.getVertexBufferObjectManager()) {
+				AnimatedSprite towerS = new AnimatedSprite(newTower.getXPos(), newTower.getYPos(), towerTextureRegion, this.engine.getVertexBufferObjectManager()) {
 					@Override
 					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 						setTargetFromSpriteTouch(this);		
@@ -443,6 +446,7 @@ public class ServerGameScene extends GameScene {
 						return true;
 					}
 				};
+				towerS.animate(100);
 				registerTouchArea(towerS);
 				setTouchAreaBindingOnActionDownEnabled(true);
 				newTower.setSprite(towerS);
@@ -452,13 +456,14 @@ public class ServerGameScene extends GameScene {
 			} else if (newEntity instanceof Creep) {
 				Creep newAIunit = (Creep) newEntity;
 				gameData.addEntity(newAIunit);
-				Sprite tempS = new Sprite(newAIunit.getXPos(), newAIunit.getYPos(), AITextureRegion , this.engine.getVertexBufferObjectManager()) {
+				AnimatedSprite tempS = new AnimatedSprite(newAIunit.getXPos(), newAIunit.getYPos(), AITextureRegion , this.engine.getVertexBufferObjectManager()) {
 					@Override
 					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 						setTargetFromSpriteTouch(this);
 						return true;
 					}
 				};
+				tempS.animate(100);
 				registerTouchArea(tempS);
 				setTouchAreaBindingOnActionDownEnabled(true);
 

@@ -46,8 +46,13 @@ import org.andengine.opengl.font.Font;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
+import org.andengine.opengl.texture.atlas.bitmap.BuildableBitmapTextureAtlas;
+import org.andengine.opengl.texture.atlas.bitmap.source.IBitmapTextureAtlasSource;
+import org.andengine.opengl.texture.atlas.buildable.builder.BlackPawnTextureAtlasBuilder;
+import org.andengine.opengl.texture.atlas.buildable.builder.ITextureAtlasBuilder.TextureAtlasBuilderException;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.TextureRegion;
+import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.util.HorizontalAlign;
 import org.andengine.util.color.Color;
@@ -59,11 +64,8 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.opengl.GLES20;
-
 import android.os.Environment;
-
 import android.widget.TextView;
-
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.PlayerControlCommands;
 import co.nz.splashYay.cagefight.ValueBar;
@@ -76,9 +78,9 @@ public abstract class GameScene extends Scene {
 	protected Camera camera;
 	
 	protected BitmapTextureAtlas playerTexture;
-	protected ITextureRegion playerTextureRegion;
+	protected TiledTextureRegion playerTextureRegion;
 	protected FixedStepPhysicsWorld phyWorld;
-	
+	protected BuildableBitmapTextureAtlas mBuildBitmapTextureAtlas;
 	protected TMXTiledMap mTMXTiledMap;
 	protected BitmapTextureAtlas mBitmapTextureAtlas;
 	
@@ -91,13 +93,13 @@ public abstract class GameScene extends Scene {
 	protected ITextureRegion mOnScreenControlKnobTextureRegion;
 	
 	protected BitmapTextureAtlas baseTexture;
-	protected TextureRegion baseTextureRegion;
+	protected TiledTextureRegion baseTextureRegion;
 	
 	protected BitmapTextureAtlas towerTexture;
-	protected TextureRegion towerTextureRegion;
+	protected TiledTextureRegion towerTextureRegion;
 	
 	protected BitmapTextureAtlas AITexture;
-	protected TextureRegion AITextureRegion;
+	protected TiledTextureRegion AITextureRegion;
 	
 	protected Sprite sPlayer;
 	protected Player player;
@@ -125,25 +127,31 @@ public abstract class GameScene extends Scene {
 	
 	public void loadRes() {
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
-		this.playerTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 64, 64);
-		this.playerTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(playerTexture, this.activity, "player.png", 0, 0);
-		playerTexture.load();
+		this.mBuildBitmapTextureAtlas = new BuildableBitmapTextureAtlas(this.activity.getTextureManager(), 512, 256, TextureOptions.NEAREST);
+		
+		this.playerTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBuildBitmapTextureAtlas, this.activity, "sprite.png", 4, 1);
 		
 		//ai
-		this.AITexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 64, 64);
-		this.AITextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(AITexture, this.activity, "AI.png", 0, 0);
-		AITexture.load();
+		//this.AITexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 64, 64);
+		this.AITextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBuildBitmapTextureAtlas, this.activity, "sprite.png", 4, 1);
+		//AITexture.load();
 		
 		//base
-		this.baseTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 256, 256); // width and height must be factor of two eg:2,4,8,16 etc
-		this.baseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(baseTexture, this.activity, "base.png", 0, 0);
-		baseTexture.load();
+	//	this.baseTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 256, 256); // width and height must be factor of two eg:2,4,8,16 etc
+		this.baseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBuildBitmapTextureAtlas, this.activity, "sprite.png", 4, 1);
+	//	baseTexture.load();
 		
 		//tower 
-		this.towerTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 256, 256); // width and height must be factor of two eg:2,4,8,16 etc
-		this.towerTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(towerTexture, this.activity, "tower.png", 0, 0);
-		towerTexture.load();
+		//this.towerTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 256, 256); // width and height must be factor of two eg:2,4,8,16 etc
+		this.towerTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBuildBitmapTextureAtlas, this.activity, "sprite.png", 4, 1);
+		//towerTexture.load();
 
+		try {
+			this.mBuildBitmapTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 1));
+			this.mBuildBitmapTextureAtlas.load();
+		} catch (TextureAtlasBuilderException e) {
+			Debug.e(e);
+		}
 		this.mBitmapTextureAtlas = new BitmapTextureAtlas(this.activity.getTextureManager(), 16, 16, TextureOptions.DEFAULT);
 		this.mBitmapTextureAtlas.load();
 		
