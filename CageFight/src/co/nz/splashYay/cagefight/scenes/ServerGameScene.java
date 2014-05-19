@@ -218,7 +218,7 @@ public class ServerGameScene extends GameScene {
 		case DEAD:
 			if (base.isAlive()) {
 				base.destroyBase();
-				//play base destroy sound, change music
+				//play base destroy sound, change music				
 			}
 			break;
 

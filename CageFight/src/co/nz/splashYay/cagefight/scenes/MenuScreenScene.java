@@ -87,10 +87,12 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 
 	
 	public MenuScreenScene(BaseGameActivity act, Engine eng, Camera cam, SceneManager sceneManager){
+		
 		this.activity = act;
 		this.engine = eng;
 		this.camera = cam;		
 		this.sceneManager = sceneManager;
+		
 	}
 	
 	
