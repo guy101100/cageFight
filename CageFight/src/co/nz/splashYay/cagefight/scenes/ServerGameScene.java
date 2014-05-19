@@ -267,7 +267,8 @@ public class ServerGameScene extends GameScene {
 			final Vector2 velocity = Vector2Pool.obtain(player.getMovementX() * player.getSpeed(), player.getMovementY() * player.getSpeed());
 			playerBody.setLinearVelocity(velocity);
 			Vector2Pool.recycle(velocity);
-			player.getSprite().a
+	//		player.getSprite().animate(new long[] { 1000, 1000, 1000 }, 1, 3, true);
+			
 
 			if (player.getMovementX() != 0 && player.getMovementY() != 0) {
 				float direction = MathUtils.radToDeg((float) Math.atan2(player.getMovementX(), -player.getMovementY()));
@@ -288,12 +289,12 @@ public class ServerGameScene extends GameScene {
 						sceneManager.getSoundManager().playRandomAttackSound();
 					}
 				}
-				
+			//	player.getSprite().animate(new long[] { 100, 100,  }, 1, 2, true);
 				
 				
 			} else if (player.getPlayerState() == EntityState.IDLE) {
 				//do nothing
-				
+			//	player.getSprite().animate(0);
 				
 			} else if (player.getPlayerState() == EntityState.DEAD) {
 				//kill the player and check if when to respawn
@@ -303,6 +304,7 @@ public class ServerGameScene extends GameScene {
 				}	else {
 					if (player.getRespawnTime() <= System.currentTimeMillis()) {
 						player.respawn(gameData);
+			//			player.getSprite().animate(new long[] { 0 }, 3, 3, true);
 					}
 				}
 			}			

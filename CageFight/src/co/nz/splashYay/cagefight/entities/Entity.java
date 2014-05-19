@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import org.andengine.engine.handler.physics.PhysicsHandler;
 import org.andengine.entity.modifier.MoveModifier;
+import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.extension.physics.box2d.util.Vector2Pool;
 import org.andengine.util.math.MathUtils;
