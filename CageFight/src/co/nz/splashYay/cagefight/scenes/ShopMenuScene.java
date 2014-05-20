@@ -103,7 +103,7 @@ public class ShopMenuScene extends MenuScene implements IOnMenuItemClickListener
 			Debug.e(e);
 		}
 		
-		this.mFont = FontFactory.create(activity.getFontManager(), activity.getTextureManager(), 256, 256, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 32);
+		this.mFont = FontFactory.create(activity.getFontManager(), activity.getTextureManager(), 256, 256, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 32, android.graphics.Color.WHITE);
 		this.mFont.load();
 		
 	}

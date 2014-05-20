@@ -15,10 +15,10 @@ public class ItemManager {
 		
 		//activity, id, String name, String description, int cost,int damage, int health, int speed, int cooldown, int creepDamage, int creepHealth, int creepSpeed, int creepCooldown, int amountOfCreeps, int baseDamage, int baseHealth, int baseCooldown, int towerDamage, int towerHealth, int towerCooldown, String imageString
 		
-		items.put(AllItems.AXE, new UpgradeItem(activity, id++ , "Power Axe", "Can i axe you a question?", 300, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,"axe.png"));
+		items.put(AllItems.AXE, new UpgradeItem(activity, id++ , "Power Axe", "Can I axe you a question?", 300, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,"axe.png"));
 		items.put(AllItems.SHIELD, new UpgradeItem(activity,id++ , "Basic Shield", "A tiny Shield", 50, 0, 25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,"shield.png"));
 		items.put(AllItems.SONICBOOTS, new UpgradeItem(activity,id++ , "Speedy boots", "Makes you run faster", 100, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,"axe.png"));
-		items.put(AllItems.SWIFTBLADE, new UpgradeItem(activity, id++ , "Swift Blade", "Increase you attack speed", 500, 0, 0, 0, 500, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,"swiftblade.png"));
+		items.put(AllItems.SWIFTBLADE, new UpgradeItem(activity, id++ , "Swift Blade", "Increase your attack speed", 500, 0, 0, 0, 500, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,"swiftblade.png"));
 		
 	}
 	

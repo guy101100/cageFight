@@ -39,8 +39,7 @@ public class ShopMenuItemMenu extends MenuScene implements IOnMenuItemClickListe
 	private BaseGameActivity activity;
 	private Engine engine;
 	private Camera camera;
-	private BuildableBitmapTextureAtlas menuTextureAtlas;
-	private Font mFont;
+	private BuildableBitmapTextureAtlas menuTextureAtlas;	
 	private TextureRegion upgrade;
 
 	private ShopMenuScene sMS;
@@ -50,6 +49,10 @@ public class ShopMenuItemMenu extends MenuScene implements IOnMenuItemClickListe
 	private TextureRegion itemImage;
 
 	private TextureRegion bg;
+
+	private Font mFont;
+
+	private Font smallFont;
 	
 	
 	
@@ -60,6 +63,7 @@ public class ShopMenuItemMenu extends MenuScene implements IOnMenuItemClickListe
 		this.sMS = sMS;
 		this.item = item;
 		this.setCamera(cam);
+		this.mFont = sMS.getmFont();
 		loadRes();
 		createScene();
 	}
@@ -79,26 +83,19 @@ public class ShopMenuItemMenu extends MenuScene implements IOnMenuItemClickListe
 			this.menuTextureAtlas.load();
 		} catch (final TextureAtlasBuilderException e) {
 			Debug.e(e);
-		}
+		}		
 		
-		this.mFont = FontFactory.create(activity.getFontManager(), activity.getTextureManager(), 256, 256, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 32, android.graphics.Color.WHITE);
-		this.mFont.load();
+		this.smallFont = FontFactory.create(activity.getFontManager(), activity.getTextureManager(), 256, 256, Typeface.create(Typeface.DEFAULT, Typeface.NORMAL), 24, android.graphics.Color.WHITE);
+		this.smallFont.load();
+		
 	}
 	
 	public void createScene(){
 		//createBackground();
 		//this.setBackgroundEnabled(false);
 		
-		Rectangle outline = new Rectangle(25, 25, 256, 256, engine.getVertexBufferObjectManager());
-		outline.setColor(Color.RED);
-		this.attachChild(outline);
-		
-		Rectangle center = new Rectangle(35, 35, 236, 236, engine.getVertexBufferObjectManager());
-		center.setColor(Color.BLACK);
-		this.attachChild(center);
-		
-		Sprite icon = new Sprite(center.getX(), center.getY(), itemImage, this.engine.getVertexBufferObjectManager());
-		icon.setSize(center.getWidth(), center.getHeight());
+		Sprite icon = new Sprite(35, 35, itemImage, this.engine.getVertexBufferObjectManager());
+		icon.setSize(200, 200);
 		this.attachChild(icon);
 		
 		final IMenuItem back = new ScaleMenuItemDecorator(new SpriteMenuItem(BACK, upgrade, engine.getVertexBufferObjectManager()), 1.2f, 1);	    
@@ -118,31 +115,30 @@ public class ShopMenuItemMenu extends MenuScene implements IOnMenuItemClickListe
 	    title.setColor(Color.WHITE);
 		this.attachChild(title);
 		
-		Text description = new Text(camera.getWidth()/2, 50, this.mFont, item.getDescription(), "Server IP : XXX.XXX.XXX.XXX Extra bit on the end".length(), activity.getVertexBufferObjectManager());
-		description.setPosition(title.getX(), camera.getHeight()/4);
+		Text description = new Text(camera.getWidth()/2, 50, this.smallFont, item.getDescription(), "Server IP : XXX.XXX.XXX.XXX Extra bit on the end".length(), activity.getVertexBufferObjectManager());
+		description.setPosition(title.getX(), title.getY() + title.getHeight() + (description.getHeight()/2));
 		description.setColor(Color.WHITE);
 		this.attachChild(description);
-		
 				
-		Text cost = new Text(camera.getWidth()/2, 50, this.mFont, (item.getCost()+""), "Server IP : XXX.XXX.XXX.XXX Extra bit on the end".length(), activity.getVertexBufferObjectManager());
+		Text cost = new Text(camera.getWidth()/2, 50, this.smallFont, ("Cost : " + item.getCost()), "Server IP : XXX.XXX.XXX.XXX Extra bit on the end".length(), activity.getVertexBufferObjectManager());
 		cost.setPosition(title.getX(), description.getY() + description.getHeight() + (description.getHeight()/2));
-		cost.setColor(Color.WHITE);
-		this.attachChild(cost);
+		cost.setColor(Color.WHITE);		
+		this.attachChild(cost);	
 		
-		String[] statStrings = (String[]) item.getStatBonuses().toArray();
-		
-		for (int i = 0; i < statStrings.length; i++) {
-			Text stats = new Text(camera.getWidth()/2, 50, this.mFont, statStrings[i], "Server IP : XXX.XXX.XXX.XXX Extra bit on the end".length(), activity.getVertexBufferObjectManager());
-			
+		int i = 0;
+		for (String string : item.getStatBonuses()) {
+			Text stats = new Text(camera.getWidth()/2, 50, this.smallFont, string, "Server IP : XXX.XXX.XXX.XXX Extra bit on the end".length(), activity.getVertexBufferObjectManager());
 			if (i == 0) {
-				stats.setPosition(title.getX(), cost.getY() + cost.getHeight() + (cost.getHeight()/2));
+				stats.setPosition(title.getX(), cost.getY() + cost.getHeight() + (cost.getHeight()/3));
 			} else {
-				stats.setPosition(title.getX(), cost.getY() + ((cost.getHeight() + (cost.getHeight()/2))*i)          );
-			}		
-			
-			stats.setColor(Color.WHITE);
+				stats.setPosition(title.getX(), cost.getY() + ((cost.getHeight() + (cost.getHeight()/3))*i)          );
+			}				
+			stats.setColor(Color.WHITE);			
 			this.attachChild(stats);
+			i++;
 		}
+		
+		
 		
 		
 		
