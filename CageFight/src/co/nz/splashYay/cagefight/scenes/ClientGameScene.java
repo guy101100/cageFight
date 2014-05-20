@@ -31,14 +31,10 @@ import com.badlogic.gdx.math.Vector2;
 public class ClientGameScene extends GameScene {
 
 	// networking
-	private SceneManager sceneManager;
 	private ClientOutNetCom oNC;
 	//private ClientInNetCom iNC;
 	private String ipAddress;
 	UDPReciver udpr;
-	
-	
-	
 	
 
 	public ClientGameScene(BaseGameActivity act, Engine eng, Camera cam, String ipAddress, SceneManager sceneManager) {
@@ -79,6 +75,7 @@ public class ClientGameScene extends GameScene {
 			@Override
 			public void onUpdate(float pSecondsElapsed) {
 				if (sceneManager.isGameStarted() &&	gameData.getEntityWithId(player.getId()) != null) {					
+					checkVictory();
 					processEntities();
 					updateTargetMarker();	
 					updateValueBars();

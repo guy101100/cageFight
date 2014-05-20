@@ -13,8 +13,9 @@ import co.nz.splashYay.cagefight.entities.Entity;
 import co.nz.splashYay.cagefight.entities.Player;
 import co.nz.splashYay.cagefight.entities.Tower;
 
-
 public class GameData implements Serializable{
+	
+	private GameState gameState;
 	
 	private transient Base evilBase;
 	private transient Base goodBase;
@@ -36,6 +37,7 @@ public class GameData implements Serializable{
 		goodTeam = new Team(1);
 		evilTeam = new Team(2);
 		
+		gameState = GameState.RUNNING;
 	}
 	
 	public GameData(GameData gD) {
@@ -44,6 +46,8 @@ public class GameData implements Serializable{
 		this.entities = (HashMap<Integer, Entity>) gD.getEntities().clone();
 		this.IDs = (ArrayList<Integer>) gD.getIDs().clone();
 		sendTime = System.currentTimeMillis();
+		
+		gameState = GameState.RUNNING;
 	}
 	
 	
@@ -162,7 +166,15 @@ public class GameData implements Serializable{
 		this.goodTower = goodTower;
 	}
 	
+	public GameState getGameState()
+	{
+		return this.gameState;
+	}
 	
+	public void setGameState(GameState gameState)
+	{
+		this.gameState = gameState;
+	}
 	
 	
 	

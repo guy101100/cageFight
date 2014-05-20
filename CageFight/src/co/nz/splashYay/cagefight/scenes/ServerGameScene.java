@@ -9,6 +9,8 @@ import org.andengine.engine.camera.Camera;
 import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.entity.text.Text;
+import org.andengine.entity.text.TextOptions;
 import org.andengine.entity.util.FPSLogger;
 import org.andengine.extension.physics.box2d.FixedStepPhysicsWorld;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
@@ -16,11 +18,16 @@ import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.extension.physics.box2d.util.Vector2Pool;
 import org.andengine.extension.tmx.TMXTile;
 import org.andengine.input.touch.TouchEvent;
+import org.andengine.opengl.font.Font;
+import org.andengine.opengl.font.FontFactory;
 import org.andengine.ui.activity.BaseGameActivity;
+import org.andengine.util.HorizontalAlign;
 import org.andengine.util.math.MathUtils;
 
+import android.graphics.Typeface;
 import co.nz.splashYay.cagefight.EntityState;
 import co.nz.splashYay.cagefight.GameData;
+import co.nz.splashYay.cagefight.GameState;
 import co.nz.splashYay.cagefight.SceneManager;
 import co.nz.splashYay.cagefight.Team.ALL_TEAMS;
 import co.nz.splashYay.cagefight.entities.Base;
@@ -40,7 +47,6 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 
 public class ServerGameScene extends GameScene {
 	// networking
-	private SceneManager sceneManager;	
 	private InFromClientListener iFCL;
 	//private OutToClientListener oTCL;
 	private ServerCheckListener sCL;
@@ -93,13 +99,11 @@ public class ServerGameScene extends GameScene {
 		this.registerUpdateHandler(new IUpdateHandler() {
 			@Override
 			public void onUpdate(float pSecondsElapsed) {
-				checkVictoryConditions();
+				checkVictory();
 				processServerPlayerControls();
 				processEntityActions();
 				updateTargetMarker();		
 				updateValueBars();
-				
-
 			}
 
 			@Override
@@ -110,15 +114,6 @@ public class ServerGameScene extends GameScene {
 		
 		
 	}
-	
-	public void checkVictoryConditions(){
-		if (!gameData.getEvilBase().isAlive()) {
-			//set good victory
-		} else if (!gameData.getGoodBase().isAlive()) {
-			//set Evil victory
-		}
-	}
-	
 	
 	
 	private void processServerPlayerControls() {
@@ -218,7 +213,7 @@ public class ServerGameScene extends GameScene {
 		case DEAD:
 			if (base.isAlive()) {
 				base.destroyBase();
-				//play base destroy sound, change music
+				//play base destroy sound, change music				
 			}
 			break;
 

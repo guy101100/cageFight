@@ -59,18 +59,19 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.opengl.GLES20;
-
 import android.os.Environment;
-
 import android.widget.TextView;
-
 import co.nz.splashYay.cagefight.GameData;
+import co.nz.splashYay.cagefight.GameState;
 import co.nz.splashYay.cagefight.PlayerControlCommands;
+import co.nz.splashYay.cagefight.SceneManager;
 import co.nz.splashYay.cagefight.ValueBar;
+import co.nz.splashYay.cagefight.SceneManager.AllScenes;
 import co.nz.splashYay.cagefight.entities.Entity;
 import co.nz.splashYay.cagefight.entities.Player;
 
 public abstract class GameScene extends Scene {
+	protected SceneManager sceneManager;
 	protected BaseGameActivity activity;
 	protected Engine engine;
 	protected Camera camera;
@@ -154,12 +155,6 @@ public abstract class GameScene extends Scene {
 		
 		this.mFont = FontFactory.create(activity.getFontManager(), activity.getTextureManager(), 256, 256, Typeface.create(Typeface.DEFAULT, Typeface.NORMAL), 24);
 		this.mFont.load();
-		
-		
-		
-		
-		
-		
 
 	}
 	
@@ -251,7 +246,8 @@ public abstract class GameScene extends Scene {
 		joyStick.getControlKnob().setScale(1.25f);
 		joyStick.refreshControlKnobPosition();
 
-		setChildScene(joyStick);// attach control joystick
+		this.hud.attachChild(joyStick);// attach control joystick
+		this.hud.registerTouchArea(joyStick.getControlBase());
 		
 		//Create target info
 		targetInfo = new ValueBar(camera.getWidth() / 2 + 80, 5, 160, 30, activity.getVertexBufferObjectManager());
@@ -377,6 +373,21 @@ public abstract class GameScene extends Scene {
 
 	public PlayerControlCommands getPlayerCommands() {
 		return playerCommands;
+	}
+	
+	public void checkVictory(){
+		if(gameData.getGameState().equals(GameState.RUNNING))
+		{
+			if(!gameData.getGoodBase().isAlive() || !gameData.getEvilBase().isAlive())
+			{
+				gameData.setGameState(GameState.FINISHED);
+				
+				StatsScene stats = new StatsScene(activity, engine, camera, gameData);
+				stats.loadResources();
+				stats.createScene();
+				this.setChildScene(stats);
+			}		
+		}
 	}
 
 	

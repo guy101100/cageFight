@@ -330,6 +330,10 @@ public class Player extends Entity implements Serializable{
 		this.respawnTime = (System.currentTimeMillis() + respawnLength);
 	}
 
+	public String getStatsString()
+	{
+		return "Level: " + level + ";Gold: " + gold;
+	}
 	
 	
 

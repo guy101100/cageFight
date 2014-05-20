@@ -54,11 +54,6 @@ public class Entity implements Serializable{
 	protected Entity target;
 
 
-
-	
-	
-	
-	
 	public Entity(int xpos, int ypos, int maxhealth, int currenthealth, int id, ALL_TEAMS team)
 	{
 		this.xpos = xpos;
