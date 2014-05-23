@@ -12,6 +12,9 @@ import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
 import org.andengine.ui.activity.BaseGameActivity;
 
+import co.nz.splashYay.cagefight.entities.Entity;
+import co.nz.splashYay.cagefight.entities.Player;
+
 public class SoundManager {
 	private BaseGameActivity activity;
 	private Engine engine;
@@ -71,17 +74,37 @@ public class SoundManager {
 			e.printStackTrace();
 		}
 	}
-	public void playTowerAttackSound(){
-		towerAttack.play();
+	
+	private float getVolume(Player player, Entity soundSource) {
+		
+		int distance = (int) player.getDistanceToTarget(soundSource);
+		if (distance < 1000) {			
+			float vol = 1000 - distance;			
+			vol = vol/1000;	
+			return vol;
+		} else {
+			return 0;
+		}
+		
+		
+		
 	}
 	
-	public void playRandomAttackSound(){
+	public void playTowerAttackSound(Player player, Entity soundSource){
+		towerAttack.setVolume(getVolume(player, soundSource));
+		towerAttack.play();
+		
+	}
+	
+	public void playRandomAttackSound(Player player, Entity soundSource){
 		int idx = new Random().nextInt(attackSounds.length);
+		attackSounds[idx].setVolume(getVolume(player, soundSource));
 		attackSounds[idx].play();		
 	}
 	
-	public void playRandomDeathSound(){
+	public void playRandomDeathSound(Player player, Entity soundSource){
 		int idx = new Random().nextInt(deathSounds.length);
+		deathSounds[idx].setVolume(getVolume(player, soundSource));
 		deathSounds[idx].play();		
 	}
 	

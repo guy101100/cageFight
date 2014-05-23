@@ -184,7 +184,7 @@ public class ServerGameScene extends GameScene {
 							
 				creep.attackTarget();
 				creep.setLastAttackTime(System.currentTimeMillis());
-				sceneManager.getSoundManager().playRandomAttackSound();
+				sceneManager.getSoundManager().playRandomAttackSound(player, creep);
 			}
 
 			break;
@@ -192,7 +192,7 @@ public class ServerGameScene extends GameScene {
 			creep.stopEntity();
 			if (creep.isAlive()) {
 				creep.killCreep();
-				sceneManager.getSoundManager().playRandomDeathSound();
+				sceneManager.getSoundManager().playRandomDeathSound(player, creep);
 			}	
 			
 			break;
@@ -218,7 +218,7 @@ public class ServerGameScene extends GameScene {
 			}
 			
 			base.setLastAttackTime(System.currentTimeMillis());
-			sceneManager.getSoundManager().playTowerAttackSound();
+			sceneManager.getSoundManager().playTowerAttackSound(player, base);
 			
 			break;
 		case IDLE:
@@ -228,7 +228,7 @@ public class ServerGameScene extends GameScene {
 		case DEAD:
 			if (base.isAlive()) {
 				base.destroyBase();
-				this.makeExplosion(base.getCenterXpos(), base.getCenterYpos(), explosionTextureRegion );
+				this.makeSingleCycleAnnimation(base.getCenterXpos(), base.getCenterYpos(), explosionTextureRegion, 9, 100 );
 				//play base destroy sound, change music				
 			}
 			break;
@@ -256,7 +256,7 @@ public class ServerGameScene extends GameScene {
 			}
 			
 			tower.setLastAttackTime(System.currentTimeMillis());
-			sceneManager.getSoundManager().playTowerAttackSound();
+			sceneManager.getSoundManager().playTowerAttackSound(player, tower);
 			
 			break;
 		case IDLE:
@@ -266,7 +266,7 @@ public class ServerGameScene extends GameScene {
 		case DEAD:
 			if (tower.isAlive()) {
 				tower.destroyTower();
-				this.makeExplosion(tower.getCenterXpos(), tower.getCenterYpos(), explosionTextureRegion);
+				this.makeSingleCycleAnnimation(tower.getCenterXpos(), tower.getCenterYpos(), explosionTextureRegion, 9, 100);
 				//play base destroy sound, change music
 			}
 			break;
@@ -310,7 +310,7 @@ public class ServerGameScene extends GameScene {
 					{
 						player.attackTarget();
 						player.setLastAttackTime(System.currentTimeMillis());
-						sceneManager.getSoundManager().playRandomAttackSound();
+						sceneManager.getSoundManager().playRandomAttackSound(this.player, player);
 					}
 				}
 				
@@ -325,7 +325,7 @@ public class ServerGameScene extends GameScene {
 				//kill the player and check if when to respawn
 				if (player.isAlive()) {
 					player.killPlayer();
-					sceneManager.getSoundManager().playRandomDeathSound();
+					sceneManager.getSoundManager().playRandomDeathSound(this.player, player);
 				}	else {
 					if (player.getRespawnTime() <= System.currentTimeMillis()) {
 						player.respawn(gameData);

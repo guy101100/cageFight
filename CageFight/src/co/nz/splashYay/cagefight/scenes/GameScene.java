@@ -464,19 +464,27 @@ public abstract class GameScene extends Scene {
 	}
 	
 	public void towerAttackExplosion(Entity ent){
-		makeExplosion(ent.getCenterXpos(), ent.getCenterYpos(), towerAttackTextureRegion);
-		System.out.println("explosion");
+		makeSingleCycleAnnimation(ent.getCenterXpos(), ent.getCenterYpos(), towerAttackTextureRegion, 38,30);		
 	}
 	
-	public void makeExplosion(float x, float y, TiledTextureRegion region){
+	
+	/**
+	 * 
+	 * @param x x position of sprite animation
+	 * @param y y position of sprite animation
+	 * @param region sprite region to animate
+	 * @param lastFrame the amount of frames to animate though (GET THIS RIGHT OR RISK INFINITE LOOP)
+	 * @param speed speed in ms of animation
+	 */
+	public void makeSingleCycleAnnimation(float x, float y, TiledTextureRegion region, final int lastFrame, int speed){
 	    final AnimatedSprite explosion = new AnimatedSprite(x, y, region, this.engine.getVertexBufferObjectManager()); 
-	    explosion.animate(50);
+	    explosion.animate(speed);
 	    this.attachChild(explosion);
 	    explosion.registerUpdateHandler(new IUpdateHandler(){
 
 	        @Override
 	        public void onUpdate(float pSecondsElapsed) {
-	            if(explosion.getCurrentTileIndex() == 9){
+	            if(explosion.getCurrentTileIndex() == lastFrame){
 	                activity.runOnUpdateThread(new Runnable() {
 	                @Override                
 	                public void run() {
