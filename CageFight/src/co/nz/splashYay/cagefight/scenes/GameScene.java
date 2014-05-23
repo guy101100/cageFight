@@ -161,8 +161,7 @@ public abstract class GameScene extends Scene {
 		this.mFont = FontFactory.create(activity.getFontManager(), activity.getTextureManager(), 256, 256, Typeface.create(Typeface.DEFAULT, Typeface.NORMAL), 24);
 		this.mFont.load();
 		
-		this.shopMenu = new ShopMenuScene(activity, engine, camera, this);
-		shopMenu.setCamera(camera);
+		this.shopMenu = new ShopMenuScene(activity, engine, camera, this);	
 		shopMenu.loadResources();
 		shopMenu.createScene();
 

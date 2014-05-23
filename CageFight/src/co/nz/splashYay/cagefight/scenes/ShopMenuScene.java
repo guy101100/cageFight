@@ -21,8 +21,11 @@ import org.andengine.opengl.texture.region.TextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.util.debug.Debug;
 
+import co.nz.splashYay.cagefight.ItemManager;
 import co.nz.splashYay.cagefight.UpgradeItem;
+import co.nz.splashYay.cagefight.ItemManager.AllItems;
 
+import android.content.ClipData.Item;
 import android.graphics.Typeface;
 
 public class ShopMenuScene extends MenuScene implements IOnMenuItemClickListener{
@@ -41,18 +44,19 @@ public class ShopMenuScene extends MenuScene implements IOnMenuItemClickListener
 	private final int ITEM2 = 2;
 	private final int ITEM3 = 3;
 	private final int ITEM4 = 4;
-	private final int ITEM5 = 5;
-	private final int ITEM6 = 6;
-	private final int ITEM7 = 7;
-	private final int ITEM8 = 8;
-	private final int ITEM9 = 9;
-	private final int ITEM10 = 10;
 	
 	private final int CLOSE = 99;
 	
-	private UpgradeItem[] items;
+	private ItemManager items;
+	
 	private GameScene gS;
 	
+	private ShopMenuItemMenu itemMenu;
+	
+	private float[] xPositions;
+	private float[] yPositions ;
+	
+	int size = 96;
 	
 
 	public ShopMenuScene(BaseGameActivity act, Engine eng, Camera cam, GameScene gS){
@@ -60,11 +64,28 @@ public class ShopMenuScene extends MenuScene implements IOnMenuItemClickListener
 		this.engine = eng;
 		this.camera = cam;
 		this.gS = gS;
-		items = new UpgradeItem[10];
+		this.setCamera(cam);
+		items = new ItemManager(activity);
 		
-		for (int i = 0; i < 10; i++) {
-			items[i] = new UpgradeItem(5, 50, 1, 500, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+		
+		xPositions = new float[AllItems.values().length];
+		yPositions = new float[AllItems.values().length];	
+		
+		xPositions[0] = (int) (camera.getWidth() /5) - (size/2);
+		yPositions[0] = 100;
+		for (int i = 1; i < AllItems.values().length; i++) {
+			xPositions[i] = (float) (xPositions[i-1] + (size*1.25));
+			if (i < 5) {
+				yPositions[i] = 100;
+			} else {
+				yPositions[i] = (float) (yPositions[0] + (size*1.25));
+			}
 		}
+		
+		
+		
+		
+		
 		
 	}
 	
@@ -82,7 +103,7 @@ public class ShopMenuScene extends MenuScene implements IOnMenuItemClickListener
 			Debug.e(e);
 		}
 		
-		this.mFont = FontFactory.create(activity.getFontManager(), activity.getTextureManager(), 256, 256, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 32);
+		this.mFont = FontFactory.create(activity.getFontManager(), activity.getTextureManager(), 256, 256, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 32, android.graphics.Color.WHITE);
 		this.mFont.load();
 		
 	}
@@ -93,52 +114,21 @@ public class ShopMenuScene extends MenuScene implements IOnMenuItemClickListener
 		//ipText = new Text(100, 160, this.mFont, "Server IP : ", "Server IP : XXX.XXX.XXX.XXX Extra bit on the end".length(), activity.getVertexBufferObjectManager());
 	    //joinMenu.attachChild(ipText);
 		
-		final IMenuItem item1 = new ScaleMenuItemDecorator(new SpriteMenuItem(ITEM1, upgrade, engine.getVertexBufferObjectManager()), 1.2f, 1);	    
-		addMenuItem(item1);
-		item1.setPosition(50, camera.getHeight()/4);
-		
-		final IMenuItem item2 = new ScaleMenuItemDecorator(new SpriteMenuItem(ITEM2, upgrade, engine.getVertexBufferObjectManager()), 1.2f, 1);	    
-		addMenuItem(item2);
-		item2.setPosition((float) (item1.getX() + (item1.getWidth()*1.25)), item1.getY());
-		
-		final IMenuItem item3 = new ScaleMenuItemDecorator(new SpriteMenuItem(ITEM3, upgrade, engine.getVertexBufferObjectManager()), 1.2f, 1);	    
-		addMenuItem(item3);
-		item3.setPosition((float) (item2.getX() + (item1.getWidth()*1.25)), item1.getY());
-		
-		final IMenuItem item4 = new ScaleMenuItemDecorator(new SpriteMenuItem(ITEM4, upgrade, engine.getVertexBufferObjectManager()), 1.2f, 1);	    
-		addMenuItem(item4);
-		item4.setPosition((float) (item3.getX() + (item1.getWidth()*1.25)), item1.getY());
-		
-		final IMenuItem item5 = new ScaleMenuItemDecorator(new SpriteMenuItem(ITEM5, upgrade, engine.getVertexBufferObjectManager()), 1.2f, 1);	    
-		addMenuItem(item5);
-		item5.setPosition((float) (item4.getX() + (item1.getWidth()*1.25)), item1.getY());
-		
-		final IMenuItem item6 = new ScaleMenuItemDecorator(new SpriteMenuItem(ITEM6, upgrade, engine.getVertexBufferObjectManager()), 1.2f, 1);	    
-		addMenuItem(item6);
-		item6.setPosition(item1.getX(), (float) (item1.getY() + (item1.getHeight()*1.25)));
-		
-		final IMenuItem item7 = new ScaleMenuItemDecorator(new SpriteMenuItem(ITEM7, upgrade, engine.getVertexBufferObjectManager()), 1.2f, 1);	    
-		addMenuItem(item7);
-		item7.setPosition((float) (item6.getX() + (item1.getWidth()*1.25)), item6.getY());
-		
-		final IMenuItem item8 = new ScaleMenuItemDecorator(new SpriteMenuItem(ITEM8, upgrade, engine.getVertexBufferObjectManager()), 1.2f, 1);	    
-		addMenuItem(item8);
-		item8.setPosition((float) (item7.getX() + (item1.getWidth()*1.25)), item6.getY());
-		
-		final IMenuItem item9 = new ScaleMenuItemDecorator(new SpriteMenuItem(ITEM9, upgrade, engine.getVertexBufferObjectManager()), 1.2f, 1);	    
-		addMenuItem(item9);
-		item9.setPosition((float) (item8.getX() + (item1.getWidth()*1.25)), item6.getY());
-		
-		final IMenuItem item10 = new ScaleMenuItemDecorator(new SpriteMenuItem(ITEM10, upgrade, engine.getVertexBufferObjectManager()), 1.2f, 1);	    
-		addMenuItem(item10);
-		item10.setPosition((float) (item9.getX() + (item1.getWidth()*1.25)), item6.getY());
-		
 		final IMenuItem back = new ScaleMenuItemDecorator(new SpriteMenuItem(CLOSE, upgrade, engine.getVertexBufferObjectManager()), 1.2f, 1);	    
 		addMenuItem(back);
-		back.setPosition(camera.getWidth() - back.getWidth() - 25, + 25);
+		back.setPosition(camera.getWidth()/4- (back.getWidth()/2), camera.getHeight() - back.getHeight() - 25);
 		
+		int count = 1;
+		for (AllItems item : AllItems.values()) {
+			
+			final IMenuItem item1 = new ScaleMenuItemDecorator(new SpriteMenuItem(count, items.getItem(item).getTextureRegion(), engine.getVertexBufferObjectManager()), 1.2f, 1);	    
+			item1.setSize(size, size);
+			addMenuItem(item1);
+			item1.setPosition(xPositions[count-1], yPositions[count-1]);	
+			count++;
+		}
 		
-		
+				
 		this.setOnMenuItemClickListener(this);
 		
 		
@@ -151,15 +141,35 @@ public class ShopMenuScene extends MenuScene implements IOnMenuItemClickListener
 			gS.toggleShopMenu();
 			
 			return true;
-		case 2:
-			
+		case ITEM1:
+			itemMenu = new ShopMenuItemMenu(activity, engine, camera, this, items.getItem(AllItems.AXE));				
+			this.setChildScene(itemMenu);
 			return true;
+		case ITEM2:
+			itemMenu = new ShopMenuItemMenu(activity, engine, camera, this, items.getItem(AllItems.SHIELD));				
+			this.setChildScene(itemMenu);
+			return true;
+		case ITEM3:
+			itemMenu = new ShopMenuItemMenu(activity, engine, camera, this, items.getItem(AllItems.SONICBOOTS));				
+			this.setChildScene(itemMenu);
+			return true;
+		case ITEM4:
+			itemMenu = new ShopMenuItemMenu(activity, engine, camera, this, items.getItem(AllItems.SWIFTBLADE));				
+			this.setChildScene(itemMenu);
+			return true;
+
 			
 		default:
 			return false;
 			
 		}
 	}
+
+	public Font getmFont() {
+		return mFont;
+	}
+	
+	
 	
 	
 }
