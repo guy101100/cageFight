@@ -47,7 +47,7 @@ public class InFromClientNetCom extends Thread {
 			outToClient = new ObjectOutputStream(welcomeSocket.getOutputStream());
 			welcomeSocket.setTcpNoDelay(true);
 
-			Player newPlayer = new Player("", gameData.getUnusedID(), 100, 1, gameData.getTeam(ALL_TEAMS.GOOD).getSpawnXpos(), gameData.getTeam(ALL_TEAMS.GOOD).getSpawnYpos(), ALL_TEAMS.GOOD);
+			Player newPlayer = new Player("", gameData.getUnusedID(), 500, 500, gameData.getTeam(ALL_TEAMS.GOOD).getSpawnXpos(), gameData.getTeam(ALL_TEAMS.GOOD).getSpawnYpos(), ALL_TEAMS.GOOD);
 			this.player = newPlayer; //the player this is connection is to
 			serverScene.addEntityToGameDataObj(newPlayer);
 			outToClient.writeObject(newPlayer);

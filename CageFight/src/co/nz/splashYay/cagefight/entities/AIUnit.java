@@ -12,8 +12,8 @@ import co.nz.splashYay.cagefight.Team.ALL_TEAMS;
 
 public abstract class AIUnit extends Entity{
 	
-	private int agroDistance = 500;
-	private int loseTargetDistance = 500;
+	protected int agroDistance = 500;
+	protected int loseTargetDistance = 500;
 	
 	public AIUnit(int xpos, int ypos, int maxhealth, int currenthealth, int id, ALL_TEAMS team) {
 		super(xpos, ypos, maxhealth, currenthealth, id, team);
@@ -21,7 +21,7 @@ public abstract class AIUnit extends Entity{
 		
 	}
 	
-	public void checkState(){
+	public void checkState(GameData gameData){
 		if (getCurrenthealth() <= 0) {
 			state = EntityState.DEAD;
 		} else {
@@ -71,7 +71,7 @@ public abstract class AIUnit extends Entity{
 	 * checks if there are enemy units inside the AI units agro radius
 	 * @return true if there are enemy units close by, else returns false
 	 */
-	private boolean checkAgroRadius(GameData gd){
+	public boolean checkAgroRadius(GameData gd){
 		for (Entity e : gd.getEntities().values()) {
 			if (e.isAlive() && !(e instanceof Tower) && !(e instanceof Base)) {
 				if (e.getId() != this.id && e.getTeam() != this.team) {

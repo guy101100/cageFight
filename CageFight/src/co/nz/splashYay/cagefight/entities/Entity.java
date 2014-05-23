@@ -25,8 +25,8 @@ public class Entity implements Serializable{
 	protected float xpos;
 	protected float ypos;
 	protected float direction;
-	protected int currenthealth;
-	protected int maxhealth;
+	protected float currenthealth;
+	protected float maxhealth;
 	
 	protected float maxSpeed;
 	protected float speed;	
@@ -66,7 +66,7 @@ public class Entity implements Serializable{
 		this.maxSpeed = 5;
 		this.speed = maxSpeed;
 		
-		this.maxDamage = 3;
+		this.maxDamage = 50;
 		this.damage = maxDamage;
 		
 		this.attackRange = 75;
@@ -148,7 +148,7 @@ public class Entity implements Serializable{
 	}
 	
 	
-	public void healEntity(int amount) {
+	public void healEntity(float amount) {
 		if (amount >= 0) {
 			if (currenthealth + amount > maxhealth) {
 				currenthealth = maxhealth;
@@ -246,7 +246,7 @@ public class Entity implements Serializable{
 	 * gets the entitys current health
 	 * @return current health of entity
 	 */
-	public int getCurrenthealth() {
+	public float getCurrenthealth() {
 		return currenthealth;
 	}
 	
@@ -265,7 +265,7 @@ public class Entity implements Serializable{
 	 * gets the entitys max health
 	 * @return max health
 	 */
-	public int getMaxhealth() {
+	public float getMaxhealth() {
 		return maxhealth;
 	}
 	
@@ -504,6 +504,12 @@ public class Entity implements Serializable{
 
 	public void setAttackRange(int attackRange) {
 		this.attackRange = attackRange;
+	}
+
+
+	public void checkState(GameData gameData) {
+		
+		
 	}
 	
 	

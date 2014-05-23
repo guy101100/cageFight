@@ -92,7 +92,7 @@ public class ServerGameScene extends GameScene {
 		sCL.start();
 		udp.start();
 		
-		player = new Player("", gameData.getUnusedID(), 100, 50, gameData.getTeam(ALL_TEAMS.EVIL).getSpawnXpos(), gameData.getTeam(ALL_TEAMS.EVIL).getSpawnYpos(), ALL_TEAMS.EVIL);
+		player = new Player("", gameData.getUnusedID(), 500, 250, gameData.getTeam(ALL_TEAMS.EVIL).getSpawnXpos(), gameData.getTeam(ALL_TEAMS.EVIL).getSpawnYpos(), ALL_TEAMS.EVIL);
 		addEntityToGameDataObj(player);
 		
 		//game loop
@@ -154,7 +154,7 @@ public class ServerGameScene extends GameScene {
 	}
 
 	private void proccessCreep(Creep creep) {
-		creep.checkState();
+		creep.checkState(gameData);
 
 		creep.checkAndUpdateObjective(gameData);
 
@@ -203,18 +203,22 @@ public class ServerGameScene extends GameScene {
 	}
 	
 	private void proccessBase(Base base) {
-		base.checkState();
+		base.checkState(gameData);
 		
 		switch (base.getState()) {
 		case ATTACKING:
 			if (base.getTeam() == ALL_TEAMS.EVIL) {
-				base.attackTargetsInRange(gameData.getEntitiesOnTeam(ALL_TEAMS.GOOD));
+				for (Entity ent : base.attackTargetsInRange(gameData.getEntitiesOnTeam(ALL_TEAMS.GOOD))) {
+					towerAttackExplosion(ent);
+				}
 			} else {
-				base.attackTargetsInRange(gameData.getEntitiesOnTeam(ALL_TEAMS.EVIL));
+				for (Entity ent : base.attackTargetsInRange(gameData.getEntitiesOnTeam(ALL_TEAMS.EVIL))) {
+					towerAttackExplosion(ent);
+				}
 			}
 			
 			base.setLastAttackTime(System.currentTimeMillis());
-			sceneManager.getSoundManager().playRandomAttackSound();
+			sceneManager.getSoundManager().playTowerAttackSound();
 			
 			break;
 		case IDLE:
@@ -224,7 +228,7 @@ public class ServerGameScene extends GameScene {
 		case DEAD:
 			if (base.isAlive()) {
 				base.destroyBase();
-				this.makeExplosion(base.getCenterXpos(), base.getCenterYpos());
+				this.makeExplosion(base.getCenterXpos(), base.getCenterYpos(), explosionTextureRegion );
 				//play base destroy sound, change music				
 			}
 			break;
@@ -236,18 +240,23 @@ public class ServerGameScene extends GameScene {
 	}
 
 	private void proccessTower(Tower tower) {
-		tower.checkState();
+		tower.checkState(gameData);
 
 		switch (tower.getState()) {
 		case ATTACKING:
+			
 			if (tower.getTeam() == ALL_TEAMS.EVIL) {
-				tower.attackTargetsInRange(gameData.getEntitiesOnTeam(ALL_TEAMS.GOOD));
+				for (Entity ent : tower.attackTargetsInRange(gameData.getEntitiesOnTeam(ALL_TEAMS.GOOD))) {
+					towerAttackExplosion(ent);
+				}
 			} else {
-				tower.attackTargetsInRange(gameData.getEntitiesOnTeam(ALL_TEAMS.EVIL));
+				for (Entity ent : tower.attackTargetsInRange(gameData.getEntitiesOnTeam(ALL_TEAMS.EVIL))) {
+					towerAttackExplosion(ent);
+				}
 			}
 			
 			tower.setLastAttackTime(System.currentTimeMillis());
-			sceneManager.getSoundManager().playRandomAttackSound();
+			sceneManager.getSoundManager().playTowerAttackSound();
 			
 			break;
 		case IDLE:
@@ -257,7 +266,7 @@ public class ServerGameScene extends GameScene {
 		case DEAD:
 			if (tower.isAlive()) {
 				tower.destroyTower();
-				this.makeExplosion(tower.getCenterXpos(), tower.getCenterYpos());
+				this.makeExplosion(tower.getCenterXpos(), tower.getCenterYpos(), explosionTextureRegion);
 				//play base destroy sound, change music
 			}
 			break;
@@ -269,7 +278,7 @@ public class ServerGameScene extends GameScene {
 
 	private void proccessPlayer(Player player) {		
 		
-		player.checkState();// checks and updates the players state
+		player.checkState(gameData);// checks and updates the players state
 		
 		player.setXPos(player.getSprite().getX());// set player position(in data) to the sprites position.
 		player.setYPos(player.getSprite().getY());
@@ -309,6 +318,7 @@ public class ServerGameScene extends GameScene {
 				
 			} else if (player.getPlayerState() == EntityState.IDLE) {
 				//do nothing
+				player.healEntity(0.1f);
 				
 				
 			} else if (player.getPlayerState() == EntityState.DEAD) {
@@ -334,7 +344,7 @@ public class ServerGameScene extends GameScene {
 			try {
 				if (tmxTile.getTMXTileProperties(mTMXTiledMap).containsTMXProperty("badHeal", "true")) {
 					if (entity.getTeam() == ALL_TEAMS.EVIL) {
-						entity.healEntity(1);
+						entity.healEntity(1.5f);
 					} else {
 						entity.setSpeed(2);
 						//damage the entity
@@ -343,7 +353,7 @@ public class ServerGameScene extends GameScene {
 					
 				} else if (tmxTile.getTMXTileProperties(mTMXTiledMap).containsTMXProperty("goodHeal", "true")) {
 					if (entity.getTeam() == ALL_TEAMS.GOOD) {
-						entity.healEntity(1);
+						entity.healEntity(1.5f);
 					} else {
 						entity.setSpeed(2);
 						//damage the entity
@@ -363,27 +373,27 @@ public class ServerGameScene extends GameScene {
 	}
 	
 	private void setUpBasesTowersAndAIunits(){
-		Base team1Base = new Base(2750, 770, 10, 10, gameData.getUnusedID(), ALL_TEAMS.GOOD);
+		Base team1Base = new Base(2750, 770, 1000, 1000, gameData.getUnusedID(), ALL_TEAMS.GOOD);
 		addEntityToGameDataObj(team1Base);
 		gameData.setGoodBase(team1Base);
 		
-		Base team2Base = new Base(898, 770, 10, 10, gameData.getUnusedID(), ALL_TEAMS.EVIL);
+		Base team2Base = new Base(898, 770, 1000, 1000, gameData.getUnusedID(), ALL_TEAMS.EVIL);
 		addEntityToGameDataObj(team2Base);
 		gameData.setEvilBase(team2Base);
 		
-		Tower tower1 = new Tower(2180, 838, 10, 10, gameData.getUnusedID(), ALL_TEAMS.GOOD);
+		Tower tower1 = new Tower(2180, 838, 750, 750, gameData.getUnusedID(), ALL_TEAMS.GOOD);
 		addEntityToGameDataObj(tower1);	
 		gameData.setGoodTower(tower1);
 		
-		Tower tower2 = new Tower(1474, 838, 10, 10, gameData.getUnusedID(), ALL_TEAMS.EVIL);
+		Tower tower2 = new Tower(1474, 838, 750, 750, gameData.getUnusedID(), ALL_TEAMS.EVIL);
 		addEntityToGameDataObj(tower2);
 		gameData.setEvilTower(tower2);
 		
 		
 		for (int i = 0; i < 3; i++) {
-			Creep unit1 = new Creep(gameData.getUnusedID(), 10, 10, gameData.getTeam(ALL_TEAMS.GOOD).getSpawnXpos(), gameData.getTeam(ALL_TEAMS.GOOD).getSpawnYpos(), ALL_TEAMS.GOOD);
+			Creep unit1 = new Creep(gameData.getUnusedID(), 100, 100, gameData.getTeam(ALL_TEAMS.GOOD).getSpawnXpos(), gameData.getTeam(ALL_TEAMS.GOOD).getSpawnYpos(), ALL_TEAMS.GOOD);
 			addEntityToGameDataObj(unit1);	
-			Creep unit2 = new Creep(gameData.getUnusedID(), 10, 10, gameData.getTeam(ALL_TEAMS.EVIL).getSpawnXpos(), gameData.getTeam(ALL_TEAMS.EVIL).getSpawnYpos(), ALL_TEAMS.EVIL);
+			Creep unit2 = new Creep(gameData.getUnusedID(), 100, 100, gameData.getTeam(ALL_TEAMS.EVIL).getSpawnXpos(), gameData.getTeam(ALL_TEAMS.EVIL).getSpawnYpos(), ALL_TEAMS.EVIL);
 			addEntityToGameDataObj(unit2);
 		}
 		

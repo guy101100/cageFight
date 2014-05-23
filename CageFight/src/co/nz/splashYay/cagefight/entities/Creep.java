@@ -39,7 +39,7 @@ public class Creep extends AIUnit {
 	}
 	
 	@Override
-	public void checkState(){
+	public void checkState(GameData gameData){
 		
 		
 		if (currenthealth <= 0) {

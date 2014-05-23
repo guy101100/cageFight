@@ -133,7 +133,8 @@ public abstract class GameScene extends Scene {
 	
 	
 	private BuildableBitmapTextureAtlas mBuildBitmapTextureAtlas;
-	private TiledTextureRegion explosionTextureRegion;
+	protected TiledTextureRegion explosionTextureRegion;
+	private TiledTextureRegion towerAttackTextureRegion;
 
 	
 	
@@ -163,9 +164,7 @@ public abstract class GameScene extends Scene {
 		this.towerTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(towerTexture, this.activity, "tower.png", 0, 0);
 		towerTexture.load();
 		
-		//explosion
-		this.mBuildBitmapTextureAtlas = new BuildableBitmapTextureAtlas(this.activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR);		
-		this.explosionTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBuildBitmapTextureAtlas, this.activity, "explosion.png", 3, 4);
+		
 
 
 		this.mBitmapTextureAtlas = new BitmapTextureAtlas(this.activity.getTextureManager(), 16, 16, TextureOptions.DEFAULT);
@@ -183,6 +182,11 @@ public abstract class GameScene extends Scene {
 		shopMenu.loadResources();
 		shopMenu.createScene();
 		
+		
+		//explosion
+		this.mBuildBitmapTextureAtlas = new BuildableBitmapTextureAtlas(this.activity.getTextureManager(), 2048, 2048, TextureOptions.BILINEAR);		
+		this.explosionTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBuildBitmapTextureAtlas, this.activity, "explosion.png", 3, 4);
+		this.towerAttackTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBuildBitmapTextureAtlas, this.activity, "explosion2.png", 8, 5);
 		
 		try {
 			this.mBuildBitmapTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 1));
@@ -459,8 +463,13 @@ public abstract class GameScene extends Scene {
 		}
 	}
 	
-	public void makeExplosion(float x, float y){
-	    final AnimatedSprite explosion = new AnimatedSprite(x, y, explosionTextureRegion, this.engine.getVertexBufferObjectManager()); 
+	public void towerAttackExplosion(Entity ent){
+		makeExplosion(ent.getCenterXpos(), ent.getCenterYpos(), towerAttackTextureRegion);
+		System.out.println("explosion");
+	}
+	
+	public void makeExplosion(float x, float y, TiledTextureRegion region){
+	    final AnimatedSprite explosion = new AnimatedSprite(x, y, region, this.engine.getVertexBufferObjectManager()); 
 	    explosion.animate(50);
 	    this.attachChild(explosion);
 	    explosion.registerUpdateHandler(new IUpdateHandler(){

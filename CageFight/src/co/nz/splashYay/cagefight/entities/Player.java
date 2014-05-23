@@ -152,7 +152,8 @@ public class Player extends Entity implements Serializable{
 	/**
 	 * Checks and update the players state
 	 */
-	public void checkState(){
+	@Override
+	public void checkState(GameData gameData){
 		if (this.getCurrenthealth() <= 0) {
 			setPlayerState(EntityState.DEAD);			
 			

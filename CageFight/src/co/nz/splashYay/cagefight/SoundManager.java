@@ -21,6 +21,8 @@ public class SoundManager {
 	private Sound[] attackSounds;
 	private Sound[] deathSounds;
 	
+	private Sound towerAttack;
+	
 	
 	
 	public SoundManager(BaseGameActivity act, Engine eng){
@@ -53,6 +55,7 @@ public class SoundManager {
 			deathSounds[1] = SoundFactory.createSoundFromAsset(engine.getSoundManager(), activity, "mfx/death2.mp3");
 			deathSounds[2] = SoundFactory.createSoundFromAsset(engine.getSoundManager(), activity, "mfx/death3.mp3");
 			
+			towerAttack = SoundFactory.createSoundFromAsset(engine.getSoundManager(), activity, "mfx/towerAttack.mp3");
 			
 			for (Music music : musics.values()) {
 				music.setVolume(0.5f);
@@ -67,6 +70,9 @@ public class SoundManager {
 			System.out.println("error 2");
 			e.printStackTrace();
 		}
+	}
+	public void playTowerAttackSound(){
+		towerAttack.play();
 	}
 	
 	public void playRandomAttackSound(){
