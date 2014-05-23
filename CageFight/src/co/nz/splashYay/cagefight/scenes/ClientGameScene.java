@@ -10,6 +10,7 @@ import org.andengine.engine.handler.physics.PhysicsHandler;
 import org.andengine.entity.modifier.MoveModifier;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.background.Background;
+import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.util.FPSLogger;
 import org.andengine.extension.physics.box2d.FixedStepPhysicsWorld;
@@ -169,11 +170,10 @@ public class ClientGameScene extends GameScene {
 			if (newEntity instanceof Player) {
 				Player newPlayer = (Player) newEntity;
 				gameData.addPlayer(newPlayer);
-				Sprite tempS = new Sprite(newPlayer.getXPos(), newPlayer.getYPos(), playerTextureRegion, this.engine.getVertexBufferObjectManager()) {
+				AnimatedSprite tempS = new AnimatedSprite(newPlayer.getXPos(), newPlayer.getYPos(), playerTextureRegion, this.engine.getVertexBufferObjectManager()) {
 					@Override
 					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-						setTargetFromSpriteTouch(this);		
-						System.out.println("PLAYER TOUCHED");
+						setTargetFromSpriteTouch(this);
 						return true;
 					}
 				};
@@ -191,11 +191,11 @@ public class ClientGameScene extends GameScene {
 				System.out.println("Base Added");
 				Base newBase = (Base) newEntity;
 				
-				Sprite baseS = new Sprite(newBase.getXPos(), newBase.getYPos(), baseTextureRegion, this.engine.getVertexBufferObjectManager()) {
+				AnimatedSprite baseS = new AnimatedSprite(newBase.getXPos(), newBase.getYPos(), baseTextureRegion, this.engine.getVertexBufferObjectManager()) {
 					@Override
 					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-						setTargetFromSpriteTouch(this);		
-						System.out.println("BASE TOUCHED");
+						setTargetFromSpriteTouch(this);
+
 						return true;
 					}
 				};
@@ -209,11 +209,11 @@ public class ClientGameScene extends GameScene {
 				System.out.println("Tower Added");
 				Tower newTower = (Tower) newEntity;
 				
-				Sprite towerS = new Sprite(newTower.getXPos(), newTower.getYPos(), towerTextureRegion, this.engine.getVertexBufferObjectManager()) {
+				AnimatedSprite towerS = new AnimatedSprite(newTower.getXPos(), newTower.getYPos(), towerTextureRegion, this.engine.getVertexBufferObjectManager()) {
 					@Override
 					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 						setTargetFromSpriteTouch(this);
-						System.out.println("TOWER TOUCHED");
+
 						return true;
 					}
 				};
@@ -225,11 +225,10 @@ public class ClientGameScene extends GameScene {
 				System.out.println("Creep Added");
 				Creep newAIUnit = (Creep) newEntity;
 				
-				Sprite tempS = new Sprite(newAIUnit.getXPos(), newAIUnit.getYPos(), AITextureRegion, this.engine.getVertexBufferObjectManager()) {
+				AnimatedSprite tempS = new AnimatedSprite(newAIUnit.getXPos(), newAIUnit.getYPos(), AITextureRegion, this.engine.getVertexBufferObjectManager()) {
 					@Override
 					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-						setTargetFromSpriteTouch(this);		
-						System.out.println("CREEP TOUCHED");
+						setTargetFromSpriteTouch(this);
 						return true;
 					}
 				};

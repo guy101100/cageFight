@@ -7,7 +7,9 @@ import java.util.Map;
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.handler.IUpdateHandler;
+import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.background.Background;
+import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.entity.text.TextOptions;
@@ -22,6 +24,7 @@ import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.FontFactory;
 import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.util.HorizontalAlign;
+import org.andengine.util.color.Color;
 import org.andengine.util.math.MathUtils;
 
 import android.graphics.Typeface;
@@ -99,11 +102,14 @@ public class ServerGameScene extends GameScene {
 		this.registerUpdateHandler(new IUpdateHandler() {
 			@Override
 			public void onUpdate(float pSecondsElapsed) {
+				
 				checkVictory();
 				processServerPlayerControls();
 				processEntityActions();
-				updateTargetMarker();		
+				updateTargetMarker();
 				updateValueBars();
+				
+				
 			}
 
 			@Override
@@ -165,7 +171,7 @@ public class ServerGameScene extends GameScene {
 		switch (creep.getState()) {
 		case MOVING:
 			
-			
+			creep.setAnnimation(6, 11, 100);
 			
 			creep.getSprite().setRotation(creep.getDirectionToTarget());
 			creep.setDirection(creep.getDirectionToTarget());			
@@ -177,14 +183,19 @@ public class ServerGameScene extends GameScene {
 			break;
 		case IDLE:
 			creep.stopEntity();
+			creep.setAnnimation(0, 3, 150);
 			break;
 		case ATTACKING:
 			creep.stopEntity();
 			if (creep.getTarget() != null && System.currentTimeMillis() >= (creep.getLastAttackTime() + creep.getAttackCoolDown())) {
-							
+				creep.setAnnimation(11, 16, 100);			
 				creep.attackTarget();
 				creep.setLastAttackTime(System.currentTimeMillis());
 				sceneManager.getSoundManager().playRandomAttackSound(player, creep);
+			} else {
+				if (System.currentTimeMillis() >= (creep.getLastAttackTime()) + 600 ) {
+					creep.setAnnimation(0, 3, 150);
+				}
 			}
 
 			break;
@@ -193,6 +204,7 @@ public class ServerGameScene extends GameScene {
 			if (creep.isAlive()) {
 				creep.killCreep();
 				sceneManager.getSoundManager().playRandomDeathSound(player, creep);
+				creep.setAnnimation(26, 27, 1000);
 			}	
 			
 			break;
@@ -266,7 +278,7 @@ public class ServerGameScene extends GameScene {
 		case DEAD:
 			if (tower.isAlive()) {
 				tower.destroyTower();
-				this.makeSingleCycleAnnimation(tower.getCenterXpos(), tower.getCenterYpos(), explosionTextureRegion, 9, 100);
+				this.makeSingleCycleAnnimation(tower.getXPos(), tower.getYPos(), explosionTextureRegion, 9, 100);
 				//play base destroy sound, change music
 			}
 			break;
@@ -389,6 +401,12 @@ public class ServerGameScene extends GameScene {
 		addEntityToGameDataObj(tower2);
 		gameData.setEvilTower(tower2);
 		
+		Rectangle rec = new Rectangle(tower2.getCenterXpos(), tower2.getCenterYpos(), 5, 5, this.engine.getVertexBufferObjectManager());
+		rec.setColor(Color.WHITE);
+		this.attachChild(rec);
+		Rectangle rec2 = new Rectangle(team2Base.getCenterXpos(), team2Base.getCenterYpos(), 5, 5, this.engine.getVertexBufferObjectManager());
+		rec2.setColor(Color.WHITE);
+		this.attachChild(rec2);
 		
 		for (int i = 0; i < 3; i++) {
 			Creep unit1 = new Creep(gameData.getUnusedID(), 100, 100, gameData.getTeam(ALL_TEAMS.GOOD).getSpawnXpos(), gameData.getTeam(ALL_TEAMS.GOOD).getSpawnYpos(), ALL_TEAMS.GOOD);
@@ -415,24 +433,29 @@ public class ServerGameScene extends GameScene {
 			
 			
 		if (newEntity != null) {
+			
+			
 			if (newEntity instanceof Player) {
 				Player newPlayer = (Player) newEntity;
 				gameData.addPlayer(newPlayer);				
-				Sprite tempS = new Sprite(newPlayer.getXPos(), newPlayer.getYPos(), playerTextureRegion, this.engine.getVertexBufferObjectManager()) {
+				AnimatedSprite tempS = new AnimatedSprite(newPlayer.getXPos(), newPlayer.getYPos(), playerTextureRegion, this.engine.getVertexBufferObjectManager()) {
 					@Override
 					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-						setTargetFromSpriteTouch(this);						
+						setTargetFromSpriteTouch(this);
 						return true;
 					}
 				};
 				registerTouchArea(tempS);
-				setTouchAreaBindingOnActionDownEnabled(true);				
+				setTouchAreaBindingOnActionDownEnabled(true);	
+				
 				
 				final FixtureDef playerFixDef = PhysicsFactory.createFixtureDef(1, 0f, 0.5f);
-				newPlayer.setBody(PhysicsFactory.createCircleBody(phyWorld, tempS, BodyType.DynamicBody, playerFixDef));				
+				newPlayer.setSprite(tempS);
+				newPlayer.setBody(PhysicsFactory.createCircleBody(phyWorld,  newPlayer.getCenterXpos(), newPlayer.getCenterYpos(), playerTextureRegion.getWidth()/4, BodyType.DynamicBody, playerFixDef));
+				
 				phyWorld.registerPhysicsConnector(new PhysicsConnector(tempS, newPlayer.getBody(), true, false));
 				this.attachChild(tempS);			
-				newPlayer.setSprite(tempS);			
+				
 				
 				if (newPlayer.getId() == player.getId()) {
 					camera.setChaseEntity(tempS);
@@ -442,11 +465,11 @@ public class ServerGameScene extends GameScene {
 				Base newBase = (Base) newEntity;
 				gameData.addEntity(newBase);
 				FixtureDef baseFix = PhysicsFactory.createFixtureDef(0, 0f, 0f);
-				Sprite baseS = new Sprite(newBase.getXPos(), newBase.getYPos(), baseTextureRegion, this.engine.getVertexBufferObjectManager()) {
+				AnimatedSprite baseS = new AnimatedSprite(newBase.getXPos(), newBase.getYPos(), baseTextureRegion, this.engine.getVertexBufferObjectManager()) {
 					@Override
 					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-						setTargetFromSpriteTouch(this);		
-						
+						setTargetFromSpriteTouch(this);
+
 						return true;
 					}
 				};
@@ -462,14 +485,15 @@ public class ServerGameScene extends GameScene {
 				Tower newTower = (Tower) newEntity;
 				gameData.addEntity(newTower);
 				FixtureDef baseFix = PhysicsFactory.createFixtureDef(0, 0f, 0f);
-				Sprite towerS = new Sprite(newTower.getXPos(), newTower.getYPos(), towerTextureRegion, this.engine.getVertexBufferObjectManager()) {
+				AnimatedSprite towerS = new AnimatedSprite(newTower.getXPos(), newTower.getYPos(), towerTextureRegion, this.engine.getVertexBufferObjectManager()) {
 					@Override
 					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-						setTargetFromSpriteTouch(this);		
-						
+						setTargetFromSpriteTouch(this);
+
 						return true;
 					}
 				};
+				
 				registerTouchArea(towerS);
 				setTouchAreaBindingOnActionDownEnabled(true);
 				newTower.setSprite(towerS);
@@ -477,9 +501,11 @@ public class ServerGameScene extends GameScene {
 				this.attachChild(towerS);
 			
 			} else if (newEntity instanceof Creep) {
+				
+				
 				Creep newAIunit = (Creep) newEntity;
 				gameData.addEntity(newAIunit);
-				Sprite tempS = new Sprite(newAIunit.getXPos(), newAIunit.getYPos(), AITextureRegion , this.engine.getVertexBufferObjectManager()) {
+				AnimatedSprite tempS = new AnimatedSprite(newAIunit.getXPos(), newAIunit.getYPos(), AITextureRegion, this.engine.getVertexBufferObjectManager()) {
 					@Override
 					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 						setTargetFromSpriteTouch(this);
@@ -488,12 +514,14 @@ public class ServerGameScene extends GameScene {
 				};
 				registerTouchArea(tempS);
 				setTouchAreaBindingOnActionDownEnabled(true);
-
+				newAIunit.setSprite(tempS);
 				final FixtureDef AIFixDef = PhysicsFactory.createFixtureDef(1, 0f, 1f);
-				newAIunit.setBody(PhysicsFactory.createCircleBody(phyWorld, tempS, BodyType.DynamicBody, AIFixDef));
+				newAIunit.setBody(PhysicsFactory.createCircleBody(phyWorld,  newAIunit.getCenterXpos(), newAIunit.getCenterYpos(), AITextureRegion.getWidth()/4, BodyType.DynamicBody, AIFixDef));
+				
+				
 				phyWorld.registerPhysicsConnector(new PhysicsConnector(tempS, newAIunit.getBody(), true, false));
 				this.attachChild(tempS);
-				newAIunit.setSprite(tempS);
+				
 
 			}
 				

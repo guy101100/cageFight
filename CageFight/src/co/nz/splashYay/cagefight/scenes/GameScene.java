@@ -53,6 +53,7 @@ import org.andengine.opengl.texture.atlas.bitmap.source.IBitmapTextureAtlasSourc
 import org.andengine.opengl.texture.atlas.buildable.builder.BlackPawnTextureAtlasBuilder;
 import org.andengine.opengl.texture.atlas.buildable.builder.ITextureAtlasBuilder.TextureAtlasBuilderException;
 import org.andengine.opengl.texture.region.ITextureRegion;
+import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.texture.region.TextureRegion;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
@@ -84,10 +85,8 @@ public abstract class GameScene extends Scene {
 	protected Camera camera;
 	
 	private ShopMenuScene shopMenu;
-	private boolean shopUp = false;
+	private boolean shopUp = false;	
 	
-	protected BitmapTextureAtlas playerTexture;
-	protected ITextureRegion playerTextureRegion;
 	protected FixedStepPhysicsWorld phyWorld;
 	
 	protected TMXTiledMap mTMXTiledMap;
@@ -101,14 +100,7 @@ public abstract class GameScene extends Scene {
 	protected ITextureRegion mOnScreenControlBaseTextureRegion;
 	protected ITextureRegion mOnScreenControlKnobTextureRegion;
 	
-	protected BitmapTextureAtlas baseTexture;
-	protected TextureRegion baseTextureRegion;
 	
-	protected BitmapTextureAtlas towerTexture;
-	protected TextureRegion towerTextureRegion;
-	
-	protected BitmapTextureAtlas AITexture;
-	protected TextureRegion AITextureRegion;
 	
 	protected Sprite sPlayer;
 	protected Player player;
@@ -134,7 +126,11 @@ public abstract class GameScene extends Scene {
 	
 	private BuildableBitmapTextureAtlas mBuildBitmapTextureAtlas;
 	protected TiledTextureRegion explosionTextureRegion;
-	private TiledTextureRegion towerAttackTextureRegion;
+	protected TiledTextureRegion towerAttackTextureRegion;
+	protected TiledTextureRegion AITextureRegion;
+	protected TiledTextureRegion baseTextureRegion;
+	protected TiledTextureRegion towerTextureRegion;
+	protected TiledTextureRegion playerTextureRegion;
 
 	
 	
@@ -145,36 +141,28 @@ public abstract class GameScene extends Scene {
 	public void loadRes() {
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 		
-		this.playerTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 64, 64);
-		this.playerTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(playerTexture, this.activity, "player.png", 0, 0);
-		playerTexture.load();
-		
+		this.mBuildBitmapTextureAtlas = new BuildableBitmapTextureAtlas(this.activity.getTextureManager(), 4096, 4096, TextureOptions.NEAREST);
+
+		this.playerTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBuildBitmapTextureAtlas, this.activity, "creep.png", 6, 6);
+
 		//ai
-		this.AITexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 64, 64);
-		this.AITextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(AITexture, this.activity, "AI.png", 0, 0);
-		AITexture.load();
-		
+		this.AITextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBuildBitmapTextureAtlas, this.activity, "creep.png", 6, 6);
+
 		//base
-		this.baseTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 256, 256); // width and height must be factor of two eg:2,4,8,16 etc
-		this.baseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(baseTexture, this.activity, "base.png", 0, 0);
-		baseTexture.load();
-		
-		//tower 
-		this.towerTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 256, 256); // width and height must be factor of two eg:2,4,8,16 etc
-		this.towerTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(towerTexture, this.activity, "tower.png", 0, 0);
-		towerTexture.load();
-		
-		
+		this.baseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBuildBitmapTextureAtlas, this.activity, "creep.png", 6, 6);
 
-
+		//tower
+		this.towerTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBuildBitmapTextureAtlas, this.activity, "creep.png",6, 6);
+		
+	
 		this.mBitmapTextureAtlas = new BitmapTextureAtlas(this.activity.getTextureManager(), 16, 16, TextureOptions.DEFAULT);
 		this.mBitmapTextureAtlas.load();
-		
+
 		this.mOnScreenControlTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 256, 128, TextureOptions.BILINEAR);
 		this.mOnScreenControlBaseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mOnScreenControlTexture, this.activity, "onscreen_control_base.png", 0, 0);
 		this.mOnScreenControlKnobTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mOnScreenControlTexture, this.activity, "onscreen_control_knob.png", 128, 0);
 		this.mOnScreenControlTexture.load();
-		
+
 		this.mFont = FontFactory.create(activity.getFontManager(), activity.getTextureManager(), 256, 256, Typeface.create(Typeface.DEFAULT, Typeface.NORMAL), 24);
 		this.mFont.load();
 		
@@ -184,7 +172,7 @@ public abstract class GameScene extends Scene {
 		
 		
 		//explosion
-		this.mBuildBitmapTextureAtlas = new BuildableBitmapTextureAtlas(this.activity.getTextureManager(), 2048, 2048, TextureOptions.BILINEAR);		
+		
 		this.explosionTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBuildBitmapTextureAtlas, this.activity, "explosion.png", 3, 4);
 		this.towerAttackTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBuildBitmapTextureAtlas, this.activity, "explosion2.png", 8, 5);
 		
@@ -432,14 +420,7 @@ public abstract class GameScene extends Scene {
 			
 	}
 	
-	public void unloadRes(){		
-		playerTexture.unload();
-		baseTexture.unload();
-		mBitmapTextureAtlas.unload();
-		mOnScreenControlTexture.unload();
-		hud.detachChildren();
-		this.detachChildren();
-	}
+	
 
 	public PlayerControlCommands getPlayerCommands() {
 		return playerCommands;
@@ -464,7 +445,7 @@ public abstract class GameScene extends Scene {
 	}
 	
 	public void towerAttackExplosion(Entity ent){
-		makeSingleCycleAnnimation(ent.getCenterXpos(), ent.getCenterYpos(), towerAttackTextureRegion, 38,30);		
+		makeSingleCycleAnnimation(ent.getXPos(), ent.getYPos(), towerAttackTextureRegion, 38,30);		
 	}
 	
 	

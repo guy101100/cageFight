@@ -48,12 +48,16 @@ public abstract class Building extends AIUnit{
 	
 	@Override
 	public void checkState(GameData gameData){
+		EntityState oldState = getState();
 		if (getCurrenthealth() <= 0) {
 			state = EntityState.DEAD;
 		} else if (System.currentTimeMillis() >= getLastAttackTime() + getAttackCoolDown() && checkAgroRadius(gameData)) {
 			state = EntityState.ATTACKING;
 		} else {
 			state = EntityState.IDLE;
+		}
+		if (oldState != getState()) {
+			stateChanged = true;
 		}
 	}
 	

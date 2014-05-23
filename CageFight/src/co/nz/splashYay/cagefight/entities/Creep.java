@@ -40,7 +40,7 @@ public class Creep extends AIUnit {
 	
 	@Override
 	public void checkState(GameData gameData){
-		
+		EntityState oldState = getState();
 		
 		if (currenthealth <= 0) {
 			state = EntityState.DEAD;
@@ -57,6 +57,10 @@ public class Creep extends AIUnit {
 		} else {
 			state = EntityState.IDLE;
 			
+		}
+		
+		if (oldState != getState()) {
+			stateChanged = true;
 		}
 	}
 

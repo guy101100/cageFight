@@ -154,6 +154,7 @@ public class Player extends Entity implements Serializable{
 	 */
 	@Override
 	public void checkState(GameData gameData){
+		EntityState oldState = getState();
 		if (this.getCurrenthealth() <= 0) {
 			setPlayerState(EntityState.DEAD);			
 			
@@ -166,6 +167,10 @@ public class Player extends Entity implements Serializable{
 		} else {
 			setPlayerState(EntityState.IDLE);
 		}	
+		
+		if (oldState != getState()) {
+			stateChanged = true;
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////

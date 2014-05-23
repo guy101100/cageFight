@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import org.andengine.engine.handler.physics.PhysicsHandler;
 import org.andengine.entity.modifier.MoveModifier;
+import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.extension.physics.box2d.util.Vector2Pool;
 import org.andengine.util.math.MathUtils;
@@ -43,7 +44,7 @@ public class Entity implements Serializable{
 	
 	protected EntityState state;
 	
-	private transient Sprite sprite;
+	private transient AnimatedSprite sprite;
 	private transient PhysicsHandler phyHandler;
 	private transient MoveModifier moveModifier;
 	private transient Body body;
@@ -52,6 +53,7 @@ public class Entity implements Serializable{
 	protected Entity lastEntityThatAttackedMe;
 	
 	protected Entity target;
+	protected boolean stateChanged;
 
 
 	public Entity(int xpos, int ypos, int maxhealth, int currenthealth, int id, ALL_TEAMS team)
@@ -80,7 +82,7 @@ public class Entity implements Serializable{
 		
 		this.lastEntityThatAttackedMe = null;
 		this.target = null;
-	
+		this.stateChanged = true;
 		
 		this.state = EntityState.IDLE;
 		
@@ -115,6 +117,19 @@ public class Entity implements Serializable{
 		
 		
 		return currentClose;
+	}
+	
+	public void setAnnimation(int startFrame, int endFrame, long duration){
+		if (stateChanged) {			
+			stateChanged = false;
+			long[] durations = new long[endFrame-startFrame +1];
+			for (int i = 0; i < durations.length; i++) {
+				durations[i] = duration;
+			}			
+			getSprite().animate(durations, startFrame, endFrame, true);			
+		}
+		
+		
 	}
 	
 	/**
@@ -160,12 +175,9 @@ public class Entity implements Serializable{
 	
 	
 	public float getCenterXpos(){
-		if (getSprite() == null) {
-			return xpos;
-		} else {
-			return (xpos - (getSprite().getWidth()/2));
-		}
-		
+
+		return (xpos + (getSprite().getWidth() / 2));
+
 	}
 	
 	public float getCenterYpos(){
@@ -174,7 +186,7 @@ public class Entity implements Serializable{
 		if (getSprite() == null) {
 			return ypos;
 		} else {
-			return (ypos - (getSprite().getHeight()/2));
+			return (ypos + (getSprite().getHeight()/2));
 		}
 	}
 
@@ -281,14 +293,14 @@ public class Entity implements Serializable{
 	 * Sets the sprite of the entity
 	 * @param sprite
 	 */
-	public void setSprite(Sprite sprite){
+	public void setSprite(AnimatedSprite sprite){
 		this.sprite = sprite;
 	}
 	/**
 	 * gets the entitys sprite
 	 * @return
 	 */
-	public Sprite getSprite() {
+	public AnimatedSprite getSprite() {
 		return sprite;
 	}
 	
@@ -499,7 +511,13 @@ public class Entity implements Serializable{
 	}
 
 	public int getAttackRange() {
-		return attackRange;
+		if (getTarget() instanceof Base || getTarget() instanceof Tower) {
+			return attackRange+64;
+		} else {
+			return attackRange;
+		}
+		
+		
 	}
 
 	public void setAttackRange(int attackRange) {
