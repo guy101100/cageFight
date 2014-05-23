@@ -17,11 +17,13 @@ import org.andengine.engine.camera.hud.HUD;
 import org.andengine.engine.camera.hud.controls.AnalogOnScreenControl;
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl;
 import org.andengine.engine.camera.hud.controls.AnalogOnScreenControl.IAnalogOnScreenControlListener;
+import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.engine.handler.physics.PhysicsHandler;
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.Scene;
+import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
@@ -46,8 +48,13 @@ import org.andengine.opengl.font.Font;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
+import org.andengine.opengl.texture.atlas.bitmap.BuildableBitmapTextureAtlas;
+import org.andengine.opengl.texture.atlas.bitmap.source.IBitmapTextureAtlasSource;
+import org.andengine.opengl.texture.atlas.buildable.builder.BlackPawnTextureAtlasBuilder;
+import org.andengine.opengl.texture.atlas.buildable.builder.ITextureAtlasBuilder.TextureAtlasBuilderException;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.TextureRegion;
+import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.util.HorizontalAlign;
 import org.andengine.util.color.Color;
@@ -121,6 +128,12 @@ public abstract class GameScene extends Scene {
 	private IFont mFont;
 	private Text playerGoldInfo;
 	private ButtonSprite shop;	
+	
+	private GameScene gS = this;
+	
+	
+	private BuildableBitmapTextureAtlas mBuildBitmapTextureAtlas;
+	private TiledTextureRegion explosionTextureRegion;
 
 	
 	
@@ -149,6 +162,11 @@ public abstract class GameScene extends Scene {
 		this.towerTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 256, 256); // width and height must be factor of two eg:2,4,8,16 etc
 		this.towerTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(towerTexture, this.activity, "tower.png", 0, 0);
 		towerTexture.load();
+		
+		//explosion
+		this.mBuildBitmapTextureAtlas = new BuildableBitmapTextureAtlas(this.activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR);		
+		this.explosionTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBuildBitmapTextureAtlas, this.activity, "explosion.png", 3, 4);
+
 
 		this.mBitmapTextureAtlas = new BitmapTextureAtlas(this.activity.getTextureManager(), 16, 16, TextureOptions.DEFAULT);
 		this.mBitmapTextureAtlas.load();
@@ -164,6 +182,14 @@ public abstract class GameScene extends Scene {
 		this.shopMenu = new ShopMenuScene(activity, engine, camera, this);	
 		shopMenu.loadResources();
 		shopMenu.createScene();
+		
+		
+		try {
+			this.mBuildBitmapTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 1));
+			this.mBuildBitmapTextureAtlas.load();
+		} catch (TextureAtlasBuilderException e) {
+			Debug.e(e);
+		}
 
 	}
 	
@@ -431,6 +457,31 @@ public abstract class GameScene extends Scene {
 
 			}		
 		}
+	}
+	
+	public void makeExplosion(float x, float y){
+	    final AnimatedSprite explosion = new AnimatedSprite(x, y, explosionTextureRegion, this.engine.getVertexBufferObjectManager()); 
+	    explosion.animate(50);
+	    this.attachChild(explosion);
+	    explosion.registerUpdateHandler(new IUpdateHandler(){
+
+	        @Override
+	        public void onUpdate(float pSecondsElapsed) {
+	            if(explosion.getCurrentTileIndex() == 9){
+	                activity.runOnUpdateThread(new Runnable() {
+	                @Override                
+	                public void run() {
+	                  gS.detachChild(explosion);
+	                  
+	                }
+	               });                
+	            }
+	        }
+
+	        @Override
+	        public void reset() {
+
+	        }});
 	}
 
 	

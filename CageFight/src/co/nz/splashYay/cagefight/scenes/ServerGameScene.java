@@ -224,6 +224,7 @@ public class ServerGameScene extends GameScene {
 		case DEAD:
 			if (base.isAlive()) {
 				base.destroyBase();
+				this.makeExplosion(base.getCenterXpos(), base.getCenterYpos());
 				//play base destroy sound, change music				
 			}
 			break;
@@ -256,6 +257,7 @@ public class ServerGameScene extends GameScene {
 		case DEAD:
 			if (tower.isAlive()) {
 				tower.destroyTower();
+				this.makeExplosion(tower.getCenterXpos(), tower.getCenterYpos());
 				//play base destroy sound, change music
 			}
 			break;
