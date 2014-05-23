@@ -206,6 +206,17 @@ public class ServerGameScene extends GameScene {
 		base.checkState();
 		
 		switch (base.getState()) {
+		case ATTACKING:
+			if (base.getTeam() == ALL_TEAMS.EVIL) {
+				base.attackTargetsInRange(gameData.getEntitiesOnTeam(ALL_TEAMS.GOOD));
+			} else {
+				base.attackTargetsInRange(gameData.getEntitiesOnTeam(ALL_TEAMS.EVIL));
+			}
+			
+			base.setLastAttackTime(System.currentTimeMillis());
+			sceneManager.getSoundManager().playRandomAttackSound();
+			
+			break;
 		case IDLE:
 			//do nothing
 			break;
@@ -226,9 +237,18 @@ public class ServerGameScene extends GameScene {
 	private void proccessTower(Tower tower) {
 		tower.checkState();
 
-		tower.checkState();
-
 		switch (tower.getState()) {
+		case ATTACKING:
+			if (tower.getTeam() == ALL_TEAMS.EVIL) {
+				tower.attackTargetsInRange(gameData.getEntitiesOnTeam(ALL_TEAMS.GOOD));
+			} else {
+				tower.attackTargetsInRange(gameData.getEntitiesOnTeam(ALL_TEAMS.EVIL));
+			}
+			
+			tower.setLastAttackTime(System.currentTimeMillis());
+			sceneManager.getSoundManager().playRandomAttackSound();
+			
+			break;
 		case IDLE:
 			//do nothing
 			break;
@@ -275,7 +295,7 @@ public class ServerGameScene extends GameScene {
 			if (player.getPlayerState() == EntityState.ATTACKING) {
 				if (player.getTarget() != null && System.currentTimeMillis() >= (player.getLastAttackTime() + player.getAttackCoolDown())  ) {
 										
-					if(player.getDistanceToTarget() < player.getAttackRange())
+					if(player.getDistanceToTarget(player.getTarget()) < player.getAttackRange())
 					{
 						player.attackTarget();
 						player.setLastAttackTime(System.currentTimeMillis());

@@ -50,6 +50,18 @@ public class GameData implements Serializable{
 		gameState = GameState.RUNNING;
 	}
 	
+	public ArrayList<Entity> getEntitiesOnTeam(ALL_TEAMS team){
+		ArrayList<Entity> toReturn = new ArrayList<Entity>();
+		
+		for (Entity ent : entities.values()){
+			if (ent.getTeam() == team) {
+				toReturn.add(ent);
+			}
+		}		
+		return toReturn;
+		
+	}
+	
 	
 	
 	/**

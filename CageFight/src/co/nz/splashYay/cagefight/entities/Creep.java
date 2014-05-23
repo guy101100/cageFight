@@ -47,7 +47,7 @@ public class Creep extends AIUnit {
 			
 		} else if (hasTarget() && getTarget().isAlive()) {
 			
-			if (getDistanceToTarget() < getAttackRange()) {
+			if (getDistanceToTarget(getTarget()) < getAttackRange()) {
 				state = EntityState.ATTACKING;
 			} else {
 				state = EntityState.MOVING;

@@ -129,7 +129,7 @@ public abstract class AIUnit extends Entity{
 				}	
 				
 			} else {
-				if (getDistanceToTarget() > loseTargetDistance) {
+				if (getDistanceToTarget(getTarget()) > loseTargetDistance) {
 					
 					if (checkAgroRadius(gd)) { //check if there is a enemy to target						
 						setTarget(getNearestEnemyEntity(gd));

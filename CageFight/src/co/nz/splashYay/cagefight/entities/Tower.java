@@ -6,7 +6,7 @@ import co.nz.splashYay.cagefight.EntityState;
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.Team.ALL_TEAMS;
 
-public class Tower extends AIUnit{
+public class Tower extends Building{
 	private static final long serialVersionUID = 1L;
 	
 	

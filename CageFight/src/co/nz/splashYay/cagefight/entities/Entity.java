@@ -220,10 +220,10 @@ public class Entity implements Serializable{
 		return Math.toDegrees(Math.atan2(xDiff, -yDiff));
 	}
 
-	public double getDistanceToTarget() {
-		if (hasTarget()) {
-			float s1 = getTarget().getCenterXpos() - getCenterXpos();
-			float s2 = getTarget().getCenterYpos() - getCenterYpos();
+	public double getDistanceToTarget(Entity ent) {
+		if (ent != null) {
+			float s1 = ent.getCenterXpos() - getCenterXpos();
+			float s2 = ent.getCenterYpos() - getCenterYpos();
 			return Math.sqrt(s1 * s1 + s2 * s2);
 		} else {
 			return 9999;
