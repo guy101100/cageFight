@@ -107,7 +107,7 @@ public class ServerGameScene extends GameScene {
 				processServerPlayerControls();
 				processEntityActions();
 				updateTargetMarker();
-				updateValueBars();
+				updateHUD();
 				
 				
 			}

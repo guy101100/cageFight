@@ -79,7 +79,7 @@ public class ClientGameScene extends GameScene {
 					checkVictory();
 					processEntities();
 					updateTargetMarker();	
-					updateValueBars();
+					updateHUD();
 					
 				}
 			}

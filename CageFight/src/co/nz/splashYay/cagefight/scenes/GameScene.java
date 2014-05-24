@@ -100,25 +100,24 @@ public abstract class GameScene extends Scene {
 	protected ITextureRegion mOnScreenControlBaseTextureRegion;
 	protected ITextureRegion mOnScreenControlKnobTextureRegion;
 	
-	
-	
 	protected Sprite sPlayer;
 	protected Player player;
 	
-
 	//HUD
 	private HUD hud = new HUD();
 	private ButtonSprite attack;
 	private AnalogOnScreenControl joyStick;
-	private ValueBar targetInfo;
-	private ValueBar playerInfo;
+	private ValueBar targetHealth;
+	private ValueBar playerHealth;
 	private ValueBar playerExpBar;
-	
+	private Text playerGoldInfo;
+	private Text playerLevelInfo;
+	private Text playerKDInfo;
 	
 	protected Rectangle targetRec;
 
 	private IFont mFont;
-	private Text playerGoldInfo;
+	private IFont infoFont;
 	private ButtonSprite shop;	
 	
 	private GameScene gS = this;
@@ -132,11 +131,6 @@ public abstract class GameScene extends Scene {
 	protected TiledTextureRegion towerTextureRegion;
 	protected TiledTextureRegion playerTextureRegion;
 
-	
-	
-	
-	
-	
 	
 	public void loadRes() {
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
@@ -165,6 +159,9 @@ public abstract class GameScene extends Scene {
 
 		this.mFont = FontFactory.create(activity.getFontManager(), activity.getTextureManager(), 256, 256, Typeface.create(Typeface.DEFAULT, Typeface.NORMAL), 24);
 		this.mFont.load();
+		
+		this.infoFont = FontFactory.create(activity.getFontManager(), activity.getTextureManager(), 256, 256, Typeface.create(Typeface.DEFAULT, Typeface.NORMAL), 24, Color.WHITE_ABGR_PACKED_INT);
+		this.infoFont.load();
 		
 		this.shopMenu = new ShopMenuScene(activity, engine, camera, this);	
 		shopMenu.loadResources();
@@ -276,8 +273,6 @@ public abstract class GameScene extends Scene {
 			} 
 		});
 		
-		
-
 		joyStick.getControlBase().setBlendFunction(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 		joyStick.getControlBase().setAlpha(0.5f);
 		joyStick.getControlBase().setScaleCenter(0, 128);
@@ -289,28 +284,35 @@ public abstract class GameScene extends Scene {
 		this.hud.registerTouchArea(joyStick.getControlBase());
 		
 		//Create target info
-		targetInfo = new ValueBar(camera.getWidth() / 2 + 80, 5, 160, 30, activity.getVertexBufferObjectManager());
-		targetInfo.setVisible(false);		
-		hud.attachChild(targetInfo);
+		targetHealth = new ValueBar(camera.getWidth() / 2 - 80, 5, 160, 30, activity.getVertexBufferObjectManager());
+		targetHealth.setVisible(false);		
+		hud.attachChild(targetHealth);
 		
 		
 		//Create player info
-		playerInfo = new ValueBar(camera.getWidth() / 2 -180, 5, 160, 30, activity.getVertexBufferObjectManager());
-		//targetInfo.setVisible(false);
+		playerHealth = new ValueBar(camera.getWidth() / 2 - 150, camera.getHeight() - 50, 300, 30, activity.getVertexBufferObjectManager());
 		
-		/*
-		playerExpBar = new ValueBar(camera.getWidth() / 2 -180, 5, 160, 30, activity.getVertexBufferObjectManager());
+		playerExpBar = new ValueBar(camera.getWidth() / 2 - 150, camera.getHeight() - 20, 300, 10, activity.getVertexBufferObjectManager());
+		playerExpBar.setProgressColor(Color.GREEN);
+		
+		playerLevelInfo = new Text(camera.getWidth() / 2, camera.getHeight() - 80, this.infoFont, "xxxxxxx", new TextOptions(HorizontalAlign.CENTER), activity.getVertexBufferObjectManager());
+		playerLevelInfo.setScale(1.3f);
+		playerLevelInfo.setColor(Color.GREEN);
 
-		playerGoldInfo = new Text(camera.getWidth() / 2 -400, 5, font, "" + player.getGold(), activity.getVertexBufferObjectManager());
+		playerGoldInfo = new Text(camera.getWidth() / 2 - 100, camera.getHeight() - 80, this.infoFont, "xxxxxxx", activity.getVertexBufferObjectManager());
+		playerGoldInfo.setScale(1.3f);
+		playerGoldInfo.setColor(Color.YELLOW);
 		
+		playerKDInfo = new Text(camera.getWidth() / 2 + 100, camera.getHeight() - 80, this.infoFont, "xxxxxxx", activity.getVertexBufferObjectManager());
+		playerKDInfo.setScale(1.3f);
+		playerKDInfo.setColor(Color.RED);
 		
-		hud.attachChild(playerExpBar);
+		hud.attachChild(playerKDInfo);
 		hud.attachChild(playerGoldInfo);
-		*/
-		hud.attachChild(playerInfo);
-		
-		
-		
+		hud.attachChild(playerLevelInfo);
+		hud.attachChild(playerExpBar);
+		hud.attachChild(playerHealth);
+
 		//Set attack button properties
 		attack = new ButtonSprite(camera.getWidth() - 100, camera.getHeight() - 120, mOnScreenControlKnobTextureRegion, this.activity.getVertexBufferObjectManager())
 	    {
@@ -322,7 +324,7 @@ public abstract class GameScene extends Scene {
 	                
 	                Entity target = player.getNearestEnemyEntity(gameData);
 	                
-	                if(target != null)
+	                if(target != null && player.isAlive())
 	                {
 		                if(!player.hasTarget())
 		                {
@@ -380,23 +382,27 @@ public abstract class GameScene extends Scene {
 		targetRec.setColor(Color.RED);
 		this.attachChild(targetRec);
 	}
-	/*
-	public void updateExpBar()
+	
+	/**
+	 * Updates the components of the HUD to represent the correct values.
+	 * Shows the target health if a target is selected
+	 */
+	public void updateHUD()
 	{
-		playerExpBar.setProgressPercentage((float) player.getExperience() / (float) player.getLevelExp());
-	}
-	*/
-	public void updateValueBars()
-	{
-		playerInfo.setProgressPercentage(( (float)player.getCurrenthealth() / (float)player.getMaxhealth() ));
+		playerHealth.setProgressPercentage((float)player.getCurrenthealth() / (float)player.getMaxhealth());
+		playerExpBar.setProgressPercentage((float)player.getExperience() / (float) player.getLevelExp());
+
+		playerLevelInfo.setText("" + player.getLevel());
+		playerGoldInfo.setText("" + player.getGold());
+		playerKDInfo.setText("0/0");
 		
 		if(player.hasTarget())
 		{
-			targetInfo.setProgressPercentage(( (float)player.getTarget().getCurrenthealth() / (float)player.getTarget().getMaxhealth() )); 
-			targetInfo.setVisible(true);
+			targetHealth.setProgressPercentage(( (float)player.getTarget().getCurrenthealth() / (float)player.getTarget().getMaxhealth() )); 
+			targetHealth.setVisible(true);
 		}
 		else
-			targetInfo.setVisible(false);
+			targetHealth.setVisible(false);
 
 	}
 	
