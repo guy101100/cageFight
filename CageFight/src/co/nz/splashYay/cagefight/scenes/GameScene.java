@@ -394,7 +394,7 @@ public abstract class GameScene extends Scene {
 
 		playerLevelInfo.setText("" + player.getLevel());
 		playerGoldInfo.setText("" + player.getGold());
-		playerKDInfo.setText("0/0");
+		playerKDInfo.setText("0/" + player.getDeathCount());
 		
 		if(player.hasTarget())
 		{

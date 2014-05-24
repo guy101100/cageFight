@@ -32,6 +32,8 @@ public class Player extends Entity implements Serializable{
 	private int LevelExp;
 	private int gold;
 	private Timer goldTimer;
+	private int killCount = 0;
+	private int deathCount = 0;
 	
 	//points a player has to level up abilities
 
@@ -95,6 +97,17 @@ public class Player extends Entity implements Serializable{
 		this.setRespawnTime();
 		System.out.println("Player : " + this.getId() + " has Died. Respawn in " + getRespawnTime() + " [" + System.currentTimeMillis() + "]");
 		
+		//Add 1 to the killer's kill count
+		if(this.getLastEntityThatAttackedMe() instanceof Player)
+		{
+			Player killer = (Player) this.getLastEntityThatAttackedMe();
+			killer.setKillCount(killer.getKillCount() + 1);
+		}
+		
+		//Add 1 to this players death count
+		this.setDeathCount(getDeathCount() + 1);
+		
+		//Remove gold on death
 		this.setGold(this.getGold() - this.getLevel() * 10);
 		if (this.getGold() < 0)
 		{
@@ -311,6 +324,30 @@ public class Player extends Entity implements Serializable{
 	public String getStatsString()
 	{
 		return "Player ID: "+ this.getId() + "; Level: " + level + ";Gold: " + gold;
+	}
+
+
+
+	public int getKillCount() {
+		return killCount;
+	}
+
+
+
+	public void setKillCount(int killCount) {
+		this.killCount = killCount;
+	}
+
+
+
+	public int getDeathCount() {
+		return deathCount;
+	}
+
+
+
+	public void setDeathCount(int deathCount) {
+		this.deathCount = deathCount;
 	}
 	
 	
