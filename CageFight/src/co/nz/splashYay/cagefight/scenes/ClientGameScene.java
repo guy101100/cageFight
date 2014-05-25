@@ -181,7 +181,7 @@ public class ClientGameScene extends GameScene {
 				final PhysicsHandler tempPhyHandler = new PhysicsHandler(tempS); // added
 				tempS.registerUpdateHandler(tempPhyHandler); // added
 				this.attachChild(tempS);
-				newPlayer.setSprite(tempS);
+				//newPlayer.setSprite(tempS);
 				newPlayer.setPhyHandler(tempPhyHandler);				
 				if (newPlayer.getId() == player.getId()) {
 					sPlayer = tempS;
@@ -199,7 +199,7 @@ public class ClientGameScene extends GameScene {
 						return true;
 					}
 				};
-				newBase.setSprite(baseS);				
+				//newBase.setSprite(baseS);				
 				this.attachChild(baseS);
 				gameData.addEntity(newBase);				
 				
@@ -217,7 +217,7 @@ public class ClientGameScene extends GameScene {
 						return true;
 					}
 				};
-				newTower.setSprite(towerS);
+				//newTower.setSprite(towerS);
 				this.attachChild(towerS);
 				gameData.addEntity(newTower);
 				
@@ -236,7 +236,7 @@ public class ClientGameScene extends GameScene {
 				final PhysicsHandler tempPhyHandler = new PhysicsHandler(tempS); // added
 				tempS.registerUpdateHandler(tempPhyHandler); // added
 				this.attachChild(tempS);
-				newAIUnit.setSprite(tempS);
+				//newAIUnit.setSprite(tempS);
 				newAIUnit.setPhyHandler(tempPhyHandler);
 				gameData.addEntity(newAIUnit);
 				

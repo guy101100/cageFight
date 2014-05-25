@@ -28,10 +28,12 @@ import org.andengine.util.color.Color;
 import org.andengine.util.math.MathUtils;
 
 import android.graphics.Typeface;
+import co.nz.splashYay.cagefight.CustomSprite;
 import co.nz.splashYay.cagefight.EntityState;
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.GameState;
 import co.nz.splashYay.cagefight.SceneManager;
+import co.nz.splashYay.cagefight.ValueBar;
 import co.nz.splashYay.cagefight.Team.ALL_TEAMS;
 import co.nz.splashYay.cagefight.entities.Base;
 import co.nz.splashYay.cagefight.entities.Creep;
@@ -164,8 +166,8 @@ public class ServerGameScene extends GameScene {
 
 		creep.checkAndUpdateObjective(gameData);
 
-		creep.setXPos(creep.getSprite().getX());
-		creep.setYPos(creep.getSprite().getY());
+		creep.setXPos(creep.getSprite().getParent().getX());
+		creep.setYPos(creep.getSprite().getParent().getY());
 		checkTileEffect(creep);
 
 		switch (creep.getState()) {
@@ -292,8 +294,8 @@ public class ServerGameScene extends GameScene {
 		
 		player.checkState(gameData);// checks and updates the players state
 		
-		player.setXPos(player.getSprite().getX());// set player position(in data) to the sprites position.
-		player.setYPos(player.getSprite().getY());
+		player.setXPos(player.getSprite().getParent().getX());// set player position(in data) to the sprites position.
+		player.setYPos(player.getSprite().getParent().getY());
 		
 		checkTileEffect(player);
 		
@@ -438,7 +440,7 @@ public class ServerGameScene extends GameScene {
 			if (newEntity instanceof Player) {
 				Player newPlayer = (Player) newEntity;
 				gameData.addPlayer(newPlayer);				
-				AnimatedSprite tempS = new AnimatedSprite(newPlayer.getXPos(), newPlayer.getYPos(), playerTextureRegion, this.engine.getVertexBufferObjectManager()) {
+				AnimatedSprite tempS = new AnimatedSprite(0, 0, playerTextureRegion, this.engine.getVertexBufferObjectManager()) {
 					@Override
 					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 						setTargetFromSpriteTouch(this);
@@ -448,17 +450,19 @@ public class ServerGameScene extends GameScene {
 				registerTouchArea(tempS);
 				setTouchAreaBindingOnActionDownEnabled(true);	
 				
+				CustomSprite cust = new CustomSprite(newPlayer.getXPos(), newPlayer.getYPos(), tempS.getWidth(), tempS.getHeight(), blankTextureRegion, this.engine.getVertexBufferObjectManager());
+				
 				
 				final FixtureDef playerFixDef = PhysicsFactory.createFixtureDef(1, 0f, 0.5f);
-				newPlayer.setSprite(tempS);
+				newPlayer.setSprite(cust, tempS);
 				newPlayer.setBody(PhysicsFactory.createCircleBody(phyWorld,  newPlayer.getCenterXpos(), newPlayer.getCenterYpos(), playerTextureRegion.getWidth()/4, BodyType.DynamicBody, playerFixDef));
 				
-				phyWorld.registerPhysicsConnector(new PhysicsConnector(tempS, newPlayer.getBody(), true, false));
-				this.attachChild(tempS);			
+				phyWorld.registerPhysicsConnector(new PhysicsConnector(cust, newPlayer.getBody(), true, false));
+				this.attachChild(cust);			
 				
 				
 				if (newPlayer.getId() == player.getId()) {
-					camera.setChaseEntity(tempS);
+					camera.setChaseEntity(cust);
 				}				
 				
 			} else if (newEntity instanceof Base) {
@@ -475,9 +479,12 @@ public class ServerGameScene extends GameScene {
 				};
 				registerTouchArea(baseS);
 				setTouchAreaBindingOnActionDownEnabled(true);
-				newBase.setSprite(baseS);
-				newBase.setBody(PhysicsFactory.createBoxBody(phyWorld, baseS, BodyType.StaticBody, baseFix));
-				this.attachChild(baseS);
+				
+				CustomSprite cust = new CustomSprite(newBase.getXPos(), newBase.getYPos(), baseS.getWidth(), baseS.getHeight(), blankTextureRegion, this.engine.getVertexBufferObjectManager());
+				
+				newBase.setSprite(cust, baseS);
+				newBase.setBody(PhysicsFactory.createBoxBody(phyWorld, cust, BodyType.StaticBody, baseFix));
+				this.attachChild(cust);
 				
 				
 				
@@ -496,9 +503,12 @@ public class ServerGameScene extends GameScene {
 				
 				registerTouchArea(towerS);
 				setTouchAreaBindingOnActionDownEnabled(true);
-				newTower.setSprite(towerS);
-				newTower.setBody(PhysicsFactory.createBoxBody(phyWorld, towerS, BodyType.StaticBody, baseFix));
-				this.attachChild(towerS);
+				
+				CustomSprite cust = new CustomSprite(newTower.getXPos(), newTower.getYPos(), towerS.getWidth(), towerS.getHeight(), blankTextureRegion, this.engine.getVertexBufferObjectManager());
+
+				newTower.setSprite(cust, towerS);
+				newTower.setBody(PhysicsFactory.createBoxBody(phyWorld, cust, BodyType.StaticBody, baseFix));
+				this.attachChild(cust);
 			
 			} else if (newEntity instanceof Creep) {
 				
@@ -514,13 +524,18 @@ public class ServerGameScene extends GameScene {
 				};
 				registerTouchArea(tempS);
 				setTouchAreaBindingOnActionDownEnabled(true);
-				newAIunit.setSprite(tempS);
+				
+				CustomSprite cust = new CustomSprite(newAIunit.getXPos(), newAIunit.getYPos(), tempS.getWidth(), tempS.getHeight(), blankTextureRegion, this.engine.getVertexBufferObjectManager());
+
+				newAIunit.setSprite(cust, tempS);
 				final FixtureDef AIFixDef = PhysicsFactory.createFixtureDef(1, 0f, 1f);
 				newAIunit.setBody(PhysicsFactory.createCircleBody(phyWorld,  newAIunit.getCenterXpos(), newAIunit.getCenterYpos(), AITextureRegion.getWidth()/4, BodyType.DynamicBody, AIFixDef));
 				
+				ValueBar hp = new ValueBar(25, 0, (float)(cust.getWidth()*0.75), 10, this.engine.getVertexBufferObjectManager());
+				cust.setHealthBar(hp);
 				
-				phyWorld.registerPhysicsConnector(new PhysicsConnector(tempS, newAIunit.getBody(), true, false));
-				this.attachChild(tempS);
+				phyWorld.registerPhysicsConnector(new PhysicsConnector(cust, newAIunit.getBody(), true, false));
+				this.attachChild(cust);
 				
 
 			}

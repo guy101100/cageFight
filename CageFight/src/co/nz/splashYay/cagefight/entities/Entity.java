@@ -9,6 +9,7 @@ import org.andengine.entity.sprite.Sprite;
 import org.andengine.extension.physics.box2d.util.Vector2Pool;
 import org.andengine.util.math.MathUtils;
 
+import co.nz.splashYay.cagefight.CustomSprite;
 import co.nz.splashYay.cagefight.EntityState;
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.Team.ALL_TEAMS;
@@ -44,7 +45,7 @@ public class Entity implements Serializable{
 	
 	protected EntityState state;
 	
-	private transient AnimatedSprite sprite;
+	private transient CustomSprite customSprite;
 	private transient PhysicsHandler phyHandler;
 	private transient MoveModifier moveModifier;
 	private transient Body body;
@@ -293,16 +294,23 @@ public class Entity implements Serializable{
 	 * Sets the sprite of the entity
 	 * @param sprite
 	 */
-	public void setSprite(AnimatedSprite sprite){
-		this.sprite = sprite;
+	public void setSprite(CustomSprite cS, AnimatedSprite sprite){
+		this.customSprite = cS;
+		this.customSprite.setSprite(sprite);
 	}
 	/**
-	 * gets the entitys sprite
+	 * gets the entity sprite
 	 * @return
 	 */
 	public AnimatedSprite getSprite() {
-		return sprite;
+		return customSprite.getSprite();
 	}
+	
+	public CustomSprite getParentSprite(){
+		return customSprite;
+	}
+	
+	
 	
 	/**
 	 * gets the physics handler that moves the sprite
