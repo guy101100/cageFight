@@ -54,13 +54,9 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 public class ServerGameScene extends GameScene {
 	// networking
 	private InFromClientListener iFCL;
-	//private OutToClientListener oTCL;
+	
 	private ServerCheckListener sCL;
-	UDPServer udp;
-	
-	private int bugCounterTileIsNull = 0;
-	private int count;
-	
+	private UDPServer udp;
 	
 
 	
@@ -71,7 +67,6 @@ public class ServerGameScene extends GameScene {
 		this.engine = eng;
 		this.camera = cam;		
 		this.sceneManager = sceneManager;
-		count = 0;
 	}
 
 	
@@ -171,7 +166,6 @@ public class ServerGameScene extends GameScene {
 		creep.setYPos(creep.getSprite().getParent().getY());
 		updateHealthBar(creep);
 		
-		checkTileEffect(creep);
 
 		switch (creep.getState()) {
 		case MOVING:
@@ -300,8 +294,7 @@ public class ServerGameScene extends GameScene {
 		
 		player.setXPos(player.getSprite().getParent().getX());// set player position(in data) to the sprites position.
 		player.setYPos(player.getSprite().getParent().getY());
-		updateHealthBar(player);
-		checkTileEffect(player);
+		updateHealthBar(player);		
 		
 		
 		if (player.getPlayerState() == EntityState.MOVING) {
@@ -355,40 +348,7 @@ public class ServerGameScene extends GameScene {
 		}		
 	}
 	
-	private void checkTileEffect(Entity entity) {
-		final TMXTile tmxTile = mTMXTiledMap.getTMXLayers().get(12).getTMXTileAt(entity.getCenterXpos(), entity.getCenterYpos());
-		
-		if (tmxTile != null && tmxTile.getGlobalTileID() != 0) {
-			try {
-				if (tmxTile.getTMXTileProperties(mTMXTiledMap).containsTMXProperty("badHeal", "true")) {
-					if (entity.getTeam() == ALL_TEAMS.EVIL) {
-						entity.healEntity(1.5f);
-					} else {
-						entity.setSpeed(2);
-						//damage the entity
-					}
-					
-					
-				} else if (tmxTile.getTMXTileProperties(mTMXTiledMap).containsTMXProperty("goodHeal", "true")) {
-					if (entity.getTeam() == ALL_TEAMS.GOOD) {
-						entity.healEntity(1.5f);
-					} else {
-						entity.setSpeed(2);
-						//damage the entity
-					}
-				} 
-			} catch (NullPointerException np) {
-				
-				bugCounterTileIsNull++;
-				System.err.println("Null pointer on the tile again : " + bugCounterTileIsNull + " Times");
-				
-			}
-			
-			
-		} else { // is not on an effecting tile, reverse any effects on the player
-			entity.setSpeed(entity.getMaxSpeed());
-		}
-	}
+	
 	
 	private void setUpBasesTowersAndAIunits(){
 		Base team1Base = new Base(2750, 770, 1000, 1000, gameData.getUnusedID(), ALL_TEAMS.GOOD);
