@@ -39,6 +39,13 @@ public class CustomSprite extends Sprite{
 		this.attachChild(healthBar);
 	}
 	
+	public void hideHealthBar(){
+		this.healthBar.setVisible(false);
+	}
+	
+	public void showHealthBar(){
+		this.healthBar.setVisible(true);
+	}
 	
 	
 	
