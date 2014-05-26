@@ -23,8 +23,11 @@ import org.andengine.ui.activity.BaseGameActivity;
 import co.nz.splashYay.cagefight.CustomSprite;
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.SceneManager;
+import co.nz.splashYay.cagefight.Team;
+import co.nz.splashYay.cagefight.Team.ALL_TEAMS;
 import co.nz.splashYay.cagefight.ValueBar;
 import co.nz.splashYay.cagefight.entities.Base;
+import co.nz.splashYay.cagefight.entities.Building;
 import co.nz.splashYay.cagefight.entities.Creep;
 import co.nz.splashYay.cagefight.entities.Entity;
 import co.nz.splashYay.cagefight.entities.Player;
@@ -115,12 +118,22 @@ public class ClientGameScene extends GameScene {
 		
 		while (it.hasNext()) {
 			Map.Entry pairs = (Map.Entry) it.next();
+			
 			if (pairs.getValue() instanceof Player) {
 				Player player = (Player) pairs.getValue();
 				processPlayer(player);
+				
 			} else if (pairs.getValue() instanceof Creep) {
 				Creep creep = (Creep) pairs.getValue();
 				processCreep(creep);
+				
+			} else if (pairs.getValue() instanceof Base) {
+				Base base = (Base) pairs.getValue();
+				processBuilding(base);
+				
+			} else if (pairs.getValue() instanceof Tower) {
+				Tower tower = (Tower) pairs.getValue();
+				processBuilding(tower);
 			}
 			
 			
@@ -129,6 +142,31 @@ public class ClientGameScene extends GameScene {
 		}
 	}
 	
+	private void processBuilding(Building building) {
+		switch (building.getState()) {
+		case IDLE:
+
+			break;
+		case ATTACKING:
+			ALL_TEAMS enemyTeam;
+			if (building.getTeam() == ALL_TEAMS.GOOD) {
+				enemyTeam = ALL_TEAMS.BAD;
+			} else {
+				enemyTeam = ALL_TEAMS.GOOD;
+			}
+			for (Entity ent : gameData.getEntitiesOnTeam(enemyTeam)) {
+				if (building.getDistanceToTarget(ent) <= building.getAttackRange()) {
+					towerAttackExplosion(ent);
+				}
+			}
+			break;
+		case DEAD:
+
+			break;
+		}
+	}
+
+	
 	private void processPlayer(Player player) {
 		
 		player.getSprite().setRotation(player.getDirection());
@@ -136,7 +174,7 @@ public class ClientGameScene extends GameScene {
 		
 		switch (player.getState()) {
 		case MOVING:
-			
+			player.setAnnimation(0, 5, 100);
 			break;
 
 		case IDLE:

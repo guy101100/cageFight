@@ -21,8 +21,7 @@ public class Base extends Building{
 	
 	public void destroyBase(){
 		setAlive(false);
-		
-		//cycle annimation
+		getBody().setActive(false);
 		
 		
 		

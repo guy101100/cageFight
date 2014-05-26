@@ -20,7 +20,7 @@ public class Team implements Serializable {
 			spawnXpos = 3200;
 			spawnYpos = 919;
 		} else {
-			team = ALL_TEAMS.EVIL;
+			team = ALL_TEAMS.BAD;
 			spawnXpos = 616;
 			spawnYpos = 919;
 		}
@@ -29,7 +29,7 @@ public class Team implements Serializable {
 	
 	
 	public enum ALL_TEAMS {
-		GOOD, EVIL
+		GOOD, BAD
 	}
 	
 	public ALL_TEAMS getTeam(){

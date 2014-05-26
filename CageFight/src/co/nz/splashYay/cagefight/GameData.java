@@ -42,7 +42,7 @@ public class GameData implements Serializable{
 	
 	public GameData(GameData gD) {
 		this.goodTeam = gD.getTeam(ALL_TEAMS.GOOD);
-		this.goodTeam = gD.getTeam(ALL_TEAMS.EVIL);
+		this.goodTeam = gD.getTeam(ALL_TEAMS.BAD);
 		this.entities = (HashMap<Integer, Entity>) gD.getEntities().clone();
 		this.IDs = (ArrayList<Integer>) gD.getIDs().clone();
 		sendTime = System.currentTimeMillis();

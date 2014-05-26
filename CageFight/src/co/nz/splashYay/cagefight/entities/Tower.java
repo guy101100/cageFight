@@ -23,7 +23,7 @@ public class Tower extends Building{
 			//give gold
 			//give xp			
 		}
-		// cycle annimation
+		getBody().setActive(false);
 		
 		
 	}

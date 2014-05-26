@@ -96,10 +96,10 @@ public class ServerGameScene extends GameScene {
 		sCL.start();
 		udp.start();
 		
-		slowLoop = new SlowRepeatingTask(mTMXTiledMap, gameData);
+		slowLoop = new SlowRepeatingTask(mTMXTiledMap, gameData, this);
 		slowLoop.start();
 		
-		player = new Player("", gameData.getUnusedID(), 500, 250, gameData.getTeam(ALL_TEAMS.EVIL).getSpawnXpos(), gameData.getTeam(ALL_TEAMS.EVIL).getSpawnYpos(), ALL_TEAMS.EVIL);
+		player = new Player("", gameData.getUnusedID(), 500, 250, gameData.getTeam(ALL_TEAMS.BAD).getSpawnXpos(), gameData.getTeam(ALL_TEAMS.BAD).getSpawnYpos(), ALL_TEAMS.BAD);
 		addEntityToGameDataObj(player);
 		
 		//game loop
@@ -231,12 +231,12 @@ public class ServerGameScene extends GameScene {
 		
 		switch (base.getState()) {
 		case ATTACKING:
-			if (base.getTeam() == ALL_TEAMS.EVIL) {
+			if (base.getTeam() == ALL_TEAMS.BAD) {
 				for (Entity ent : base.attackTargetsInRange(gameData.getEntitiesOnTeam(ALL_TEAMS.GOOD))) {
 					towerAttackExplosion(ent);
 				}
 			} else {
-				for (Entity ent : base.attackTargetsInRange(gameData.getEntitiesOnTeam(ALL_TEAMS.EVIL))) {
+				for (Entity ent : base.attackTargetsInRange(gameData.getEntitiesOnTeam(ALL_TEAMS.BAD))) {
 					towerAttackExplosion(ent);
 				}
 			}
@@ -269,12 +269,12 @@ public class ServerGameScene extends GameScene {
 		switch (tower.getState()) {
 		case ATTACKING:
 			
-			if (tower.getTeam() == ALL_TEAMS.EVIL) {
+			if (tower.getTeam() == ALL_TEAMS.BAD) {
 				for (Entity ent : tower.attackTargetsInRange(gameData.getEntitiesOnTeam(ALL_TEAMS.GOOD))) {
 					towerAttackExplosion(ent);
 				}
 			} else {
-				for (Entity ent : tower.attackTargetsInRange(gameData.getEntitiesOnTeam(ALL_TEAMS.EVIL))) {
+				for (Entity ent : tower.attackTargetsInRange(gameData.getEntitiesOnTeam(ALL_TEAMS.BAD))) {
 					towerAttackExplosion(ent);
 				}
 			}
@@ -369,7 +369,7 @@ public class ServerGameScene extends GameScene {
 		addEntityToGameDataObj(team1Base);
 		gameData.setGoodBase(team1Base);
 		
-		Base team2Base = new Base(898, 770, 1000, 1000, gameData.getUnusedID(), ALL_TEAMS.EVIL);
+		Base team2Base = new Base(898, 770, 1000, 1000, gameData.getUnusedID(), ALL_TEAMS.BAD);
 		addEntityToGameDataObj(team2Base);
 		gameData.setEvilBase(team2Base);
 		
@@ -377,7 +377,7 @@ public class ServerGameScene extends GameScene {
 		addEntityToGameDataObj(tower1);	
 		gameData.setGoodTower(tower1);
 		
-		Tower tower2 = new Tower(1474, 838, 750, 750, gameData.getUnusedID(), ALL_TEAMS.EVIL);
+		Tower tower2 = new Tower(1474, 838, 750, 750, gameData.getUnusedID(), ALL_TEAMS.BAD);
 		addEntityToGameDataObj(tower2);
 		gameData.setEvilTower(tower2);
 		
@@ -391,7 +391,7 @@ public class ServerGameScene extends GameScene {
 		for (int i = 0; i < 3; i++) {
 			Creep unit1 = new Creep(gameData.getUnusedID(), 100, 100, gameData.getTeam(ALL_TEAMS.GOOD).getSpawnXpos(), gameData.getTeam(ALL_TEAMS.GOOD).getSpawnYpos(), ALL_TEAMS.GOOD);
 			addEntityToGameDataObj(unit1);	
-			Creep unit2 = new Creep(gameData.getUnusedID(), 100, 100, gameData.getTeam(ALL_TEAMS.EVIL).getSpawnXpos(), gameData.getTeam(ALL_TEAMS.EVIL).getSpawnYpos(), ALL_TEAMS.EVIL);
+			Creep unit2 = new Creep(gameData.getUnusedID(), 100, 100, gameData.getTeam(ALL_TEAMS.BAD).getSpawnXpos(), gameData.getTeam(ALL_TEAMS.BAD).getSpawnYpos(), ALL_TEAMS.BAD);
 			addEntityToGameDataObj(unit2);
 		}
 		
@@ -437,7 +437,13 @@ public class ServerGameScene extends GameScene {
 
 			newEntity.setSprite(cust, tempS);
 			final FixtureDef AIFixDef = PhysicsFactory.createFixtureDef(1, 0f, 1f);
-			newEntity.setBody(PhysicsFactory.createCircleBody(phyWorld,  newEntity.getCenterXpos(), newEntity.getCenterYpos(), AITextureRegion.getWidth()/4, body, AIFixDef));
+			
+			if (newEntity instanceof Base || newEntity instanceof Tower) {
+				newEntity.setBody(PhysicsFactory.createBoxBody(phyWorld, cust, body, AIFixDef));
+
+			} else {
+				newEntity.setBody(PhysicsFactory.createCircleBody(phyWorld,  newEntity.getCenterXpos(), newEntity.getCenterYpos(), AITextureRegion.getWidth()/4, body, AIFixDef));
+			}
 			
 			ValueBar hp = new ValueBar(25, 0, (float)(cust.getWidth() - 50), 10, this.engine.getVertexBufferObjectManager());
 			cust.setHealthBar(hp);

@@ -13,16 +13,19 @@ import co.nz.splashYay.cagefight.entities.Creep;
 import co.nz.splashYay.cagefight.entities.Entity;
 import co.nz.splashYay.cagefight.entities.Player;
 import co.nz.splashYay.cagefight.entities.Tower;
+import co.nz.splashYay.cagefight.scenes.ServerGameScene;
 
 public class SlowRepeatingTask extends Thread {
 	private int bugCounterTileIsNull = 0;
 	private TMXTiledMap mTMXTiledMap;	
 	private GameData gameData;
+	private ServerGameScene sGS;
 	
 	
-	public SlowRepeatingTask(TMXTiledMap mTMXTiledMap, GameData gameData) {
+	public SlowRepeatingTask(TMXTiledMap mTMXTiledMap, GameData gameData, ServerGameScene sGS) {
 		this.mTMXTiledMap = mTMXTiledMap;
 		this.gameData = gameData;
+		this.sGS = sGS;
 	}
 	
 	@Override
@@ -74,16 +77,17 @@ public class SlowRepeatingTask extends Thread {
 	
 	
 	private void checkTileEffect(Entity entity) {
-		final TMXTile tmxTile = mTMXTiledMap.getTMXLayers().get(12).getTMXTileAt(entity.getCenterXpos(), entity.getCenterYpos());
+		final TMXTile tmxTile = mTMXTiledMap.getTMXLayers().get(0).getTMXTileAt(entity.getCenterXpos(), entity.getCenterYpos());
 		
 		if (tmxTile != null && tmxTile.getGlobalTileID() != 0) {
 			try {
 				if (tmxTile.getTMXTileProperties(mTMXTiledMap).containsTMXProperty("badHeal", "true")) {
-					if (entity.getTeam() == ALL_TEAMS.EVIL) {
+					if (entity.getTeam() == ALL_TEAMS.BAD) {
 						entity.healEntity(30f);
 					} else {
-						entity.setSpeed(2);
-						//damage the entity
+						entity.setSpeed(entity.getMaxSpeed()/2);
+						sGS.towerAttackExplosion(entity);
+						entity.damageEntity(30);
 					}
 					
 					
@@ -92,8 +96,9 @@ public class SlowRepeatingTask extends Thread {
 						entity.healEntity(30f);
 
 					} else {
-						entity.setSpeed(2);
-						//damage the entity
+						entity.setSpeed(entity.getMaxSpeed()/2);
+						sGS.towerAttackExplosion(entity);
+						entity.damageEntity(30);
 					}
 				} 
 			} catch (NullPointerException np) {

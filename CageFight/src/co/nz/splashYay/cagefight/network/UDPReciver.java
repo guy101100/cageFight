@@ -82,7 +82,7 @@ public class UDPReciver extends Thread {
 	    		//System.out.println("[" + System.currentTimeMillis() + "] recieved data [" + (gameData.getSendTime() - gameDataIn.getSendTime()) + "]");
 	    		gameData.setSendTime(gameDataIn.getSendTime());
 	    		gameData.getTeam(ALL_TEAMS.GOOD).updateFromOtherTeamData(gameDataIn.getTeam(ALL_TEAMS.GOOD));
-				gameData.getTeam(ALL_TEAMS.EVIL).updateFromOtherTeamData(gameDataIn.getTeam(ALL_TEAMS.EVIL));
+				gameData.getTeam(ALL_TEAMS.BAD).updateFromOtherTeamData(gameDataIn.getTeam(ALL_TEAMS.BAD));
 				
 				
 				for (Entry<Integer, Entity> entry: gameDataIn.getEntities().entrySet()) {					    

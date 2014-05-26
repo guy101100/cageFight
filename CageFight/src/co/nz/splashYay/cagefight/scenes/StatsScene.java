@@ -95,7 +95,7 @@ public class StatsScene extends MenuScene implements IOnMenuItemClickListener
 					this.attachChild(playerInfo);
 					good++;
 				}
-				else if(p.getTeam().equals(Team.ALL_TEAMS.EVIL))
+				else if(p.getTeam().equals(Team.ALL_TEAMS.BAD))
 				{
 					Text playerInfo = new Text(30, 240 + (20 * evil), this.mFont, p.getStatsString(), activity.getVertexBufferObjectManager());
 					this.attachChild(playerInfo);

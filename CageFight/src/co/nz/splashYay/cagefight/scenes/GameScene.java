@@ -145,10 +145,10 @@ public abstract class GameScene extends Scene {
 		this.AITextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBuildBitmapTextureAtlas, this.activity, "creep.png", 6, 6);
 
 		//base
-		this.baseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBuildBitmapTextureAtlas, this.activity, "creep.png", 6, 6);
+		this.baseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBuildBitmapTextureAtlas, this.activity, "base.png", 1, 1);
 
 		//tower
-		this.towerTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBuildBitmapTextureAtlas, this.activity, "creep.png",6, 6);
+		this.towerTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBuildBitmapTextureAtlas, this.activity, "tower.png",1, 1);
 		
 	
 		this.mBitmapTextureAtlas = new BitmapTextureAtlas(this.activity.getTextureManager(), 16, 16, TextureOptions.DEFAULT);
