@@ -144,6 +144,7 @@ public abstract class Entity implements Serializable{
 	 */
 	public void attackTarget() {
 		//cycle annimation
+		
 		getSprite().setRotation(MathUtils.radToDeg((float) Math.atan2( ( getTarget().getXPos() - getXPos() ), -( getTarget().getYPos()- getYPos() ))));		
 		Entity target = getTarget();
 		target.damageEntity(this.getDamage());

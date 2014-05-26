@@ -131,6 +131,8 @@ public class Player extends Entity implements Serializable{
 	    final float angle = getBody().getAngle(); // keeps the body angle
 	    int x = gd.getTeam(getTeam()).getSpawnXpos();
 	    int y = gd.getTeam(getTeam()).getSpawnYpos();
+	    this.setXPos(x);
+	    this.setYPos(y);
 	    final Vector2 v2 = Vector2Pool.obtain(x / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT, y / PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT);
 	    
 	    getBody().setTransform(v2, angle);

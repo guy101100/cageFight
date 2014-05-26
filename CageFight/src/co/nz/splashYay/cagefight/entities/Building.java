@@ -31,7 +31,10 @@ public abstract class Building extends AIUnit{
 		
 		for (Entity ent : entities) {							
 			if (ent.isAlive() && getDistanceToTarget(ent) < attackRange) {
-				toDamage.add(ent);
+				if (System.currentTimeMillis() >= ent.getRespawnTime() + 2500 ) {
+					toDamage.add(ent);
+				}
+				
 			}			
 		}
 		if (toDamage.size() > 0) {
