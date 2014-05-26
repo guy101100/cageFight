@@ -17,7 +17,7 @@ import co.nz.splashYay.cagefight.Team.ALL_TEAMS;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 
-public class Entity implements Serializable{
+public abstract class Entity implements Serializable{
 	
 	/**
 	 * 
@@ -40,6 +40,8 @@ public class Entity implements Serializable{
 	protected long attackCoolDown;
 	
 	protected int attackRange;
+	
+	protected float regenAmount;
 	
 	protected boolean alive;
 	
@@ -86,6 +88,8 @@ public class Entity implements Serializable{
 		this.stateChanged = true;
 		
 		this.state = EntityState.IDLE;
+		
+		this.regenAmount = 2;
 		
 	}
 	
@@ -533,10 +537,14 @@ public class Entity implements Serializable{
 	}
 
 
-	public void checkState(GameData gameData) {
-		
-		
+	public float getRegenAmount() {
+		return regenAmount;
 	}
+	
+	
+	public abstract void checkState(GameData gameData);
+	
+	
 	
 	
 	

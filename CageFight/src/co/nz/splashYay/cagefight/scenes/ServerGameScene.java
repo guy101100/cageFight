@@ -34,6 +34,7 @@ import co.nz.splashYay.cagefight.EntityState;
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.GameState;
 import co.nz.splashYay.cagefight.SceneManager;
+import co.nz.splashYay.cagefight.SlowRepeatingTask;
 import co.nz.splashYay.cagefight.ValueBar;
 import co.nz.splashYay.cagefight.Team.ALL_TEAMS;
 import co.nz.splashYay.cagefight.entities.Base;
@@ -57,6 +58,8 @@ public class ServerGameScene extends GameScene {
 	
 	private ServerCheckListener sCL;
 	private UDPServer udp;
+
+	private SlowRepeatingTask slowLoop;
 	
 
 	
@@ -92,6 +95,9 @@ public class ServerGameScene extends GameScene {
 		//oTCL.start();
 		sCL.start();
 		udp.start();
+		
+		slowLoop = new SlowRepeatingTask(mTMXTiledMap, gameData);
+		slowLoop.start();
 		
 		player = new Player("", gameData.getUnusedID(), 500, 250, gameData.getTeam(ALL_TEAMS.EVIL).getSpawnXpos(), gameData.getTeam(ALL_TEAMS.EVIL).getSpawnYpos(), ALL_TEAMS.EVIL);
 		addEntityToGameDataObj(player);
@@ -329,7 +335,7 @@ public class ServerGameScene extends GameScene {
 				
 			} else if (player.getPlayerState() == EntityState.IDLE) {
 				//do nothing
-				player.healEntity(0.1f);
+				
 				
 				
 			} else if (player.getPlayerState() == EntityState.DEAD) {

@@ -36,20 +36,30 @@ public class SlowRepeatingTask extends Thread {
 
 			while (it.hasNext()) {
 				Map.Entry pairs = (Map.Entry) it.next();
-
+				
+				
+				
+				
+				
 				if (pairs.getValue() instanceof Player) {
 					Player player = (Player) pairs.getValue();
 					checkTileEffect(player);
+					player.healEntity(player.getRegenAmount());
 					
 
 				} else if (pairs.getValue() instanceof Creep) {
 					Creep creep = (Creep) pairs.getValue();
 					checkTileEffect(creep);
+					creep.healEntity(creep.getRegenAmount());
 
 				} else if (pairs.getValue() instanceof Tower) {
-
+					Tower tower = (Tower) pairs.getValue();
+					tower.healEntity(tower.getRegenAmount());
+					
 				} else if (pairs.getValue() instanceof Base) {
-
+					Base base = (Base) pairs.getValue();
+					base.healEntity(base.getRegenAmount());
+					
 				}
 				
 			}
@@ -73,7 +83,7 @@ public class SlowRepeatingTask extends Thread {
 			try {
 				if (tmxTile.getTMXTileProperties(mTMXTiledMap).containsTMXProperty("badHeal", "true")) {
 					if (entity.getTeam() == ALL_TEAMS.EVIL) {
-						entity.healEntity(1.5f);
+						entity.healEntity(30f);
 					} else {
 						entity.setSpeed(2);
 						//damage the entity
@@ -82,7 +92,7 @@ public class SlowRepeatingTask extends Thread {
 					
 				} else if (tmxTile.getTMXTileProperties(mTMXTiledMap).containsTMXProperty("goodHeal", "true")) {
 					if (entity.getTeam() == ALL_TEAMS.GOOD) {
-						entity.healEntity(1.5f);
+						entity.healEntity(30f);
 					} else {
 						entity.setSpeed(2);
 						//damage the entity
