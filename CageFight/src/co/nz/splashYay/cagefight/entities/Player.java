@@ -24,6 +24,7 @@ public class Player extends Entity implements Serializable{
 	private float movementX = 0;
 	private float movementY = 0;
 	private boolean attackCommand = false;
+	private int expToLevel = 120;
 	
 	//Player Stats
 	private int experience;
@@ -156,9 +157,19 @@ public class Player extends Entity implements Serializable{
 			
 			int extraExp = this.getExperience() - this.getLevelExp();
 			
-			this.setExperience(0 + extraExp);
+			this.resetExperience();
+			
+			this.addExperience(extraExp);
 			
 			this.setAbilityPoints(this.getAbilityPoints() + 1);
+		}
+	}
+	
+	public void checkForLevel()
+	{
+		if (this.getExperience() >= this.expToLevel)
+		{
+			this.levelUp();
 		}
 	}
 	
@@ -202,8 +213,14 @@ public class Player extends Entity implements Serializable{
 		return experience;
 	}
 
-	public void setExperience(int experience) {
-		this.experience = experience;
+	public void addExperience(int experience) {
+		if (experience >= 0)
+		this.experience += experience;
+	}
+	
+	public void resetExperience()
+	{
+		this.experience = 0;
 	}
 	
 	public int getLevelExp()

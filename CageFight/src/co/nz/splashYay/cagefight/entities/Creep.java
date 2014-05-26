@@ -33,7 +33,12 @@ public class Creep extends AIUnit {
 	}
 	
 	public void killCreep(){
-		this.setAlive(false);		
+		this.setAlive(false);	
+		if  (lastEntityThatAttackedMe instanceof Player)
+		{
+			((Player)lastEntityThatAttackedMe).addExperience(150);
+			((Player)lastEntityThatAttackedMe).checkForLevel();
+		}
 		// TO ADD : death annimation
 		this.getBody().setActive(false);
 	}
