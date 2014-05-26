@@ -40,6 +40,7 @@ public class SlowRepeatingTask extends Thread {
 				if (pairs.getValue() instanceof Player) {
 					Player player = (Player) pairs.getValue();
 					checkTileEffect(player);
+					
 
 				} else if (pairs.getValue() instanceof Creep) {
 					Creep creep = (Creep) pairs.getValue();
@@ -50,12 +51,15 @@ public class SlowRepeatingTask extends Thread {
 				} else if (pairs.getValue() instanceof Base) {
 
 				}
-				try {
-					sleep(1000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				
+			}
+			
+			
+			try {
+				sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		
