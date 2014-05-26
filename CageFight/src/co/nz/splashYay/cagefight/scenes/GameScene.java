@@ -244,6 +244,7 @@ public abstract class GameScene extends Scene {
 		if (shopUp) {
 			shopUp = false;
 			this.clearChildScene();
+			this.setChildScene(joyStick);
 			hud.setVisible(true);
 			
 		} else {
@@ -287,8 +288,8 @@ public abstract class GameScene extends Scene {
 		joyStick.getControlKnob().setScale(1.25f);
 		joyStick.refreshControlKnobPosition();
 
-		this.hud.attachChild(joyStick);// attach control joystick
-		this.hud.registerTouchArea(joyStick.getControlBase());
+		this.setChildScene(joyStick);// attach control joystick
+		//this.hud.registerTouchArea(joyStick.getControlBase());
 		
 		//Create target info
 		targetHealth = new ValueBar(camera.getWidth() / 2 - 80, 5, 160, 30, activity.getVertexBufferObjectManager());
