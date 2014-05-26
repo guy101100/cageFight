@@ -439,7 +439,7 @@ public class ServerGameScene extends GameScene {
 			final FixtureDef AIFixDef = PhysicsFactory.createFixtureDef(1, 0f, 1f);
 			newEntity.setBody(PhysicsFactory.createCircleBody(phyWorld,  newEntity.getCenterXpos(), newEntity.getCenterYpos(), AITextureRegion.getWidth()/4, body, AIFixDef));
 			
-			ValueBar hp = new ValueBar(25, 0, (float)(cust.getWidth()*0.75), 10, this.engine.getVertexBufferObjectManager());
+			ValueBar hp = new ValueBar(25, 0, (float)(cust.getWidth() - 50), 10, this.engine.getVertexBufferObjectManager());
 			cust.setHealthBar(hp);
 			
 			phyWorld.registerPhysicsConnector(new PhysicsConnector(cust, newEntity.getBody(), true, false));

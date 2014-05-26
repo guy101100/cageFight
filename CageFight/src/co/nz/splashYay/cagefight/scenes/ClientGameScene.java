@@ -228,7 +228,7 @@ public class ClientGameScene extends GameScene {
 
 			newEntity.setSprite(cust, tempS);
 			
-			ValueBar hp = new ValueBar(25, 0, (float)(cust.getWidth()*0.75), 10, this.engine.getVertexBufferObjectManager());
+			ValueBar hp = new ValueBar(25, 0, (float)(cust.getWidth()- 50), 10, this.engine.getVertexBufferObjectManager());
 			cust.setHealthBar(hp);			
 			
 			this.attachChild(cust);
