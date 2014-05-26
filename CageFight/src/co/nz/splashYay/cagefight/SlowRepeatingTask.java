@@ -45,6 +45,7 @@ public class SlowRepeatingTask extends Thread {
 					Player player = (Player) pairs.getValue();
 					checkTileEffect(player);
 					player.healEntity(player.getRegenAmount());
+					player.addGold(1);
 					
 
 				} else if (pairs.getValue() instanceof Creep) {
