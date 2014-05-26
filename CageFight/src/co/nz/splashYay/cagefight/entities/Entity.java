@@ -30,6 +30,8 @@ public abstract class Entity implements Serializable{
 	protected float currenthealth;
 	protected float maxhealth;
 	
+	protected long respawnTime = 0;
+	
 	protected float maxSpeed;
 	protected float speed;	
 	
@@ -56,7 +58,7 @@ public abstract class Entity implements Serializable{
 	protected Entity lastEntityThatAttackedMe;
 	
 	protected Entity target;
-	protected boolean stateChanged;
+	protected transient boolean stateChanged;
 
 
 	public Entity(int xpos, int ypos, int maxhealth, int currenthealth, int id, ALL_TEAMS team)
@@ -467,7 +469,14 @@ public abstract class Entity implements Serializable{
 	public EntityState getState() {
 		return state;
 	}
+	
+	
 
+
+
+	public void setState(EntityState state) {
+		this.state = state;
+	}
 
 
 	public Entity getLastEntityThatAttackedMe() {
@@ -546,7 +555,22 @@ public abstract class Entity implements Serializable{
 	
 	
 	
+	/**
+	 * The System time the entity will respawn
+	 * @return the time the entity will respawn
+	 */
+	public long getRespawnTime() {
+		return respawnTime;
+	}
 	
+	/**
+	 * Sets respawn time to current system time + respawn time
+	 * @Param respawnTime how long it will take to respawn the player
+	 */
+	public void setRespawnTime() {
+		long respawnLength = 10000;
+		this.respawnTime = (System.currentTimeMillis() + respawnLength);
+	}
 	
 	
 

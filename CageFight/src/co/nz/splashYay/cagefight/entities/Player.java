@@ -27,8 +27,7 @@ public class Player extends Entity implements Serializable{
 	
 	//Player Stats
 	private int experience;
-	private int level;
-	private long respawnTime = 0;
+	private int level;	
 	private int LevelExp;
 	private int gold;
 	private Timer goldTimer;
@@ -136,14 +135,11 @@ public class Player extends Entity implements Serializable{
 	    
 	    getBody().setTransform(v2, angle);
 	    Vector2Pool.recycle(v2);
+	    
+	    this.setPlayerState(EntityState.IDLE);
+		setAlive(true);
 	    System.out.println("Player : " + this.getId() + " has respawned [" + System.currentTimeMillis() + "]");
 	    
-	    
-	    
-	    
-	    
-	    
-
 		
 	}
 	
@@ -305,19 +301,12 @@ public class Player extends Entity implements Serializable{
 	}
 
 	/**
-	 * The System time the player will respawn
-	 * @return the time the player will respawn
-	 */
-	public long getRespawnTime() {
-		return respawnTime;
-	}
-	
-	/**
 	 * Sets respawn time to current system time + respawn time
 	 * @Param respawnTime how long it will take to respawn the player
 	 */
-	private void setRespawnTime() {
-		long respawnLength = this.level * 10000;
+	@Override
+	public void setRespawnTime() {
+		long respawnLength = 10000;
 		this.respawnTime = (System.currentTimeMillis() + respawnLength);
 	}
 

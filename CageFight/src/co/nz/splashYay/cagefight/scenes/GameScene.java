@@ -139,7 +139,7 @@ public abstract class GameScene extends Scene {
 		
 		this.mBuildBitmapTextureAtlas = new BuildableBitmapTextureAtlas(this.activity.getTextureManager(), 4096, 4096, TextureOptions.NEAREST);
 
-		this.playerTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBuildBitmapTextureAtlas, this.activity, "creep.png", 6, 6);
+		this.playerTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBuildBitmapTextureAtlas, this.activity, "playerWalk3.png", 1, 6);
 
 		//ai
 		this.AITextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBuildBitmapTextureAtlas, this.activity, "creep.png", 6, 6);
@@ -439,21 +439,22 @@ public abstract class GameScene extends Scene {
 		return playerCommands;
 	}
 	
-	public void checkVictory(){
-		if(gameData.getGameState().equals(GameState.RUNNING))
-		{
-			if(!gameData.getGoodBase().isAlive() || !gameData.getEvilBase().isAlive())
-			{
-				gameData.setGameState(GameState.FINISHED);
-				
-				StatsScene stats = new StatsScene(activity, engine, camera, gameData);
-				stats.loadResources();
-				stats.createScene();
-				this.setChildScene(stats);
-				
-				this.hud.setVisible(false);
+	public void checkVictory() {
+		if (gameData.getGameState().equals(GameState.RUNNING)) {
+			if (gameData.getGoodBase() != null && gameData.getEvilBase() != null) {
+				if (!gameData.getGoodBase().isAlive() || !gameData.getEvilBase().isAlive()) {
+					gameData.setGameState(GameState.FINISHED);
 
-			}		
+					StatsScene stats = new StatsScene(activity, engine, camera, gameData);
+					stats.loadResources();
+					stats.createScene();
+					this.setChildScene(stats);
+
+					this.hud.setVisible(false);
+
+				}
+			}
+
 		}
 	}
 	

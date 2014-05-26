@@ -36,25 +36,26 @@ public class SlowRepeatingTask extends Thread {
 
 			while (it.hasNext()) {
 				Map.Entry pairs = (Map.Entry) it.next();
+				if (((Entity) pairs.getValue()).isAlive()) {
+					if (pairs.getValue() instanceof Player) {
+						Player player = (Player) pairs.getValue();
+						checkTileEffect(player);
+						player.healEntity(player.getRegenAmount());
 
-				if (pairs.getValue() instanceof Player) {
-					Player player = (Player) pairs.getValue();
-					checkTileEffect(player);
-					player.healEntity(player.getRegenAmount());
+					} else if (pairs.getValue() instanceof Creep) {
+						Creep creep = (Creep) pairs.getValue();
+						checkTileEffect(creep);
+						creep.healEntity(creep.getRegenAmount());
 
-				} else if (pairs.getValue() instanceof Creep) {
-					Creep creep = (Creep) pairs.getValue();
-					checkTileEffect(creep);
-					creep.healEntity(creep.getRegenAmount());
+					} else if (pairs.getValue() instanceof Tower) {
+						Tower tower = (Tower) pairs.getValue();
+						tower.healEntity(tower.getRegenAmount());
 
-				} else if (pairs.getValue() instanceof Tower) {
-					Tower tower = (Tower) pairs.getValue();
-					tower.healEntity(tower.getRegenAmount());
+					} else if (pairs.getValue() instanceof Base) {
+						Base base = (Base) pairs.getValue();
+						base.healEntity(base.getRegenAmount());
 
-				} else if (pairs.getValue() instanceof Base) {
-					Base base = (Base) pairs.getValue();
-					base.healEntity(base.getRegenAmount());
-
+					}
 				}
 
 			}

@@ -176,7 +176,7 @@ public class ServerGameScene extends GameScene {
 		switch (creep.getState()) {
 		case MOVING:
 			
-			creep.setAnnimation(6, 11, 100);
+			creep.setAnnimation(4, 11, 100);
 			
 			creep.getSprite().setRotation(creep.getDirectionToTarget());
 			creep.setDirection(creep.getDirectionToTarget());			
@@ -193,7 +193,7 @@ public class ServerGameScene extends GameScene {
 		case ATTACKING:
 			creep.stopEntity();
 			if (creep.getTarget() != null && System.currentTimeMillis() >= (creep.getLastAttackTime() + creep.getAttackCoolDown())) {
-				creep.setAnnimation(11, 16, 100);			
+				creep.setAnnimation(11, 21, 100);			
 				creep.attackTarget();
 				creep.setLastAttackTime(System.currentTimeMillis());
 				sceneManager.getSoundManager().playRandomAttackSound(player, creep);
@@ -210,7 +210,13 @@ public class ServerGameScene extends GameScene {
 				creep.killCreep();
 				sceneManager.getSoundManager().playRandomDeathSound(player, creep);
 				creep.setAnnimation(26, 27, 1000);
-			}	
+			} else {
+				if (creep.getRespawnTime() <= System.currentTimeMillis()) {
+					creep.respawn(gameData);
+				}
+			}
+			
+			
 			
 			break;
 
@@ -304,7 +310,9 @@ public class ServerGameScene extends GameScene {
 		
 		
 		if (player.getPlayerState() == EntityState.MOVING) {
-			player.getBody().setActive(true);
+			
+			player.setAnnimation(0, 5, 100);
+			
 			final Body playerBody = player.getBody();
 			final Vector2 velocity = Vector2Pool.obtain(player.getMovementX() * player.getSpeed(), player.getMovementY() * player.getSpeed());
 			playerBody.setLinearVelocity(velocity);
@@ -409,13 +417,19 @@ public class ServerGameScene extends GameScene {
 			
 			
 			gameData.addEntity(newEntity);
-			AnimatedSprite tempS = new AnimatedSprite(newEntity.getXPos(), newEntity.getYPos(), temp, this.engine.getVertexBufferObjectManager()) {
+			AnimatedSprite tempS = new AnimatedSprite(0, 0, temp, this.engine.getVertexBufferObjectManager()) {
 				@Override
 				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 					setTargetFromSpriteTouch(this);
 					return true;
 				}
 			};
+			
+			if (newEntity.getTeam() == ALL_TEAMS.GOOD) {
+				tempS.setColor(Color.YELLOW);
+			} else {
+				tempS.setColor(Color.CYAN);
+			}
 			registerTouchArea(tempS);
 			setTouchAreaBindingOnActionDownEnabled(true);
 			
@@ -448,6 +462,7 @@ public class ServerGameScene extends GameScene {
 			entity.getParentSprite().hideHealthBar();
 		}
 	}
+	
 	
 	
 	

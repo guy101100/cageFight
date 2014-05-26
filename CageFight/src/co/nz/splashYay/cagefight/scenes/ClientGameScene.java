@@ -14,11 +14,16 @@ import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.util.FPSLogger;
 import org.andengine.extension.physics.box2d.FixedStepPhysicsWorld;
+import org.andengine.extension.physics.box2d.PhysicsConnector;
+import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.input.touch.TouchEvent;
+import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
 
+import co.nz.splashYay.cagefight.CustomSprite;
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.SceneManager;
+import co.nz.splashYay.cagefight.ValueBar;
 import co.nz.splashYay.cagefight.entities.Base;
 import co.nz.splashYay.cagefight.entities.Creep;
 import co.nz.splashYay.cagefight.entities.Entity;
@@ -28,6 +33,8 @@ import co.nz.splashYay.cagefight.network.ClientOutNetCom;
 import co.nz.splashYay.cagefight.network.UDPReciver;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
 public class ClientGameScene extends GameScene {
 
@@ -105,6 +112,7 @@ public class ClientGameScene extends GameScene {
 	 */
 	private void processEntities() {
 		Iterator it = gameData.getEntities().entrySet().iterator();
+		
 		while (it.hasNext()) {
 			Map.Entry pairs = (Map.Entry) it.next();
 			if (pairs.getValue() instanceof Player) {
@@ -122,24 +130,37 @@ public class ClientGameScene extends GameScene {
 	}
 	
 	private void processPlayer(Player player) {
-		// move player			
-		//if (player.getMovementX() != 0 && player.getMovementY() != 0) {
-			player.getSprite().setRotation(player.getDirection());
-		//}
 		
-		//player.getSprite().setPosition(player.getXPos(), player.getYPos());
+		player.getSprite().setRotation(player.getDirection());
+		player.getParentSprite().getHealthBar().setProgressPercentage(player.getCurrenthealth() / player.getMaxhealth());
 		
+		switch (player.getState()) {
+		case MOVING:
+			
+			break;
+
+		case IDLE:
+
+			break;
+		case ATTACKING:
+
+			break;
+		case DEAD:
+
+			break;
+		}
 		
 
 		// if player is not moving and is out of sync, move to actual position.
 		float moveTime = 0.125f; // time in seconds it takes to move to actual position
 
 		if (player.getSprite().getEntityModifierCount() == 0) { // if there is no move modifier add one
-			MoveModifier moveModifier = new MoveModifier(moveTime, player.getSprite().getX(), player.getXPos() , player.getSprite().getY(), player.getYPos()   );
+			MoveModifier moveModifier = new MoveModifier(moveTime, player.getSprite().getParent().getX(), player.getXPos() , player.getSprite().getParent().getY(), player.getYPos()   );
 			player.setMoveModifier(moveModifier);
-			player.getSprite().registerEntityModifier(moveModifier);
+			player.getParentSprite().registerEntityModifier(moveModifier);
+			
 		} else {
-			player.getMoveModifier().reset(moveTime, player.getSprite().getX(), player.getXPos(), player.getSprite().getY(), player.getYPos()); // move player to where actual coords are
+			player.getMoveModifier().reset(moveTime, player.getSprite().getParent().getX(), player.getXPos(), player.getSprite().getParent().getY(), player.getYPos()); // move player to where actual coords are
 		}
 		
 		
@@ -149,23 +170,88 @@ public class ClientGameScene extends GameScene {
 		// move creep
 				
 		creep.getSprite().setRotation(creep.getDirection());		
+		switch (creep.getState()) {
+		case MOVING:
+			creep.setAnnimation(4, 11, 100);
+			break;
 
+		case IDLE:
+			creep.setAnnimation(0, 3, 150);
+			break;
+		case ATTACKING:
+			creep.setAnnimation(11, 21, 100);	
+			break;
+		case DEAD:
+			creep.setAnnimation(26, 27, 1500);
+			break;
+		}
 		
 		float moveTime = 0.125f; // time in seconds it takes to move to actual position
 
 		if (creep.getSprite().getEntityModifierCount() == 0) { // if there is no move modifier add one
 			MoveModifier moveModifier = new MoveModifier(moveTime, creep.getSprite().getX(), creep.getXPos() , creep.getSprite().getY(), creep.getYPos()   );
 			creep.setMoveModifier(moveModifier);
-			creep.getSprite().registerEntityModifier(moveModifier);
+			creep.getParentSprite().registerEntityModifier(moveModifier);
 		} else {
-			creep.getMoveModifier().reset(moveTime, creep.getSprite().getX(), creep.getXPos(), creep.getSprite().getY(), creep.getYPos()); // move player to where actual coords are
+			creep.getMoveModifier().reset(moveTime, creep.getSprite().getParent().getX(), creep.getXPos(), creep.getSprite().getParent().getY(), creep.getYPos()); // move player to where actual coords are
 		}
+	}
+	
+	public void addEntityToGameDataObj(Entity newEntity) {
+		if (newEntity != null) {
+			TiledTextureRegion temp  = null;			
+			
+			if (newEntity instanceof Player) {
+				temp = playerTextureRegion;
+			} else if (newEntity instanceof Creep) {
+				temp = AITextureRegion;
+			} else if (newEntity instanceof Tower) {
+				temp = towerTextureRegion;				
+			} else if (newEntity instanceof Base) {
+				temp = baseTextureRegion;				
+			}
+			
+			
+			gameData.addEntity(newEntity);
+			AnimatedSprite tempS = new AnimatedSprite(0, 0, temp, this.engine.getVertexBufferObjectManager()) {
+				@Override
+				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+					setTargetFromSpriteTouch(this);
+					return true;
+				}
+			};
+			
+			registerTouchArea(tempS);
+			setTouchAreaBindingOnActionDownEnabled(true);
+			
+			CustomSprite cust = new CustomSprite(newEntity.getXPos(), newEntity.getYPos(), tempS.getWidth(), tempS.getHeight(), blankTextureRegion, this.engine.getVertexBufferObjectManager());
+
+			newEntity.setSprite(cust, tempS);
+			
+			ValueBar hp = new ValueBar(25, 0, (float)(cust.getWidth()*0.75), 10, this.engine.getVertexBufferObjectManager());
+			cust.setHealthBar(hp);			
+			
+			this.attachChild(cust);
+			
+			final PhysicsHandler tempPhyHandler = new PhysicsHandler(tempS); // added
+			cust.registerUpdateHandler(tempPhyHandler); // added			
+			newEntity.setPhyHandler(tempPhyHandler);
+			
+			
+			
+			if (player != null && newEntity.getId() == player.getId()) {
+				camera.setChaseEntity(cust);
+				sPlayer = tempS;
+			}		
+			
+		}
+		
 	}
 	
 	
 
 	
-	public void addEntityToGameDataObj(Entity newEntity) {
+	public void addEntityToGameDataObj2(Entity newEntity) {
 		if (newEntity != null) {
 			if (newEntity instanceof Player) {
 				Player newPlayer = (Player) newEntity;
