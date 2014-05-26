@@ -108,10 +108,10 @@ public class Player extends Entity implements Serializable{
 		this.setDeathCount(getDeathCount() + 1);
 		
 		//Remove gold on death
-		this.setGold(this.getGold() - this.getLevel() * 10);
+		this.spendGold(this.getGold() - this.getLevel() * 10);
 		if (this.getGold() < 0)
 		{
-			this.setGold(0);
+			this.spendGold(0);
 		}
 	}
 	
@@ -273,21 +273,19 @@ public class Player extends Entity implements Serializable{
 		return gold;
 	}
 
-
-
-	public void setGold(int gold) {
-		this.gold = gold;
+	
+	public void addGold(int gold)
+	{
+		if (gold >= 0){
+		this.gold+=gold;
+		}
 	}
 
-
-	public void initialiseGoldTimer()
+	public void spendGold(int gold)
 	{
-		try {
-			goldTimer.wait(1000);
-			this.setGold(this.getGold() + 1);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (gold >= 0)
+		{
+			this.gold = this.gold - gold;
 		}
 	}
 	

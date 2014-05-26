@@ -22,16 +22,20 @@ import org.andengine.extension.tmx.TMXTile;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.FontFactory;
+import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.util.HorizontalAlign;
 import org.andengine.util.color.Color;
 import org.andengine.util.math.MathUtils;
 
 import android.graphics.Typeface;
+import co.nz.splashYay.cagefight.CustomSprite;
 import co.nz.splashYay.cagefight.EntityState;
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.GameState;
 import co.nz.splashYay.cagefight.SceneManager;
+import co.nz.splashYay.cagefight.SlowRepeatingTask;
+import co.nz.splashYay.cagefight.ValueBar;
 import co.nz.splashYay.cagefight.Team.ALL_TEAMS;
 import co.nz.splashYay.cagefight.entities.Base;
 import co.nz.splashYay.cagefight.entities.Creep;
@@ -51,13 +55,11 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 public class ServerGameScene extends GameScene {
 	// networking
 	private InFromClientListener iFCL;
-	//private OutToClientListener oTCL;
+	
 	private ServerCheckListener sCL;
-	UDPServer udp;
-	
-	private int bugCounterTileIsNull = 0;
-	private int count;
-	
+	private UDPServer udp;
+
+	private SlowRepeatingTask slowLoop;
 	
 
 	
@@ -68,7 +70,6 @@ public class ServerGameScene extends GameScene {
 		this.engine = eng;
 		this.camera = cam;		
 		this.sceneManager = sceneManager;
-		count = 0;
 	}
 
 	
@@ -94,6 +95,9 @@ public class ServerGameScene extends GameScene {
 		//oTCL.start();
 		sCL.start();
 		udp.start();
+		
+		slowLoop = new SlowRepeatingTask(mTMXTiledMap, gameData);
+		slowLoop.start();
 		
 		player = new Player("", gameData.getUnusedID(), 500, 250, gameData.getTeam(ALL_TEAMS.EVIL).getSpawnXpos(), gameData.getTeam(ALL_TEAMS.EVIL).getSpawnYpos(), ALL_TEAMS.EVIL);
 		addEntityToGameDataObj(player);
@@ -164,9 +168,10 @@ public class ServerGameScene extends GameScene {
 
 		creep.checkAndUpdateObjective(gameData);
 
-		creep.setXPos(creep.getSprite().getX());
-		creep.setYPos(creep.getSprite().getY());
-		checkTileEffect(creep);
+		creep.setXPos(creep.getSprite().getParent().getX());
+		creep.setYPos(creep.getSprite().getParent().getY());
+		updateHealthBar(creep);
+		
 
 		switch (creep.getState()) {
 		case MOVING:
@@ -216,6 +221,7 @@ public class ServerGameScene extends GameScene {
 	
 	private void proccessBase(Base base) {
 		base.checkState(gameData);
+		updateHealthBar(base);
 		
 		switch (base.getState()) {
 		case ATTACKING:
@@ -253,7 +259,7 @@ public class ServerGameScene extends GameScene {
 
 	private void proccessTower(Tower tower) {
 		tower.checkState(gameData);
-
+		updateHealthBar(tower);
 		switch (tower.getState()) {
 		case ATTACKING:
 			
@@ -292,10 +298,9 @@ public class ServerGameScene extends GameScene {
 		
 		player.checkState(gameData);// checks and updates the players state
 		
-		player.setXPos(player.getSprite().getX());// set player position(in data) to the sprites position.
-		player.setYPos(player.getSprite().getY());
-		
-		checkTileEffect(player);
+		player.setXPos(player.getSprite().getParent().getX());// set player position(in data) to the sprites position.
+		player.setYPos(player.getSprite().getParent().getY());
+		updateHealthBar(player);		
 		
 		
 		if (player.getPlayerState() == EntityState.MOVING) {
@@ -330,7 +335,7 @@ public class ServerGameScene extends GameScene {
 				
 			} else if (player.getPlayerState() == EntityState.IDLE) {
 				//do nothing
-				player.healEntity(0.1f);
+				
 				
 				
 			} else if (player.getPlayerState() == EntityState.DEAD) {
@@ -349,40 +354,7 @@ public class ServerGameScene extends GameScene {
 		}		
 	}
 	
-	private void checkTileEffect(Entity entity) {
-		final TMXTile tmxTile = mTMXTiledMap.getTMXLayers().get(12).getTMXTileAt(entity.getCenterXpos(), entity.getCenterYpos());
-		
-		if (tmxTile != null && tmxTile.getGlobalTileID() != 0) {
-			try {
-				if (tmxTile.getTMXTileProperties(mTMXTiledMap).containsTMXProperty("badHeal", "true")) {
-					if (entity.getTeam() == ALL_TEAMS.EVIL) {
-						entity.healEntity(1.5f);
-					} else {
-						entity.setSpeed(2);
-						//damage the entity
-					}
-					
-					
-				} else if (tmxTile.getTMXTileProperties(mTMXTiledMap).containsTMXProperty("goodHeal", "true")) {
-					if (entity.getTeam() == ALL_TEAMS.GOOD) {
-						entity.healEntity(1.5f);
-					} else {
-						entity.setSpeed(2);
-						//damage the entity
-					}
-				} 
-			} catch (NullPointerException np) {
-				
-				bugCounterTileIsNull++;
-				System.err.println("Null pointer on the tile again : " + bugCounterTileIsNull + " Times");
-				
-			}
-			
-			
-		} else { // is not on an effecting tile, reverse any effects on the player
-			entity.setSpeed(entity.getMaxSpeed());
-		}
-	}
+	
 	
 	private void setUpBasesTowersAndAIunits(){
 		Base team1Base = new Base(2750, 770, 1000, 1000, gameData.getUnusedID(), ALL_TEAMS.GOOD);
@@ -418,117 +390,68 @@ public class ServerGameScene extends GameScene {
 	}
 	
 	
-	
-	
 	public void addEntityToGameDataObj(Entity newEntity) {
-		/*
-		boolean done = false;
-		do{
-			if(done){
-				
-			}
-		} while (!done) ;
-		
-		*/
-			
-			
 		if (newEntity != null) {
-			
+			TiledTextureRegion temp  = null;
+			BodyType body = BodyType.DynamicBody;
 			
 			if (newEntity instanceof Player) {
-				Player newPlayer = (Player) newEntity;
-				gameData.addPlayer(newPlayer);				
-				AnimatedSprite tempS = new AnimatedSprite(newPlayer.getXPos(), newPlayer.getYPos(), playerTextureRegion, this.engine.getVertexBufferObjectManager()) {
-					@Override
-					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-						setTargetFromSpriteTouch(this);
-						return true;
-					}
-				};
-				registerTouchArea(tempS);
-				setTouchAreaBindingOnActionDownEnabled(true);	
-				
-				
-				final FixtureDef playerFixDef = PhysicsFactory.createFixtureDef(1, 0f, 0.5f);
-				newPlayer.setSprite(tempS);
-				newPlayer.setBody(PhysicsFactory.createCircleBody(phyWorld,  newPlayer.getCenterXpos(), newPlayer.getCenterYpos(), playerTextureRegion.getWidth()/4, BodyType.DynamicBody, playerFixDef));
-				
-				phyWorld.registerPhysicsConnector(new PhysicsConnector(tempS, newPlayer.getBody(), true, false));
-				this.attachChild(tempS);			
-				
-				
-				if (newPlayer.getId() == player.getId()) {
-					camera.setChaseEntity(tempS);
-				}				
-				
-			} else if (newEntity instanceof Base) {
-				Base newBase = (Base) newEntity;
-				gameData.addEntity(newBase);
-				FixtureDef baseFix = PhysicsFactory.createFixtureDef(0, 0f, 0f);
-				AnimatedSprite baseS = new AnimatedSprite(newBase.getXPos(), newBase.getYPos(), baseTextureRegion, this.engine.getVertexBufferObjectManager()) {
-					@Override
-					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-						setTargetFromSpriteTouch(this);
-
-						return true;
-					}
-				};
-				registerTouchArea(baseS);
-				setTouchAreaBindingOnActionDownEnabled(true);
-				newBase.setSprite(baseS);
-				newBase.setBody(PhysicsFactory.createBoxBody(phyWorld, baseS, BodyType.StaticBody, baseFix));
-				this.attachChild(baseS);
-				
-				
-				
-			} else if (newEntity instanceof Tower) {
-				Tower newTower = (Tower) newEntity;
-				gameData.addEntity(newTower);
-				FixtureDef baseFix = PhysicsFactory.createFixtureDef(0, 0f, 0f);
-				AnimatedSprite towerS = new AnimatedSprite(newTower.getXPos(), newTower.getYPos(), towerTextureRegion, this.engine.getVertexBufferObjectManager()) {
-					@Override
-					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-						setTargetFromSpriteTouch(this);
-
-						return true;
-					}
-				};
-				
-				registerTouchArea(towerS);
-				setTouchAreaBindingOnActionDownEnabled(true);
-				newTower.setSprite(towerS);
-				newTower.setBody(PhysicsFactory.createBoxBody(phyWorld, towerS, BodyType.StaticBody, baseFix));
-				this.attachChild(towerS);
-			
+				temp = playerTextureRegion;
 			} else if (newEntity instanceof Creep) {
-				
-				
-				Creep newAIunit = (Creep) newEntity;
-				gameData.addEntity(newAIunit);
-				AnimatedSprite tempS = new AnimatedSprite(newAIunit.getXPos(), newAIunit.getYPos(), AITextureRegion, this.engine.getVertexBufferObjectManager()) {
-					@Override
-					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-						setTargetFromSpriteTouch(this);
-						return true;
-					}
-				};
-				registerTouchArea(tempS);
-				setTouchAreaBindingOnActionDownEnabled(true);
-				newAIunit.setSprite(tempS);
-				final FixtureDef AIFixDef = PhysicsFactory.createFixtureDef(1, 0f, 1f);
-				newAIunit.setBody(PhysicsFactory.createCircleBody(phyWorld,  newAIunit.getCenterXpos(), newAIunit.getCenterYpos(), AITextureRegion.getWidth()/4, BodyType.DynamicBody, AIFixDef));
-				
-				
-				phyWorld.registerPhysicsConnector(new PhysicsConnector(tempS, newAIunit.getBody(), true, false));
-				this.attachChild(tempS);
-				
-
+				temp = AITextureRegion;
+			} else if (newEntity instanceof Tower) {
+				temp = towerTextureRegion;
+				body = BodyType.StaticBody;
+			} else if (newEntity instanceof Base) {
+				temp = baseTextureRegion;
+				body = BodyType.StaticBody;
 			}
-				
+			
+			
+			gameData.addEntity(newEntity);
+			AnimatedSprite tempS = new AnimatedSprite(newEntity.getXPos(), newEntity.getYPos(), temp, this.engine.getVertexBufferObjectManager()) {
+				@Override
+				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+					setTargetFromSpriteTouch(this);
+					return true;
+				}
+			};
+			registerTouchArea(tempS);
+			setTouchAreaBindingOnActionDownEnabled(true);
+			
+			CustomSprite cust = new CustomSprite(newEntity.getXPos(), newEntity.getYPos(), tempS.getWidth(), tempS.getHeight(), blankTextureRegion, this.engine.getVertexBufferObjectManager());
+
+			newEntity.setSprite(cust, tempS);
+			final FixtureDef AIFixDef = PhysicsFactory.createFixtureDef(1, 0f, 1f);
+			newEntity.setBody(PhysicsFactory.createCircleBody(phyWorld,  newEntity.getCenterXpos(), newEntity.getCenterYpos(), AITextureRegion.getWidth()/4, body, AIFixDef));
+			
+			ValueBar hp = new ValueBar(25, 0, (float)(cust.getWidth()*0.75), 10, this.engine.getVertexBufferObjectManager());
+			cust.setHealthBar(hp);
+			
+			phyWorld.registerPhysicsConnector(new PhysicsConnector(cust, newEntity.getBody(), true, false));
+			this.attachChild(cust);
+			
+			if (player != null && newEntity.getId() == player.getId()) {
+				camera.setChaseEntity(cust);
+			}		
+			
 		}
 		
 	}
+	
+	public void updateHealthBar(Entity entity){
+		if (entity.isAlive()) {
+			entity.getParentSprite().showHealthBar();
+			entity.getParentSprite().getHealthBar().setProgressPercentage((float)entity.getCurrenthealth() / (float)entity.getMaxhealth());
 
+		} else {
+			entity.getParentSprite().hideHealthBar();
+		}
+	}
+	
+	
+	
+	
 
 
 	public void addClient(Client client) {

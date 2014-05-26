@@ -104,7 +104,7 @@ public class GameData implements Serializable{
 		return entities.get(id);
 	}
 	
-	public void addPlayer(Player player){ // causes concurrent modification errors
+	public void addPlayer(Player player){ // can cause concurrent modification errors
 		if (player !=null ) {
 			entities.put(player.getId(), player);
 		} else {

@@ -9,6 +9,7 @@ import org.andengine.entity.sprite.Sprite;
 import org.andengine.extension.physics.box2d.util.Vector2Pool;
 import org.andengine.util.math.MathUtils;
 
+import co.nz.splashYay.cagefight.CustomSprite;
 import co.nz.splashYay.cagefight.EntityState;
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.Team.ALL_TEAMS;
@@ -16,7 +17,7 @@ import co.nz.splashYay.cagefight.Team.ALL_TEAMS;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 
-public class Entity implements Serializable{
+public abstract class Entity implements Serializable{
 	
 	/**
 	 * 
@@ -40,11 +41,13 @@ public class Entity implements Serializable{
 	
 	protected int attackRange;
 	
+	protected float regenAmount;
+	
 	protected boolean alive;
 	
 	protected EntityState state;
 	
-	private transient AnimatedSprite sprite;
+	private transient CustomSprite customSprite;
 	private transient PhysicsHandler phyHandler;
 	private transient MoveModifier moveModifier;
 	private transient Body body;
@@ -85,6 +88,8 @@ public class Entity implements Serializable{
 		this.stateChanged = true;
 		
 		this.state = EntityState.IDLE;
+		
+		this.regenAmount = 2;
 		
 	}
 	
@@ -293,16 +298,23 @@ public class Entity implements Serializable{
 	 * Sets the sprite of the entity
 	 * @param sprite
 	 */
-	public void setSprite(AnimatedSprite sprite){
-		this.sprite = sprite;
+	public void setSprite(CustomSprite cS, AnimatedSprite sprite){
+		this.customSprite = cS;
+		this.customSprite.setSprite(sprite);
 	}
 	/**
-	 * gets the entitys sprite
+	 * gets the entity sprite
 	 * @return
 	 */
 	public AnimatedSprite getSprite() {
-		return sprite;
+		return customSprite.getSprite();
 	}
+	
+	public CustomSprite getParentSprite(){
+		return customSprite;
+	}
+	
+	
 	
 	/**
 	 * gets the physics handler that moves the sprite
@@ -525,10 +537,14 @@ public class Entity implements Serializable{
 	}
 
 
-	public void checkState(GameData gameData) {
-		
-		
+	public float getRegenAmount() {
+		return regenAmount;
 	}
+	
+	
+	public abstract void checkState(GameData gameData);
+	
+	
 	
 	
 	

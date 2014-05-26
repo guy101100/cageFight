@@ -130,6 +130,8 @@ public abstract class GameScene extends Scene {
 	protected TiledTextureRegion baseTextureRegion;
 	protected TiledTextureRegion towerTextureRegion;
 	protected TiledTextureRegion playerTextureRegion;
+	protected BitmapTextureAtlas blankTexture;
+	protected TextureRegion blankTextureRegion;
 
 	
 	public void loadRes() {
@@ -172,6 +174,11 @@ public abstract class GameScene extends Scene {
 		
 		this.explosionTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBuildBitmapTextureAtlas, this.activity, "explosion.png", 3, 4);
 		this.towerAttackTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBuildBitmapTextureAtlas, this.activity, "explosion2.png", 8, 5);
+		
+		
+		this.blankTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 128, 128, TextureOptions.BILINEAR);
+		this.blankTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.blankTexture, this.activity, "blank.png", 0, 0);
+		this.blankTexture.load();
 		
 		try {
 			this.mBuildBitmapTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 1));
@@ -410,7 +417,7 @@ public abstract class GameScene extends Scene {
 		if (playerCommands.getTargetID() != 0) {
 			Sprite targetSprite = gameData.getEntityWithId(playerCommands.getTargetID()).getSprite();
 			targetRec.setSize(targetSprite.getWidth() + 6, targetSprite.getHeight() + 6);
-			targetRec.setPosition(targetSprite.getX() -3, targetSprite.getY()-3);
+			targetRec.setPosition(targetSprite.getParent().getX() -3, targetSprite.getParent().getY()-3);
 		}
 	}
 	
