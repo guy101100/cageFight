@@ -103,6 +103,7 @@ public class ServerGameScene extends GameScene {
 		slowLoop.start();
 		
 		player = new Player("", gameData.getUnusedID(), 500, 250, gameData.getTeam(ALL_TEAMS.BAD).getSpawnXpos(), gameData.getTeam(ALL_TEAMS.BAD).getSpawnYpos(), ALL_TEAMS.BAD);
+		player.setGold(1000);
 		addEntityToGameDataObj(player);
 		
 		//game loop
@@ -135,6 +136,10 @@ public class ServerGameScene extends GameScene {
 		tempPlayer.setMovementY(playerCommands.getMovementY());
 		tempPlayer.setAttackCommand(playerCommands.isAttackCommand());
 		tempPlayer.setTarget(gameData.getEntityWithId(playerCommands.getTargetID()));
+		
+		tempPlayer.setWantsToPurchase(playerCommands.getPurchaseItem());
+		playerCommands.setPurchaseItem(null);
+		
 	}
 	
 	private void processEntityActions(){
@@ -363,9 +368,11 @@ public class ServerGameScene extends GameScene {
 	
 	private void checkItemPurchases(Player player){
 		if (player.getWantsToPurchase() != null) {
+			
 			UpgradeItem item = itemManager.getItem(player.getWantsToPurchase());
+			player.setWantsToPurchase(null);
 			if (player.purchaseItem(item)) {
-				
+				System.out.println("Player : " + player.getId() + " purchased " + item.getName());
 				if (item.effectsPlayer()) {
 					item.upgradeEntity(player);
 				}

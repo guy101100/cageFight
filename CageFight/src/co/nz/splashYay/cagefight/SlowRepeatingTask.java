@@ -1,5 +1,6 @@
 package co.nz.splashYay.cagefight;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -33,35 +34,37 @@ public class SlowRepeatingTask extends Thread {
 		
 		
 		while (true) {
-			HashMap temp = (HashMap) gameData.getEntities().clone();
-
-			Iterator it = temp.entrySet().iterator();
-
-			while (it.hasNext()) {
-				Map.Entry pairs = (Map.Entry) it.next();
-				if (((Entity) pairs.getValue()).isAlive()) {
-					if (pairs.getValue() instanceof Player) {
-						Player player = (Player) pairs.getValue();
+			ArrayList<Integer> ids = (ArrayList<Integer>) gameData.getIDs().clone();			
+			
+			for(int id : ids) {
+				Entity ent = gameData.getEntityWithId(id);
+				
+				if (ent != null && ent.isAlive()) {
+					if (ent instanceof Player) {
+						Player player = (Player) ent;						
 						checkTileEffect(player);
 						player.healEntity(player.getRegenAmount());
 
-					} else if (pairs.getValue() instanceof Creep) {
-						Creep creep = (Creep) pairs.getValue();
+					} else if (ent instanceof Creep) {
+						Creep creep = (Creep) ent;
 						checkTileEffect(creep);
 						creep.healEntity(creep.getRegenAmount());
 
-					} else if (pairs.getValue() instanceof Tower) {
-						Tower tower = (Tower) pairs.getValue();
+					} else if (ent instanceof Tower) {
+						Tower tower = (Tower) ent;
 						tower.healEntity(tower.getRegenAmount());
 
-					} else if (pairs.getValue() instanceof Base) {
-						Base base = (Base) pairs.getValue();
+					} else if (ent instanceof Base) {
+						Base base = (Base) ent;
 						base.healEntity(base.getRegenAmount());
 
 					}
 				}
-
+				
+				
 			}
+			
+			
 
 			try {
 				sleep(1000);

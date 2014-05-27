@@ -82,6 +82,7 @@ public class Player extends Entity implements Serializable{
 		this.movementX = player.getMovementX();
 		this.movementY = player.getMovementY();
 		this.team = player.getTeam();
+		this.gold = player.getGold();
 		
 		if (this.state != player.getState()) {
 			this.state = player.getState();

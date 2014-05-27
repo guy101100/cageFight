@@ -71,6 +71,9 @@ public class ClientOutNetCom extends Thread{
 			try {
 				outToServer.flush();
 				outToServer.writeObject(cGS.getPlayerCommands());
+				if (cGS.getPlayerCommands().getPurchaseItem() != null) {
+					cGS.getPlayerCommands().setPurchaseItem(null);
+				}
 				//System.out.println("[" + System.currentTimeMillis() + "] Send : " + cmds.getMovementX() + " " + cmds.getMovementY());
 				outToServer.reset();
 			} catch (IOException e) {

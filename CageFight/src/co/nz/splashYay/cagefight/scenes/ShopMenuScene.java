@@ -168,6 +168,11 @@ public class ShopMenuScene extends MenuScene implements IOnMenuItemClickListener
 	public Font getmFont() {
 		return mFont;
 	}
+
+	public GameScene getgS() {
+		return gS;
+	}
+	
 	
 	
 	

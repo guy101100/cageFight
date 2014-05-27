@@ -176,7 +176,7 @@ public class ShopMenuItemMenu extends MenuScene implements IOnMenuItemClickListe
 			sMS.clearChildScene();
 			return true;
 		case BUY:
-			
+			sMS.getgS().getPlayerCommands().setPurchaseItem(item.getItemType());
 			return true;
 			
 		default:

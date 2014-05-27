@@ -7,6 +7,7 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegion
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
 
+import co.nz.splashYay.cagefight.ItemManager.AllItems;
 import co.nz.splashYay.cagefight.entities.Base;
 import co.nz.splashYay.cagefight.entities.Creep;
 import co.nz.splashYay.cagefight.entities.Entity;
@@ -42,10 +43,13 @@ public class UpgradeItem {
 	protected BitmapTextureAtlas texture;
 	protected ITextureRegion textureRegion;
 	private int ID;
+	private AllItems itemType;
 	
 	
-	public UpgradeItem(BaseGameActivity activity, int ID, String name, String description, int cost,int damage, int health, int speed, int cooldown, int creepDamage, int creepHealth, int creepSpeed, int creepCooldown, int amountOfCreeps, int baseDamage, int baseHealth, int baseCooldown, int towerDamage, int towerHealth, int towerCooldown, String imageString) {
+	public UpgradeItem(BaseGameActivity activity, int ID, String name, String description, int cost,int damage, int health, int speed, int cooldown, int creepDamage, int creepHealth, int creepSpeed, int creepCooldown, int amountOfCreeps, int baseDamage, int baseHealth, int baseCooldown, int towerDamage, int towerHealth, int towerCooldown, String imageString, AllItems itemType) {
 		super();
+		this.itemType = itemType;
+		
 		this.ID = ID;
 		this.name = name;
 		this.description = description;
@@ -283,6 +287,13 @@ public class UpgradeItem {
 
 	public String getImageString() {
 		return imageString;
+	}
+	
+	
+
+
+	public AllItems getItemType() {
+		return itemType;
 	}
 
 
