@@ -79,7 +79,7 @@ public class UDPReciver extends Thread {
 	    	
 	    	
 	    	if (gameDataIn.getSendTime() > gameData.getSendTime()) { // if new send time is greater than gameDatas send time, the the data is new, if not data is old and should be ignored.
-	    		//System.out.println("[" + System.currentTimeMillis() + "] recieved data [" + (gameData.getSendTime() - gameDataIn.getSendTime()) + "]");
+	    		System.out.println("[" + System.currentTimeMillis() + "] recieved data [" + ( gameDataIn.getSendTime() - gameData.getSendTime()) + "]");
 	    		gameData.setSendTime(gameDataIn.getSendTime());
 	    		gameData.getTeam(ALL_TEAMS.GOOD).updateFromOtherTeamData(gameDataIn.getTeam(ALL_TEAMS.GOOD));
 				gameData.getTeam(ALL_TEAMS.BAD).updateFromOtherTeamData(gameDataIn.getTeam(ALL_TEAMS.BAD));
@@ -114,7 +114,7 @@ public class UDPReciver extends Thread {
 				    }
 				}
 	    	} else {
-	    		//System.out.println("[" + System.currentTimeMillis() + "] recieved old data");
+	    		System.out.println("[" + System.currentTimeMillis() + "] recieved old data");
 	    	}
 	    	
 	    	
