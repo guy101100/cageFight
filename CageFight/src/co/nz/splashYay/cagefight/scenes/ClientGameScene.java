@@ -19,8 +19,10 @@ import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
+import org.andengine.util.color.Color;
 
 import co.nz.splashYay.cagefight.CustomSprite;
+import co.nz.splashYay.cagefight.EntityState;
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.SceneManager;
 import co.nz.splashYay.cagefight.Team;
@@ -143,24 +145,36 @@ public class ClientGameScene extends GameScene {
 	}
 	
 	private void processBuilding(Building building) {
+		updateHealthBar(building);
+		
+				
 		switch (building.getState()) {
 		case IDLE:
 
 			break;
 		case ATTACKING:
-			ALL_TEAMS enemyTeam;
-			if (building.getTeam() == ALL_TEAMS.GOOD) {
-				enemyTeam = ALL_TEAMS.BAD;
-			} else {
-				enemyTeam = ALL_TEAMS.GOOD;
-			}
-			for (Entity ent : gameData.getEntitiesOnTeam(enemyTeam)) {
-				if (building.getDistanceToTarget(ent) <= building.getAttackRange()) {
-					towerAttackExplosion(ent);
+			if (building.hasStateChanged()) {
+				building.setStateChanged(false);
+				boolean attacked = false;
+				for (Entity ent : gameData.getEntitiesOnTeam(building.getEnemyTeam())) {
+					if (building.getDistanceToTarget(ent) <= building.getAttackRange()) {
+						towerAttackExplosion(ent);
+						attacked = true;
+					}
+				}			
+				if (attacked) {
+					sceneManager.getSoundManager().playTowerAttackSound(player, building);
 				}
 			}
+			
+			
 			break;
 		case DEAD:
+			if (building.hasStateChanged() && building.getState() == EntityState.DEAD) {
+				building.setStateChanged(false);
+				sceneManager.getSoundManager().playRandomDeathSound(this.player, building);
+				building.setAlive(false);
+			}
 
 			break;
 		}
@@ -168,23 +182,31 @@ public class ClientGameScene extends GameScene {
 
 	
 	private void processPlayer(Player player) {
+			
+		updateHealthBar(player);
 		
 		player.getSprite().setRotation(player.getDirection());
 		player.getParentSprite().getHealthBar().setProgressPercentage(player.getCurrenthealth() / player.getMaxhealth());
 		
 		switch (player.getState()) {
-		case MOVING:
-			player.setAnnimation(0, 5, 100);
+		case MOVING:			
+			player.setAnnimation(0, 5, 100, false);
 			break;
 
 		case IDLE:
-
+			
 			break;
 		case ATTACKING:
+			if (player.hasStateChanged()) {
+				sceneManager.getSoundManager().playRandomAttackSound(this.player, player);		
+			}
 
 			break;
 		case DEAD:
-
+			if (player.hasStateChanged()) {				
+				sceneManager.getSoundManager().playRandomDeathSound(this.player, player);
+				player.setAlive(false);
+			}
 			break;
 		}
 		
@@ -204,23 +226,39 @@ public class ClientGameScene extends GameScene {
 		
 	}
 	
-	private void processCreep(Creep creep) {
-		// move creep
-				
+	private void processCreep(Creep creep) {		
+		updateHealthBar(creep);		
+		
 		creep.getSprite().setRotation(creep.getDirection());		
 		switch (creep.getState()) {
 		case MOVING:
-			creep.setAnnimation(4, 11, 100);
+			
+			creep.setAnnimation(4, 11, 100, false);
+			
 			break;
 
 		case IDLE:
-			creep.setAnnimation(0, 3, 150);
+			creep.setAnnimation(0, 3, 150, false);
+			
+			
 			break;
+			
 		case ATTACKING:
-			creep.setAnnimation(11, 21, 100);	
+			
+			if (creep.hasStateChanged()) {	
+				creep.setAnnimation(11, 21, 100, true);
+				sceneManager.getSoundManager().playRandomAttackSound(this.player, creep);				
+			}
+			
 			break;
 		case DEAD:
-			creep.setAnnimation(26, 27, 1500);
+			
+			if (creep.hasStateChanged()) {
+				creep.setAnnimation(26, 27, 1500, true);
+				sceneManager.getSoundManager().playRandomDeathSound(this.player, creep);
+				creep.setAlive(false);
+			}
+			
 			break;
 		}
 		
@@ -259,6 +297,12 @@ public class ClientGameScene extends GameScene {
 				}
 			};
 			
+			if (newEntity.getTeam() == ALL_TEAMS.GOOD) {
+				tempS.setColor(Color.YELLOW);
+			} else {
+				tempS.setColor(Color.CYAN);
+			}
+			
 			registerTouchArea(tempS);
 			setTouchAreaBindingOnActionDownEnabled(true);
 			
@@ -289,89 +333,11 @@ public class ClientGameScene extends GameScene {
 	
 
 	
-	public void addEntityToGameDataObj2(Entity newEntity) {
-		if (newEntity != null) {
-			if (newEntity instanceof Player) {
-				Player newPlayer = (Player) newEntity;
-				gameData.addPlayer(newPlayer);
-				AnimatedSprite tempS = new AnimatedSprite(newPlayer.getXPos(), newPlayer.getYPos(), playerTextureRegion, this.engine.getVertexBufferObjectManager()) {
-					@Override
-					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-						setTargetFromSpriteTouch(this);
-						return true;
-					}
-				};
-
-				final PhysicsHandler tempPhyHandler = new PhysicsHandler(tempS); // added
-				tempS.registerUpdateHandler(tempPhyHandler); // added
-				this.attachChild(tempS);
-				//newPlayer.setSprite(tempS);
-				newPlayer.setPhyHandler(tempPhyHandler);				
-				if (newPlayer.getId() == player.getId()) {
-					sPlayer = tempS;
-					camera.setChaseEntity(sPlayer);
-				}
-			} else if (newEntity instanceof Base) {
-				System.out.println("Base Added");
-				Base newBase = (Base) newEntity;
-				
-				AnimatedSprite baseS = new AnimatedSprite(newBase.getXPos(), newBase.getYPos(), baseTextureRegion, this.engine.getVertexBufferObjectManager()) {
-					@Override
-					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-						setTargetFromSpriteTouch(this);
-
-						return true;
-					}
-				};
-				//newBase.setSprite(baseS);				
-				this.attachChild(baseS);
-				gameData.addEntity(newBase);				
-				
-				
-				
-			} else if (newEntity instanceof Tower) {
-				System.out.println("Tower Added");
-				Tower newTower = (Tower) newEntity;
-				
-				AnimatedSprite towerS = new AnimatedSprite(newTower.getXPos(), newTower.getYPos(), towerTextureRegion, this.engine.getVertexBufferObjectManager()) {
-					@Override
-					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-						setTargetFromSpriteTouch(this);
-
-						return true;
-					}
-				};
-				//newTower.setSprite(towerS);
-				this.attachChild(towerS);
-				gameData.addEntity(newTower);
-				
-			} else if (newEntity instanceof Creep) {
-				System.out.println("Creep Added");
-				Creep newAIUnit = (Creep) newEntity;
-				
-				AnimatedSprite tempS = new AnimatedSprite(newAIUnit.getXPos(), newAIUnit.getYPos(), AITextureRegion, this.engine.getVertexBufferObjectManager()) {
-					@Override
-					public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-						setTargetFromSpriteTouch(this);
-						return true;
-					}
-				};
-
-				final PhysicsHandler tempPhyHandler = new PhysicsHandler(tempS); // added
-				tempS.registerUpdateHandler(tempPhyHandler); // added
-				this.attachChild(tempS);
-				//newAIUnit.setSprite(tempS);
-				newAIUnit.setPhyHandler(tempPhyHandler);
-				gameData.addEntity(newAIUnit);
-				
-			}
-			
-
-		}
-	}
+	
 
 	public void setPlayer(Player player) {
 		this.player = player;
+		this.addEntityToGameDataObj(player);
 		
 	}
 

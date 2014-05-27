@@ -116,6 +116,8 @@ public class UDPReciver extends Thread {
 	    	} else {
 	    		//System.out.println("[" + System.currentTimeMillis() + "] recieved old data");
 	    	}
+	    	
+	    	
 			
 	    	
 		} catch (OptionalDataException e) {			

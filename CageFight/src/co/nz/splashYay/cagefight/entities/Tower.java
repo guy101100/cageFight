@@ -32,19 +32,7 @@ public class Tower extends Building{
 	
 		
 		
-	/**
-	 * Used by the ClientInNetCom to update the towers data
-	 * @param tower to get data from
-	 */
-	public void updateFromServer(Tower tower){
-		this.currenthealth = tower.getCurrenthealth();
-		this.maxhealth = tower.getMaxhealth();
-		this.lastAttackTime = tower.getLastAttackTime();
-		this.attackCoolDown = tower.getAttackCoolDown();
-		this.state = tower.getState();
-		this.alive = tower.isAlive();		
-		
-	}
+	
 	
 	
 	

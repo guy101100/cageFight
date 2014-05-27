@@ -63,6 +63,8 @@ public class InFromClientNetCom extends Thread {
 					tempPlayer.setMovementY(receivedCommands.getMovementY());
 					tempPlayer.setAttackCommand(receivedCommands.isAttackCommand());
 					tempPlayer.setTarget((Entity) gameData.getEntityWithId(receivedCommands.getTargetID()));
+					tempPlayer.setWantsToPurchase(receivedCommands.getPurchaseItem());
+					
 
 				} else {
 					System.err.println("error reciveving");

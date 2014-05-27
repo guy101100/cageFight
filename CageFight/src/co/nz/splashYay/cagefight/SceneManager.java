@@ -86,6 +86,7 @@ public class SceneManager {
 		case GAME_CLIENT:			
 			engine.setScene(clientGameScene);
 			clientGameScene.attachHUD();
+			soundManager.setMusic(MUSIC_TYPE.GAME1);
 			break;
 		case GAME_SERVER:			
 			engine.setScene(serverGameScene);

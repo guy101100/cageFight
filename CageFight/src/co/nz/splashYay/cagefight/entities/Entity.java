@@ -45,9 +45,10 @@ public abstract class Entity implements Serializable{
 	
 	protected float regenAmount;
 	
-	protected boolean alive;
+	protected transient boolean alive;
 	
 	protected EntityState state;
+	protected transient EntityState previousState;
 	
 	private transient CustomSprite customSprite;
 	private transient PhysicsHandler phyHandler;
@@ -55,7 +56,7 @@ public abstract class Entity implements Serializable{
 	private transient Body body;
 	protected ALL_TEAMS team;
 	
-	protected Entity lastEntityThatAttackedMe;
+	protected transient Entity lastEntityThatAttackedMe;
 	
 	protected Entity target;
 	protected transient boolean stateChanged;
@@ -93,6 +94,8 @@ public abstract class Entity implements Serializable{
 		
 		this.regenAmount = 2;
 		
+		this.previousState = EntityState.IDLE;
+		
 	}
 	
 	
@@ -106,7 +109,7 @@ public abstract class Entity implements Serializable{
 
 		for (Entity e : gd.getEntities().values()) {
 			
-			if (e.isAlive() && !(e instanceof Tower) && !(e instanceof Base)) {
+			if (e.getState() != EntityState.DEAD && !(e instanceof Tower) && !(e instanceof Base)) {
 				if (e.getId() != this.id && e.getTeam() != this.team) {
 					if (currentClose == null)
 						currentClose = e;
@@ -126,16 +129,31 @@ public abstract class Entity implements Serializable{
 		return currentClose;
 	}
 	
-	public void setAnnimation(int startFrame, int endFrame, long duration){
-		if (stateChanged) {			
+	public boolean hasStateChanged(){
+		boolean toReturn = stateChanged;
+		if (stateChanged == true) {
 			stateChanged = false;
+		}
+		return toReturn;
+		
+		
+	}
+	
+	/**
+	 * If calling after hasStateChanged() set forceAnimation to true
+	 * @param startFrame
+	 * @param endFrame
+	 * @param duration
+	 * @param forceAnimation
+	 */
+	public void setAnnimation(int startFrame, int endFrame, long duration, boolean forceAnimation){
+		if (hasStateChanged() || forceAnimation) {			
 			long[] durations = new long[endFrame-startFrame +1];
 			for (int i = 0; i < durations.length; i++) {
 				durations[i] = duration;
 			}			
 			getSprite().animate(durations, startFrame, endFrame, true);			
 		}
-		
 		
 	}
 	
@@ -459,6 +477,14 @@ public abstract class Entity implements Serializable{
 		this.id = id;
 	}
 
+	public ALL_TEAMS getEnemyTeam(){
+		if (team == ALL_TEAMS.GOOD) {
+			return ALL_TEAMS.BAD;
+		} else {
+			return ALL_TEAMS.GOOD;
+		}
+		
+	}
 	public ALL_TEAMS getTeam() {
 		return team;
 	}
@@ -572,6 +598,18 @@ public abstract class Entity implements Serializable{
 		long respawnLength = 10000;
 		this.respawnTime = (System.currentTimeMillis() + respawnLength);
 	}
+
+
+	public boolean isStateChanged() {
+		return stateChanged;
+	}
+
+
+	public void setStateChanged(boolean stateChanged) {
+		this.stateChanged = stateChanged;
+	}
+	
+	
 	
 	
 

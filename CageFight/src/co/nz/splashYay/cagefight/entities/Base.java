@@ -32,18 +32,6 @@ public class Base extends Building{
 	
 	
 	
-	/**
-	 * Used by the ClientInNetCom to update the towers data
-	 * @param base to get data from
-	 */
-	public void updateFromServer(Base base){
-		this.currenthealth = base.getCurrenthealth();
-		this.maxhealth = base.getMaxhealth();
-		this.lastAttackTime = base.getLastAttackTime();
-		this.attackCoolDown = base.getAttackCoolDown();
-		this.state = base.getState();
-		this.alive = base.isAlive();		
-		
-	}
+	
 
 }

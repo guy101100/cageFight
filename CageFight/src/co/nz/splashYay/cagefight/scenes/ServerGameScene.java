@@ -19,6 +19,7 @@ import org.andengine.extension.physics.box2d.PhysicsConnector;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.extension.physics.box2d.util.Vector2Pool;
 import org.andengine.extension.tmx.TMXTile;
+import org.andengine.extension.tmx.TMXLoader.ITMXTilePropertiesListener;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.FontFactory;
@@ -33,8 +34,10 @@ import co.nz.splashYay.cagefight.CustomSprite;
 import co.nz.splashYay.cagefight.EntityState;
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.GameState;
+import co.nz.splashYay.cagefight.ItemManager;
 import co.nz.splashYay.cagefight.SceneManager;
 import co.nz.splashYay.cagefight.SlowRepeatingTask;
+import co.nz.splashYay.cagefight.UpgradeItem;
 import co.nz.splashYay.cagefight.ValueBar;
 import co.nz.splashYay.cagefight.Team.ALL_TEAMS;
 import co.nz.splashYay.cagefight.entities.Base;
@@ -176,7 +179,7 @@ public class ServerGameScene extends GameScene {
 		switch (creep.getState()) {
 		case MOVING:
 			
-			creep.setAnnimation(4, 11, 100);
+			creep.setAnnimation(4, 11, 100, false);
 			
 			creep.getSprite().setRotation(creep.getDirectionToTarget());
 			creep.setDirection(creep.getDirectionToTarget());			
@@ -188,18 +191,18 @@ public class ServerGameScene extends GameScene {
 			break;
 		case IDLE:
 			creep.stopEntity();
-			creep.setAnnimation(0, 3, 150);
+			creep.setAnnimation(0, 3, 150, false);
 			break;
 		case ATTACKING:
 			creep.stopEntity();
-			if (creep.getTarget() != null && System.currentTimeMillis() >= (creep.getLastAttackTime() + creep.getAttackCoolDown())) {
-				creep.setAnnimation(11, 21, 100);			
+			if (creep.getTarget() != null) {
+				creep.setAnnimation(11, 21, 100, false);			
 				creep.attackTarget();
 				creep.setLastAttackTime(System.currentTimeMillis());
 				sceneManager.getSoundManager().playRandomAttackSound(player, creep);
 			} else {
 				if (System.currentTimeMillis() >= (creep.getLastAttackTime()) + 600 ) {
-					creep.setAnnimation(0, 3, 150);
+					creep.setAnnimation(0, 3, 150, false);
 				}
 			}
 
@@ -209,7 +212,7 @@ public class ServerGameScene extends GameScene {
 			if (creep.isAlive()) {
 				creep.killCreep();
 				sceneManager.getSoundManager().playRandomDeathSound(player, creep);
-				creep.setAnnimation(26, 27, 1000);
+				creep.setAnnimation(26, 27, 1000, false);
 			} else {
 				if (creep.getRespawnTime() <= System.currentTimeMillis()) {
 					creep.respawn(gameData);
@@ -307,11 +310,11 @@ public class ServerGameScene extends GameScene {
 		player.setXPos(player.getSprite().getParent().getX());// set player position(in data) to the sprites position.
 		player.setYPos(player.getSprite().getParent().getY());
 		updateHealthBar(player);		
-		
+		checkItemPurchases(player);
 		
 		if (player.getPlayerState() == EntityState.MOVING) {
 			
-			player.setAnnimation(0, 5, 100);
+			player.setAnnimation(0, 5, 100, false);
 			
 			final Body playerBody = player.getBody();
 			final Vector2 velocity = Vector2Pool.obtain(player.getMovementX() * player.getSpeed(), player.getMovementY() * player.getSpeed());
@@ -329,14 +332,10 @@ public class ServerGameScene extends GameScene {
 			player.stopEntity();
 			
 			if (player.getPlayerState() == EntityState.ATTACKING) {
-				if (player.getTarget() != null && System.currentTimeMillis() >= (player.getLastAttackTime() + player.getAttackCoolDown())  ) {
-										
-					if(player.getDistanceToTarget(player.getTarget()) < player.getAttackRange())
-					{
+				if (player.getTarget() != null   ) {	
 						player.attackTarget();
 						player.setLastAttackTime(System.currentTimeMillis());
 						sceneManager.getSoundManager().playRandomAttackSound(this.player, player);
-					}
 				}
 				
 				
@@ -362,6 +361,41 @@ public class ServerGameScene extends GameScene {
 		}		
 	}
 	
+	private void checkItemPurchases(Player player){
+		if (player.getWantsToPurchase() != null) {
+			UpgradeItem item = itemManager.getItem(player.getWantsToPurchase());
+			if (player.purchaseItem(item)) {
+				
+				if (item.effectsPlayer()) {
+					item.upgradeEntity(player);
+				}
+				
+				if (item.effectsCreep()) {
+					for (Entity ent : gameData.getEntitiesOnTeam(player.getEnemyTeam())) {
+						if (ent instanceof Creep) {
+							item.upgradeEntity(ent);
+						}
+					}
+				}
+				
+				if (item.effectsTower()) {
+					if (player.getTeam() == ALL_TEAMS.GOOD) {
+						item.upgradeEntity(gameData.getGoodTower());
+					} else {
+						item.upgradeEntity(gameData.getEvilTower());
+					}
+				}
+				if (item.effectsBase()) {
+					if (player.getTeam() == ALL_TEAMS.GOOD) {
+						item.upgradeEntity(gameData.getGoodTower());
+					} else {
+						item.upgradeEntity(gameData.getEvilTower());
+					}
+				}
+				
+			}
+		}
+	}
 	
 	
 	private void setUpBasesTowersAndAIunits(){
@@ -459,15 +493,7 @@ public class ServerGameScene extends GameScene {
 		
 	}
 	
-	public void updateHealthBar(Entity entity){
-		if (entity.isAlive()) {
-			entity.getParentSprite().showHealthBar();
-			entity.getParentSprite().getHealthBar().setProgressPercentage((float)entity.getCurrenthealth() / (float)entity.getMaxhealth());
-
-		} else {
-			entity.getParentSprite().hideHealthBar();
-		}
-	}
+	
 	
 	
 	

@@ -65,7 +65,7 @@ public class ShopMenuScene extends MenuScene implements IOnMenuItemClickListener
 		this.camera = cam;
 		this.gS = gS;
 		this.setCamera(cam);
-		items = new ItemManager(activity);
+		items = gS.getItemManager();
 		
 		
 		xPositions = new float[AllItems.values().length];

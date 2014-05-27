@@ -27,14 +27,22 @@ public class Creep extends AIUnit {
 	
 	public void updateFromServer(Creep ai){
 		
-		this.currenthealth = ai.getCurrenthealth();
-		this.direction = ai.getDirection();
-		this.maxhealth = ai.getMaxhealth();
 		this.xpos = ai.getXPos();
-		this.ypos  = ai.getYPos();
+		this.ypos = ai.getYPos();
+		this.direction = ai.getDirection();
+		
+		this.currenthealth = ai.getCurrenthealth();
+		this.maxhealth = ai.getMaxhealth();
+		
 		this.speed = ai.getSpeed();
 		
 		this.target = ai.getTarget();
+		
+		if (this.state != ai.getState()) {
+			this.state = ai.getState();
+			this.stateChanged = true;
+		}
+		
 	}
 	
 	public void killCreep(){
@@ -53,7 +61,7 @@ public class Creep extends AIUnit {
 			
 		} else if (hasTarget() && getTarget().isAlive()) {
 			
-			if (getDistanceToTarget(getTarget()) < getAttackRange()) {
+			if (System.currentTimeMillis() >= (getLastAttackTime() + getAttackCoolDown()) && getDistanceToTarget(getTarget()) < getAttackRange()) {
 				state = EntityState.ATTACKING;
 			} else {
 				state = EntityState.MOVING;

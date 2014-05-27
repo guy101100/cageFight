@@ -9,7 +9,9 @@ import org.andengine.util.math.MathUtils;
 
 import co.nz.splashYay.cagefight.EntityState;
 import co.nz.splashYay.cagefight.GameData;
+import co.nz.splashYay.cagefight.ItemManager.AllItems;
 import co.nz.splashYay.cagefight.Team.ALL_TEAMS;
+import co.nz.splashYay.cagefight.UpgradeItem;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -34,6 +36,8 @@ public class Player extends Entity implements Serializable{
 	private int killCount = 0;
 	private int deathCount = 0;
 	
+	private AllItems wantsToPurchase;
+	
 	//points a player has to level up abilities
 
 	private int abilityPoints;
@@ -46,6 +50,8 @@ public class Player extends Entity implements Serializable{
 		this.level = 1;
 		setMaxSpeed(10);
 		setSpeed(10);	
+		
+		wantsToPurchase = null;
 		
 	}
 	
@@ -61,15 +67,27 @@ public class Player extends Entity implements Serializable{
 	 * @param player to get data from
 	 */
 	public void updateFromServer(Player player){
+		this.xpos = player.getXPos();
+		this.ypos = player.getYPos();
+		this.direction = player.getDirection();
+		
+		this.currenthealth = player.getCurrenthealth();
+		this.maxhealth = player.getMaxhealth();
+		
+		this.speed = player.getSpeed();		
+					
+		this.target = player.getTarget();
+		
 		this.experience = player.getExperience();
 		this.movementX = player.getMovementX();
 		this.movementY = player.getMovementY();
-		this.currenthealth = player.getCurrenthealth();
-		this.direction = player.getDirection();
-		this.maxhealth = player.getMaxhealth();
-		this.xpos = player.getXPos();
-		this.ypos  = player.getYPos();
-		this.speed = player.getSpeed();
+		this.team = player.getTeam();
+		
+		if (this.state != player.getState()) {
+			this.state = player.getState();
+			this.stateChanged = true;
+		}
+		
 		
 	}
 	
@@ -169,7 +187,7 @@ public class Player extends Entity implements Serializable{
 		if (this.getCurrenthealth() <= 0) {
 			setPlayerState(EntityState.DEAD);			
 			
-		} else  if (attackCommand) {
+		} else  if (attackCommand && System.currentTimeMillis() >= (getLastAttackTime() + getAttackCoolDown()) && getDistanceToTarget(getTarget()) < getAttackRange()) {
 			setPlayerState(EntityState.ATTACKING);	
 			
 		} else if (getMovementX() != 0 && getMovementY() != 0) {
@@ -182,6 +200,26 @@ public class Player extends Entity implements Serializable{
 		if (oldState != getState()) {
 			stateChanged = true;
 		}
+	}
+	
+	public boolean purchaseItem(UpgradeItem item){
+		if (spendGold(item.getCost())) {
+			wantsToPurchase = null;	
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	private boolean spendGold(int amount){
+		if (getGold() - amount > 0) {
+			setGold(getGold() - amount);
+			return true;
+		} else {
+			return false;
+		}
+		
+		
 	}
 	
 	///////////////////////////////////////////////////////////////////////
@@ -339,6 +377,18 @@ public class Player extends Entity implements Serializable{
 
 	public void setDeathCount(int deathCount) {
 		this.deathCount = deathCount;
+	}
+
+
+
+	public AllItems getWantsToPurchase() {
+		return wantsToPurchase;
+	}
+
+
+
+	public void setWantsToPurchase(AllItems wantsToPurchase) {
+		this.wantsToPurchase = wantsToPurchase;
 	}
 	
 	

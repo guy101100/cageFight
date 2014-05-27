@@ -64,6 +64,23 @@ public abstract class Building extends AIUnit{
 		}
 	}
 	
+	/**
+	 * Used by the ClientInNetCom to update the towers data
+	 * @param tower to get data from
+	 */
+	public void updateFromServer(Building building){
+		this.currenthealth = building.getCurrenthealth();
+		this.maxhealth = building.getMaxhealth();
+		this.lastAttackTime = building.getLastAttackTime();
+		this.attackCoolDown = building.getAttackCoolDown();
+		
+		if (this.state != building.getState()) {
+			this.state = building.getState();
+			this.stateChanged = true;
+		}
+		
+	}
+	
 	
 
 }

@@ -126,7 +126,7 @@ public class ShopMenuItemMenu extends MenuScene implements IOnMenuItemClickListe
 		this.attachChild(cost);	
 		
 		int i = 0;
-		for (String string : item.getStatBonuses()) {
+		for (String string : item.getStatBonusesString()) {
 			Text stats = new Text(camera.getWidth()/2, 50, this.smallFont, string, "Server IP : XXX.XXX.XXX.XXX Extra bit on the end".length(), activity.getVertexBufferObjectManager());
 			if (i == 0) {
 				stats.setPosition(title.getX(), cost.getY() + cost.getHeight() + (cost.getHeight()/3));

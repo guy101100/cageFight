@@ -73,7 +73,7 @@ public class SlowRepeatingTask extends Thread {
 
 	}
 		
-
+	
 	
 	
 	private void checkTileEffect(Entity entity) {
@@ -113,4 +113,7 @@ public class SlowRepeatingTask extends Thread {
 			entity.setSpeed(entity.getMaxSpeed());
 		}
 	}
+	
+	
+	
 }

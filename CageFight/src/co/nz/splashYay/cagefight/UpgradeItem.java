@@ -7,6 +7,12 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegion
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
 
+import co.nz.splashYay.cagefight.entities.Base;
+import co.nz.splashYay.cagefight.entities.Creep;
+import co.nz.splashYay.cagefight.entities.Entity;
+import co.nz.splashYay.cagefight.entities.Player;
+import co.nz.splashYay.cagefight.entities.Tower;
+
 public class UpgradeItem {
 	
 	private String name;
@@ -74,7 +80,37 @@ public class UpgradeItem {
 	}
 	
 	
-	public ArrayList<String> getStatBonuses(){
+	public boolean effectsPlayer(){
+		if (damage > 0 || speed > 0 || health > 0 || cooldown > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public boolean effectsCreep(){
+		if (creepDamage > 0 || creepSpeed > 0 || creepHealth > 0 || creepCooldown > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	public boolean effectsTower(){
+		if (towerDamage > 0 || towerHealth > 0 || towerCooldown > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	public boolean effectsBase(){
+		if (baseDamage > 0 || baseHealth > 0 || baseCooldown > 0 ) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public ArrayList<String> getStatBonusesString(){
 		ArrayList<String> toReturn = new ArrayList<String>();
 		
 		if (damage != 0) {
@@ -247,6 +283,38 @@ public class UpgradeItem {
 
 	public String getImageString() {
 		return imageString;
+	}
+
+
+	public void upgradeEntity(Entity entity) {
+		if (entity instanceof Player) {
+			entity.setMaxDamage(entity.getMaxDamage() + damage);
+			entity.setDamage(entity.getDamage() + damage);
+			entity.setMaxhealth((int) (entity.getMaxhealth() + health));
+			entity.setMaxSpeed((int) (entity.getMaxSpeed() + speed));
+			entity.setAttackCoolDown(entity.getAttackCoolDown() - cooldown);
+			
+		} else if (entity instanceof Creep) {
+			entity.setMaxDamage(entity.getMaxDamage() + creepDamage);
+			entity.setDamage(entity.getDamage() + creepDamage);
+			entity.setMaxhealth((int) (entity.getMaxhealth() + creepHealth));
+			entity.setMaxSpeed((int) (entity.getMaxSpeed() + creepSpeed));
+			entity.setAttackCoolDown(entity.getAttackCoolDown() - creepCooldown);
+			
+		} else if (entity instanceof Tower) {
+			entity.setMaxDamage(entity.getMaxDamage() + towerDamage);
+			entity.setDamage(entity.getDamage() + towerDamage);
+			entity.setMaxhealth((int) (entity.getMaxhealth() + towerHealth));	
+			entity.setAttackCoolDown(entity.getAttackCoolDown() - towerCooldown);
+			
+		} else if (entity instanceof Base) {
+			entity.setMaxDamage(entity.getMaxDamage() + baseDamage);
+			entity.setDamage(entity.getDamage() + baseDamage);
+			entity.setMaxhealth((int) (entity.getMaxhealth() + baseHealth));			
+			entity.setAttackCoolDown(entity.getAttackCoolDown() - baseCooldown);
+			
+		}
+		
 	}
 	
 	

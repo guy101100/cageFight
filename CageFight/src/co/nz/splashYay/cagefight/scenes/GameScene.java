@@ -69,8 +69,10 @@ import android.graphics.Typeface;
 import android.opengl.GLES20;
 import android.os.Environment;
 import android.widget.TextView;
+import co.nz.splashYay.cagefight.EntityState;
 import co.nz.splashYay.cagefight.GameData;
 import co.nz.splashYay.cagefight.GameState;
+import co.nz.splashYay.cagefight.ItemManager;
 import co.nz.splashYay.cagefight.PlayerControlCommands;
 import co.nz.splashYay.cagefight.SceneManager;
 import co.nz.splashYay.cagefight.ValueBar;
@@ -132,13 +134,18 @@ public abstract class GameScene extends Scene {
 	protected TiledTextureRegion playerTextureRegion;
 	protected BitmapTextureAtlas blankTexture;
 	protected TextureRegion blankTextureRegion;
-
+	
+	protected ItemManager itemManager;
+	private BuildableBitmapTextureAtlas mBuildBitmapTextureAtlas2;
 	
 	public void loadRes() {
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 		
-		this.mBuildBitmapTextureAtlas = new BuildableBitmapTextureAtlas(this.activity.getTextureManager(), 4096, 4096, TextureOptions.NEAREST);
+		this.mBuildBitmapTextureAtlas = new BuildableBitmapTextureAtlas(this.activity.getTextureManager(), 2048, 2048, TextureOptions.BILINEAR);
+		this.mBuildBitmapTextureAtlas2 = new BuildableBitmapTextureAtlas(this.activity.getTextureManager(), 2048, 2048, TextureOptions.BILINEAR);
 
+		
+		
 		this.playerTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBuildBitmapTextureAtlas, this.activity, "playerWalk3.png", 1, 6);
 
 		//ai
@@ -150,9 +157,6 @@ public abstract class GameScene extends Scene {
 		//tower
 		this.towerTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBuildBitmapTextureAtlas, this.activity, "tower.png",1, 1);
 		
-	
-		this.mBitmapTextureAtlas = new BitmapTextureAtlas(this.activity.getTextureManager(), 16, 16, TextureOptions.DEFAULT);
-		this.mBitmapTextureAtlas.load();
 
 		this.mOnScreenControlTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 256, 128, TextureOptions.BILINEAR);
 		this.mOnScreenControlBaseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mOnScreenControlTexture, this.activity, "onscreen_control_base.png", 0, 0);
@@ -165,6 +169,8 @@ public abstract class GameScene extends Scene {
 		this.infoFont = FontFactory.create(activity.getFontManager(), activity.getTextureManager(), 256, 256, Typeface.create(Typeface.DEFAULT, Typeface.NORMAL), 24, Color.WHITE_ABGR_PACKED_INT);
 		this.infoFont.load();
 		
+		itemManager = new ItemManager(activity);
+		
 		this.shopMenu = new ShopMenuScene(activity, engine, camera, this);	
 		shopMenu.loadResources();
 		shopMenu.createScene();
@@ -172,8 +178,8 @@ public abstract class GameScene extends Scene {
 		
 		//explosion
 		
-		this.explosionTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBuildBitmapTextureAtlas, this.activity, "explosion.png", 3, 4);
-		this.towerAttackTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBuildBitmapTextureAtlas, this.activity, "explosion2.png", 8, 5);
+		this.explosionTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBuildBitmapTextureAtlas2, this.activity, "explosion.png", 3, 4);
+		this.towerAttackTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBuildBitmapTextureAtlas2, this.activity, "explosion2.png", 8, 5);
 		
 		
 		this.blankTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 128, 128, TextureOptions.BILINEAR);
@@ -183,6 +189,8 @@ public abstract class GameScene extends Scene {
 		try {
 			this.mBuildBitmapTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 1));
 			this.mBuildBitmapTextureAtlas.load();
+			this.mBuildBitmapTextureAtlas2.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 1));
+			this.mBuildBitmapTextureAtlas2.load();
 		} catch (TextureAtlasBuilderException e) {
 			Debug.e(e);
 		}
@@ -332,13 +340,13 @@ public abstract class GameScene extends Scene {
 	                
 	                Entity target = player.getNearestEnemyEntity(gameData);
 	                
-	                if(target != null && player.isAlive())
+	                if(target != null && player.getState() != EntityState.DEAD)
 	                {
 		                if(!player.hasTarget())
 		                {
 		                	playerCommands.setTargetID(target.getId());
 		                }
-		                else if(!player.getTarget().isAlive())
+		                else if(player.getTarget().getState() == EntityState.DEAD)
 	                	{
 	                		playerCommands.setTargetID(target.getId());
 	                	}
@@ -428,7 +436,7 @@ public abstract class GameScene extends Scene {
 	 */
 	protected void setTargetFromSpriteTouch(Sprite sprite){
 		Entity touched = gameData.getEntityFromSprite(sprite);
-		if (touched.isAlive() && touched.getTeam() != player.getTeam()) {
+		if (touched.getState() != EntityState.DEAD && touched.getTeam() != player.getTeam()) {
 			playerCommands.setTargetID(touched.getId());
 		}
 			
@@ -443,14 +451,13 @@ public abstract class GameScene extends Scene {
 	public void checkVictory() {
 		if (gameData.getGameState().equals(GameState.RUNNING)) {
 			if (gameData.getGoodBase() != null && gameData.getEvilBase() != null) {
-				if (!gameData.getGoodBase().isAlive() || !gameData.getEvilBase().isAlive()) {
+				if (gameData.getGoodBase().getState() == EntityState.DEAD || gameData.getEvilBase().getState() == EntityState.DEAD) {
 					gameData.setGameState(GameState.FINISHED);
 
 					StatsScene stats = new StatsScene(activity, engine, camera, gameData);
 					stats.loadResources();
 					stats.createScene();
 					this.setChildScene(stats);
-
 					this.hud.setVisible(false);
 
 				}
@@ -495,6 +502,20 @@ public abstract class GameScene extends Scene {
 	        public void reset() {
 
 	        }});
+	}
+
+	public ItemManager getItemManager() {
+		return itemManager;
+	}
+	
+	public void updateHealthBar(Entity entity){
+		if (entity.getState() != EntityState.DEAD) {
+			entity.getParentSprite().showHealthBar();
+			entity.getParentSprite().getHealthBar().setProgressPercentage((float)entity.getCurrenthealth() / (float)entity.getMaxhealth());
+
+		} else {
+			entity.getParentSprite().hideHealthBar();
+		}
 	}
 
 	

@@ -3,6 +3,8 @@ package co.nz.splashYay.cagefight;
 import java.io.Serializable;
 import java.net.InetAddress;
 
+import co.nz.splashYay.cagefight.ItemManager.AllItems;
+
 public class PlayerControlCommands implements Serializable {
 
 	
@@ -18,8 +20,9 @@ public class PlayerControlCommands implements Serializable {
 	private float clientPosX;
 	private float clientPosY;
 	
-	private InetAddress inetAddr;
-	private int port;
+	private AllItems purchaseItem;
+	
+	
 	
 	
 	public PlayerControlCommands(){
@@ -28,6 +31,7 @@ public class PlayerControlCommands implements Serializable {
 		clientPosX = 0;
 		clientPosY = 0;
 		attackCommand = false;
+		purchaseItem = null;
 		
 	}
 	
@@ -35,33 +39,18 @@ public class PlayerControlCommands implements Serializable {
 	
 
 
-	public InetAddress getInetAddr() {
-		return inetAddr;
+	public AllItems getPurchaseItem() {
+		return purchaseItem;
 	}
 
 
 
 
 
-	public void setInetAddr(InetAddress inetAddr) {
-		this.inetAddr = inetAddr;
+	public void setPurchaseItem(AllItems purchaseItem) {
+		this.purchaseItem = purchaseItem;
 	}
 
-
-
-
-
-	public int getPort() {
-		return port;
-	}
-
-
-
-
-
-	public void setPort(int port) {
-		this.port = port;
-	}
 
 
 
