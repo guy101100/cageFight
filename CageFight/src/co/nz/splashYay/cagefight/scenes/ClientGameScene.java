@@ -16,10 +16,12 @@ import org.andengine.entity.util.FPSLogger;
 import org.andengine.extension.physics.box2d.FixedStepPhysicsWorld;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
+import org.andengine.extension.physics.box2d.util.Vector2Pool;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.util.color.Color;
+import org.andengine.util.math.MathUtils;
 
 import co.nz.splashYay.cagefight.CustomSprite;
 import co.nz.splashYay.cagefight.EntityState;
@@ -38,6 +40,7 @@ import co.nz.splashYay.cagefight.network.ClientOutNetCom;
 import co.nz.splashYay.cagefight.network.UDPReciver;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
@@ -88,6 +91,7 @@ public class ClientGameScene extends GameScene {
 			@Override
 			public void onUpdate(float pSecondsElapsed) {
 				if (sceneManager.isGameStarted() &&	gameData.getEntityWithId(player.getId()) != null) {					
+					
 					checkVictory();
 					processEntities();
 					updateTargetMarker();	
@@ -209,22 +213,19 @@ public class ClientGameScene extends GameScene {
 			}
 			break;
 		}
-		
 
-		// if player is not moving and is out of sync, move to actual position.
-		float moveTime = 0.125f; // time in seconds it takes to move to actual position
+		float x = player.getXPos() - player.getParentSprite().getX();
+		float y = player.getYPos() - player.getParentSprite().getY();
 
-		if (player.getSprite().getEntityModifierCount() == 0) { // if there is no move modifier add one
-			MoveModifier moveModifier = new MoveModifier(moveTime, player.getSprite().getParent().getX(), player.getXPos() , player.getSprite().getParent().getY(), player.getYPos()   );
-			player.setMoveModifier(moveModifier);
-			player.getParentSprite().registerEntityModifier(moveModifier);
+		player.getPhyHandler().setVelocity(x * player.getSpeed(), y * player.getSpeed());
 			
-		} else {
-			player.getMoveModifier().reset(moveTime, player.getSprite().getParent().getX(), player.getXPos(), player.getSprite().getParent().getY(), player.getYPos()); // move player to where actual coords are
-		}
+		
 		
 		
 	}
+	
+	
+	
 	
 	private void processCreep(Creep creep) {		
 		updateHealthBar(creep);		
@@ -262,15 +263,10 @@ public class ClientGameScene extends GameScene {
 			break;
 		}
 		
-		float moveTime = 0.125f; // time in seconds it takes to move to actual position
+		float x = creep.getXPos() - creep.getParentSprite().getX();
+		float y = creep.getYPos() - creep.getParentSprite().getY();
 
-		if (creep.getSprite().getEntityModifierCount() == 0) { // if there is no move modifier add one
-			MoveModifier moveModifier = new MoveModifier(moveTime, creep.getSprite().getX(), creep.getXPos() , creep.getSprite().getY(), creep.getYPos()   );
-			creep.setMoveModifier(moveModifier);
-			creep.getParentSprite().registerEntityModifier(moveModifier);
-		} else {
-			creep.getMoveModifier().reset(moveTime, creep.getSprite().getParent().getX(), creep.getXPos(), creep.getSprite().getParent().getY(), creep.getYPos()); // move player to where actual coords are
-		}
+		creep.getPhyHandler().setVelocity(x * creep.getSpeed(), y * creep.getSpeed());
 	}
 	
 	public void addEntityToGameDataObj(Entity newEntity) {
@@ -315,7 +311,7 @@ public class ClientGameScene extends GameScene {
 			
 			this.attachChild(cust);
 			
-			final PhysicsHandler tempPhyHandler = new PhysicsHandler(tempS); // added
+			final PhysicsHandler tempPhyHandler = new PhysicsHandler(cust); // added
 			cust.registerUpdateHandler(tempPhyHandler); // added			
 			newEntity.setPhyHandler(tempPhyHandler);
 			
