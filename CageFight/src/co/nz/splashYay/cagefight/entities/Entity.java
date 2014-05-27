@@ -252,11 +252,19 @@ public abstract class Entity implements Serializable{
 	}
 	
 	
-	public double getAngleOfLineToTarget() {
-		float xDiff = getTarget().getCenterXpos() - getCenterXpos();
-		float yDiff = getTarget().getCenterYpos() - getCenterYpos();
-		return Math.toDegrees(Math.atan2(xDiff, -yDiff));
+	public double getAngleOfLineToTarget(float x, float y) {		
+		return Math.toDegrees(Math.atan2(x, -y));
 	}
+	
+	public Vector2 distanceToMoveWithAngle(double angle, float distance) {
+        int xDir = 0;
+        int yDir = 0;
+        angle = Math.toRadians(angle);
+        xDir = (int) (Math.sin(angle) * distance);
+        yDir = (int) (Math.cos(angle) * distance);
+        Vector2 direction = Vector2Pool.obtain(xDir, -yDir);        
+        return direction;
+    }
 
 	public double getDistanceToTarget(Entity ent) {
 		if (ent != null) {

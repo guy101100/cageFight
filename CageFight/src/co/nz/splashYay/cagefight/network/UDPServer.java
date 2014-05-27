@@ -62,13 +62,13 @@ public class UDPServer extends Thread {
 
 					outPacket = new DatagramPacket(outObj, outObj.length, client.inetAddress, client.port);
 					socket.send(outPacket);
-					//System.out.println("sent to : " + client.getInetAddress().toString());
+					
 
 				}
 				
-				// System.out.println(System.currentTimeMillis() - start);
+				
 				try {
-					Thread.sleep(15);
+					Thread.sleep(25);
 				} catch (InterruptedException ie) {
 				}
 			}

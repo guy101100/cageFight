@@ -69,6 +69,9 @@ public class Player extends Entity implements Serializable{
 	public void updateFromServer(Player player){
 		this.xpos = player.getXPos();
 		this.ypos = player.getYPos();
+		
+		
+		
 		this.direction = player.getDirection();
 		
 		this.currenthealth = player.getCurrenthealth();

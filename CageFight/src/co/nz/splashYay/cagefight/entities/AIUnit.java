@@ -44,7 +44,7 @@ public abstract class AIUnit extends Entity{
 			final Body creepBody = getBody();			
 			float x = getXdirectionToTarget();
 			float y = getYdirectionToTarget();			
-			final Vector2 velocity = distanceToMoveWithAngle(getAngleOfLineToTarget(), getSpeed());
+			final Vector2 velocity = distanceToMoveWithAngle(getAngleOfLineToTarget(x, y), getSpeed());
 			creepBody.setLinearVelocity(velocity);
 			Vector2Pool.recycle(velocity);
 		}		
@@ -53,15 +53,7 @@ public abstract class AIUnit extends Entity{
 	
 	
     
-    public Vector2 distanceToMoveWithAngle(double angle, float distance) {
-        int xDir = 0;
-        int yDir = 0;
-        angle = Math.toRadians(angle);
-        xDir = (int) (Math.sin(angle) * distance);
-        yDir = (int) (Math.cos(angle) * distance);
-        Vector2 direction = Vector2Pool.obtain(xDir, -yDir);        
-        return direction;
-    }
+    
     
         
     //
