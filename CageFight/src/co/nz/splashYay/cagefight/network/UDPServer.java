@@ -68,7 +68,7 @@ public class UDPServer extends Thread {
 				
 				// System.out.println(System.currentTimeMillis() - start);
 				try {
-					Thread.sleep(30);
+					Thread.sleep(15);
 				} catch (InterruptedException ie) {
 				}
 			}
