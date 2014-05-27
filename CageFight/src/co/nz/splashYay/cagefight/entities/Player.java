@@ -213,7 +213,7 @@ public class Player extends Entity implements Serializable{
 	}
 	
 	private boolean spendGold(int amount){
-		if (getGold() - amount > 0) {
+		if (getGold() - amount >= 0) {
 			setGold(getGold() - amount);
 			return true;
 		} else {
