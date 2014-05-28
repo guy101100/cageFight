@@ -15,7 +15,7 @@ public class ServerCheckListener extends Thread {
 	public void run() {
 		System.out.println("Online Checker Started");
 		try {
-			ServerSocket welcomeSocket = new ServerSocket(6787);
+			ServerSocket welcomeSocket = new ServerSocket(6786);
 
 			while (!interrupted()) {
 				Socket connectionSocket = welcomeSocket.accept(); //when information comes in through that socket accept it for processing

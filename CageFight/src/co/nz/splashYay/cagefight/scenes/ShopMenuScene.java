@@ -38,7 +38,8 @@ public class ShopMenuScene extends MenuScene implements IOnMenuItemClickListener
 	private Camera camera;
 	private BuildableBitmapTextureAtlas menuTextureAtlas;
 	private Font mFont;
-	private TextureRegion upgrade;
+	private TextureRegion buyS;
+	private TextureRegion backS;
 	
 	private final int ITEM1 = 1;
 	private final int ITEM2 = 2;
@@ -57,6 +58,7 @@ public class ShopMenuScene extends MenuScene implements IOnMenuItemClickListener
 	private float[] yPositions ;
 	
 	int size = 96;
+	private Font smallFont;
 	
 
 	public ShopMenuScene(BaseGameActivity act, Engine eng, Camera cam, GameScene gS){
@@ -93,7 +95,8 @@ public class ShopMenuScene extends MenuScene implements IOnMenuItemClickListener
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 		menuTextureAtlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 512, 512, TextureOptions.BILINEAR);
 		
-		upgrade = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "buySquare.jpg");
+		buyS = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "shopBuy.png");
+		backS = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "shopBack.png");
 		
 
 		try {
@@ -106,15 +109,17 @@ public class ShopMenuScene extends MenuScene implements IOnMenuItemClickListener
 		this.mFont = FontFactory.create(activity.getFontManager(), activity.getTextureManager(), 256, 256, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 32, android.graphics.Color.WHITE);
 		this.mFont.load();
 		
+		this.smallFont = FontFactory.create(activity.getFontManager(), activity.getTextureManager(), 256, 256, Typeface.create(Typeface.DEFAULT, Typeface.NORMAL), 24, android.graphics.Color.WHITE);
+		this.smallFont.load();
+		
 	}
 	
 	public void createScene(){
 		this.setPosition(0, 0);
+		setBackgroundEnabled(false);
 		
-		//ipText = new Text(100, 160, this.mFont, "Server IP : ", "Server IP : XXX.XXX.XXX.XXX Extra bit on the end".length(), activity.getVertexBufferObjectManager());
-	    //joinMenu.attachChild(ipText);
 		
-		final IMenuItem back = new ScaleMenuItemDecorator(new SpriteMenuItem(CLOSE, upgrade, engine.getVertexBufferObjectManager()), 1.2f, 1);	    
+		final IMenuItem back = new ScaleMenuItemDecorator(new SpriteMenuItem(CLOSE, backS, engine.getVertexBufferObjectManager()), 1.2f, 1);	    
 		addMenuItem(back);
 		back.setPosition(camera.getWidth()/4- (back.getWidth()/2), camera.getHeight() - back.getHeight() - 25);
 		
@@ -172,6 +177,20 @@ public class ShopMenuScene extends MenuScene implements IOnMenuItemClickListener
 	public GameScene getgS() {
 		return gS;
 	}
+
+	public Font getSmallFont() {
+		return smallFont;
+	}
+
+	public TextureRegion getBuyS() {
+		return buyS;
+	}
+
+	public TextureRegion getBackS() {
+		return backS;
+	}
+	
+	
 	
 	
 	

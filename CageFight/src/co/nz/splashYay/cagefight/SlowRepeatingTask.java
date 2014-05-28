@@ -87,6 +87,7 @@ public class SlowRepeatingTask extends Thread {
 				if (tmxTile.getTMXTileProperties(mTMXTiledMap).containsTMXProperty("badHeal", "true")) {
 					if (entity.getTeam() == ALL_TEAMS.BAD) {
 						entity.healEntity(30f);
+						checkIfPlayerAndSetIsAtShop(entity, true);
 					} else {
 						entity.setSpeed(entity.getMaxSpeed()/2);
 						sGS.towerAttackExplosion(entity);
@@ -97,7 +98,7 @@ public class SlowRepeatingTask extends Thread {
 				} else if (tmxTile.getTMXTileProperties(mTMXTiledMap).containsTMXProperty("goodHeal", "true")) {
 					if (entity.getTeam() == ALL_TEAMS.GOOD) {
 						entity.healEntity(30f);
-
+						checkIfPlayerAndSetIsAtShop(entity, true);
 					} else {
 						entity.setSpeed(entity.getMaxSpeed()/2);
 						sGS.towerAttackExplosion(entity);
@@ -114,6 +115,13 @@ public class SlowRepeatingTask extends Thread {
 			
 		} else { // is not on an effecting tile, reverse any effects on the player
 			entity.setSpeed(entity.getMaxSpeed());
+			checkIfPlayerAndSetIsAtShop(entity, false);
+		}
+	}
+	
+	private void checkIfPlayerAndSetIsAtShop(Entity entity, boolean tF){
+		if (entity instanceof Player) {
+			((Player)entity).setAtShop(tF);
 		}
 	}
 	

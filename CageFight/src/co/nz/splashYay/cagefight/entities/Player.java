@@ -36,6 +36,7 @@ public class Player extends Entity implements Serializable{
 	private int killCount = 0;
 	private int deathCount = 0;
 	
+	private boolean atShop;
 	private AllItems wantsToPurchase;
 	
 	//points a player has to level up abilities
@@ -51,6 +52,7 @@ public class Player extends Entity implements Serializable{
 		setMaxSpeed(10);
 		setSpeed(10);	
 		
+		atShop = false;
 		wantsToPurchase = null;
 		
 	}
@@ -69,7 +71,7 @@ public class Player extends Entity implements Serializable{
 	public void updateFromServer(Player player){
 		this.xpos = player.getXPos();
 		this.ypos = player.getYPos();
-		
+		this.atShop = player.isAtShop();
 		
 		
 		this.direction = player.getDirection();
@@ -394,6 +396,20 @@ public class Player extends Entity implements Serializable{
 	public void setWantsToPurchase(AllItems wantsToPurchase) {
 		this.wantsToPurchase = wantsToPurchase;
 	}
+
+
+
+	public boolean isAtShop() {
+		return atShop;
+	}
+
+
+
+	public void setAtShop(boolean isAtShop) {
+		this.atShop = isAtShop;
+	}
+	
+	
 	
 	
 

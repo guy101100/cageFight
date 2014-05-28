@@ -192,6 +192,8 @@ public class MenuScreenScene extends Scene implements IOnMenuItemClickListener {
 		
 		this.mFont = FontFactory.create(activity.getFontManager(), activity.getTextureManager(), 256, 256, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 32);
 		this.mFont.load();
+		
+		
 
 
 	}
