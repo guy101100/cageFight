@@ -137,6 +137,7 @@ public abstract class GameScene extends Scene {
 	
 	protected ItemManager itemManager;
 	private BuildableBitmapTextureAtlas mBuildBitmapTextureAtlas2;
+	private TiledTextureRegion shopRegion;
 	
 	public void loadRes() {
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
@@ -157,11 +158,13 @@ public abstract class GameScene extends Scene {
 		//tower
 		this.towerTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBuildBitmapTextureAtlas, this.activity, "tower.png",1, 1);
 		
+		this.shopRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBuildBitmapTextureAtlas, this.activity, "shop.png",1, 1);
 
 		this.mOnScreenControlTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 256, 128, TextureOptions.BILINEAR);
 		this.mOnScreenControlBaseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mOnScreenControlTexture, this.activity, "onscreen_control_base.png", 0, 0);
 		this.mOnScreenControlKnobTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mOnScreenControlTexture, this.activity, "onscreen_control_knob.png", 128, 0);
 		this.mOnScreenControlTexture.load();
+		
 
 		this.mFont = FontFactory.create(activity.getFontManager(), activity.getTextureManager(), 256, 256, Typeface.create(Typeface.DEFAULT, Typeface.NORMAL), 24);
 		this.mFont.load();
@@ -372,7 +375,8 @@ public abstract class GameScene extends Scene {
 	    
 	    
 	    //shop button
-	    shop = new ButtonSprite(camera.getWidth() - 90, 25, mOnScreenControlKnobTextureRegion, this.activity.getVertexBufferObjectManager())
+	    
+	    shop = new ButtonSprite(10, 10, shopRegion, this.activity.getVertexBufferObjectManager())
 	    {
 	        public boolean onAreaTouched(TouchEvent touchEvent, float X, float Y)
 	        {	        	
@@ -383,8 +387,6 @@ public abstract class GameScene extends Scene {
 	        };
 	    };
 	    
-	    shop.setColor(Color.GREEN);
-	    shop.setScale(2.0f);
 	    
 	    this.hud.attachChild(shop);
 	    this.hud.registerTouchArea(shop);
