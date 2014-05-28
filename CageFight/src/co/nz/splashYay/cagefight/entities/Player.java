@@ -203,6 +203,11 @@ public class Player extends Entity implements Serializable{
 			
 			System.out.println("Current " + getExperience());
 			this.setAbilityPoints(this.getAbilityPoints() + 1);
+			
+			setMaxDamage(getMaxDamage() + (level * 5));
+			setMaxhealth((int) (getMaxhealth() + (level * 10)));
+			setRegenAmount(getRegenAmount()+2);
+			
 		}
 	}
 	

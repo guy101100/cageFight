@@ -541,8 +541,8 @@ public abstract class Entity implements Serializable{
 		return target != null;
 	}
 	
-	public int getDamage() {
-		return damage;
+	public int getDamage() {	
+		return (damage + (int)(Math.random() * ((maxDamage - damage) + 1)));
 	}
 
 	public void setDamage(int damage) {
@@ -583,6 +583,9 @@ public abstract class Entity implements Serializable{
 
 	public float getRegenAmount() {
 		return regenAmount;
+	}
+	public void setRegenAmount(float regenAmount) {
+		this.regenAmount = regenAmount;
 	}
 	
 	
