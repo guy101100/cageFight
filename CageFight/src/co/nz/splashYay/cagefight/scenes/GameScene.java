@@ -106,7 +106,7 @@ public abstract class GameScene extends Scene {
 	protected Player player;
 	
 	//HUD
-	private HUD hud = new HUD();
+	protected HUD hud = new HUD();
 	private ButtonSprite attack;
 	private AnalogOnScreenControl joyStick;
 	private ValueBar targetHealth;
