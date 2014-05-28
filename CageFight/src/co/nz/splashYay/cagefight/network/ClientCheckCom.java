@@ -30,7 +30,7 @@ public class ClientCheckCom extends Thread {
 	public boolean checkForServer() {
 		boolean serverOnline = false;
 		try {
-			clientSocket = new Socket(ipAddress, 6787);
+			clientSocket = new Socket(ipAddress, 6786);
 
 			inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 			outToServer = new DataOutputStream(clientSocket.getOutputStream());

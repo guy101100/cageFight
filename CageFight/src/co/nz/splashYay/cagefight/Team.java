@@ -17,12 +17,12 @@ public class Team implements Serializable {
 		this.id = id;
 		if (id == 1) {
 			team = ALL_TEAMS.GOOD;
-			spawnXpos = 3200;
-			spawnYpos = 919;
+			spawnXpos = 3500;
+			spawnYpos = 850;
 		} else {
 			team = ALL_TEAMS.BAD;
-			spawnXpos = 616;
-			spawnYpos = 919;
+			spawnXpos = 215;
+			spawnYpos = 850;
 		}
 	}
 	

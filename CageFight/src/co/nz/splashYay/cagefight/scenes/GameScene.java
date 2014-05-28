@@ -285,7 +285,7 @@ public abstract class GameScene extends Scene {
 			@Override
 			public void onControlClick(final AnalogOnScreenControl pAnalogOnScreenControl) {
 				
-		        
+		        System.out.println(player.getParentSprite().getX() + " " + player.getParentSprite().getY());
 			} 
 		});
 		
@@ -372,7 +372,7 @@ public abstract class GameScene extends Scene {
 	    
 	    
 	    //shop button
-	    shop = new ButtonSprite(camera.getWidth() - 100, 120, mOnScreenControlKnobTextureRegion, this.activity.getVertexBufferObjectManager())
+	    shop = new ButtonSprite(camera.getWidth() - 90, 25, mOnScreenControlKnobTextureRegion, this.activity.getVertexBufferObjectManager())
 	    {
 	        public boolean onAreaTouched(TouchEvent touchEvent, float X, float Y)
 	        {	        	
@@ -405,6 +405,14 @@ public abstract class GameScene extends Scene {
 	 */
 	public void updateHUD()
 	{
+		if (player.isAtShop() && !shop.isVisible()) {
+			this.hud.registerTouchArea(shop);
+			shop.setVisible(true);
+		} else if (!player.isAtShop() && shop.isVisible())  {
+			this.hud.unregisterTouchArea(shop);
+			shop.setVisible(false);
+		}
+		
 		playerHealth.setProgressPercentage((float)player.getCurrenthealth() / (float)player.getMaxhealth());
 		playerExpBar.setProgressPercentage((float)player.getExperience() / (float) player.getLevelExp());
 
