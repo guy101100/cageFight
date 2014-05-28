@@ -84,10 +84,13 @@ public class Player extends Entity implements Serializable{
 		this.target = player.getTarget();
 		
 		this.experience = player.getExperience();
+		this.level = player.getLevel();
 		this.movementX = player.getMovementX();
 		this.movementY = player.getMovementY();
 		this.team = player.getTeam();
 		this.gold = player.getGold();
+		this.killCount = player.getKillCount();
+		this.deathCount = player.getDeathCount();
 		
 		if (this.state != player.getState()) {
 			this.state = player.getState();
@@ -358,7 +361,7 @@ public class Player extends Entity implements Serializable{
 
 	public String getStatsString()
 	{
-		return "Player ID: "+ this.getId() + "; Level: " + level + ";Gold: " + gold;
+		return "Player ID: "+ this.getId() + "; Level: " + level + "; Gold: " + gold + "; K/D: " + this.getKillCount() + "/" + this.getDeathCount();
 	}
 
 
