@@ -13,7 +13,8 @@ public class PlayerControlCommands implements Serializable {
 	private float movementX;
 	private float movementY;
 	
-	private boolean attackCommand;	
+	private boolean attackCommand;
+	private int attackState;
 	private int targetID;
 	
 		
@@ -31,6 +32,7 @@ public class PlayerControlCommands implements Serializable {
 		clientPosX = 0;
 		clientPosY = 0;
 		attackCommand = false;
+		attackState = 0;
 		purchaseItem = null;
 		
 	}

@@ -345,7 +345,13 @@ public class ServerGameScene extends GameScene {
 				
 				
 				
-			} else if (player.getPlayerState() == EntityState.IDLE) {
+			}
+			else if(player.getPlayerState() == EntityState.SPECIALATTACKING)
+			{
+				//Perform Special Attack
+				
+			}
+			else if (player.getPlayerState() == EntityState.IDLE) {
 				//do nothing
 				
 				

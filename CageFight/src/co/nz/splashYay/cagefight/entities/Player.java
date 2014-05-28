@@ -204,7 +204,7 @@ public class Player extends Entity implements Serializable{
 			}
 			else if(attackState == 1 && System.currentTimeMillis() >= (getLastAttackTime() + getAttackCoolDown()) )
 			{
-				setPlayerState(EntityState.SPECIALATTACK);	
+				setPlayerState(EntityState.SPECIALATTACKING);	
 			}
 			
 		} else if (getMovementX() != 0 && getMovementY() != 0) {
