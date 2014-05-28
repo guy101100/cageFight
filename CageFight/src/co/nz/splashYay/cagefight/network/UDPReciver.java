@@ -83,7 +83,7 @@ public class UDPReciver extends Thread {
 	    		gameData.setSendTime(gameDataIn.getSendTime());
 	    		gameData.getTeam(ALL_TEAMS.GOOD).updateFromOtherTeamData(gameDataIn.getTeam(ALL_TEAMS.GOOD));
 				gameData.getTeam(ALL_TEAMS.BAD).updateFromOtherTeamData(gameDataIn.getTeam(ALL_TEAMS.BAD));
-				
+				gameData.setGameState(gameDataIn.getGameState());
 				
 				for (Entry<Integer, Entity> entry: gameDataIn.getEntities().entrySet()) {					    
 				    Entity entityIn = entry.getValue();

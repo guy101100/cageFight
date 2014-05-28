@@ -40,16 +40,6 @@ public class GameData implements Serializable{
 		gameState = GameState.RUNNING;
 	}
 	
-	public GameData(GameData gD) {
-		this.goodTeam = gD.getTeam(ALL_TEAMS.GOOD);
-		this.goodTeam = gD.getTeam(ALL_TEAMS.BAD);
-		this.entities = (HashMap<Integer, Entity>) gD.getEntities().clone();
-		this.IDs = (ArrayList<Integer>) gD.getIDs().clone();
-		sendTime = System.currentTimeMillis();
-		
-		gameState = GameState.RUNNING;
-	}
-	
 	public ArrayList<Entity> getEntitiesOnTeam(ALL_TEAMS team){
 		ArrayList<Entity> toReturn = new ArrayList<Entity>();
 		
