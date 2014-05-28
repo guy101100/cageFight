@@ -28,7 +28,7 @@ public class UDPReciver extends Thread {
 	DatagramPacket outPacket = null;
 	byte[] inBuf;
 
-	int port = 6787;
+	
 	InetAddress address;
 
 	private ClientGameScene clientGameScene;
