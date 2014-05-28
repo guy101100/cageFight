@@ -28,6 +28,9 @@ public class Player extends Entity implements Serializable{
 	private boolean attackCommand = false;
 	private int attackState = 0;
 	
+	private long lastSpecialAttackTime = 0;
+	private long specialAttackCooldown = 6000;
+	
 	//Player Stats
 	private int experience;
 	private int level;	
@@ -202,7 +205,7 @@ public class Player extends Entity implements Serializable{
 			{
 				setPlayerState(EntityState.ATTACKING);	
 			}
-			else if(attackState == 1 && System.currentTimeMillis() >= (getLastAttackTime() + getAttackCoolDown()) )
+			else if(attackState == 1 && System.currentTimeMillis() >= (getLastSpecialAttackTime() + getSpecialAttackCooldown()) )
 			{
 				setPlayerState(EntityState.SPECIALATTACKING);	
 			}
@@ -418,6 +421,30 @@ public class Player extends Entity implements Serializable{
 
 	public void setAtShop(boolean isAtShop) {
 		this.atShop = isAtShop;
+	}
+
+
+
+	public long getSpecialAttackCooldown() {
+		return specialAttackCooldown;
+	}
+
+
+
+	public void setSpecialAttackCooldown(long specialAttackCooldown) {
+		this.specialAttackCooldown = specialAttackCooldown;
+	}
+
+
+
+	public long getLastSpecialAttackTime() {
+		return lastSpecialAttackTime;
+	}
+
+
+
+	public void setLastSpecialAttackTime(long lastSpecialAttackTime) {
+		this.lastSpecialAttackTime = lastSpecialAttackTime;
 	}
 	
 	
