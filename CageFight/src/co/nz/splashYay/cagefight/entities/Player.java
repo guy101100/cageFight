@@ -26,6 +26,7 @@ public class Player extends Entity implements Serializable{
 	private float movementX = 0;
 	private float movementY = 0;
 	private boolean attackCommand = false;
+	private int attackState = 0;
 	
 	//Player Stats
 	private int experience;
@@ -108,8 +109,7 @@ public class Player extends Entity implements Serializable{
 	//                         sever only methods
 	///////////////////////////////////////////////////////////////////////
 	
-	
-	
+
 	
 	
 	/**
@@ -196,8 +196,16 @@ public class Player extends Entity implements Serializable{
 		if (this.getCurrenthealth() <= 0) {
 			setPlayerState(EntityState.DEAD);			
 			
-		} else  if (attackCommand && System.currentTimeMillis() >= (getLastAttackTime() + getAttackCoolDown()) && getDistanceToTarget(getTarget()) < getAttackRange()) {
-			setPlayerState(EntityState.ATTACKING);	
+		} else  if (attackCommand)
+		{
+			if(attackState == 0 && System.currentTimeMillis() >= (getLastAttackTime() + getAttackCoolDown()) && getDistanceToTarget(getTarget()) < getAttackRange())
+			{
+				setPlayerState(EntityState.ATTACKING);	
+			}
+			else if(attackState == 1 && System.currentTimeMillis() >= (getLastAttackTime() + getAttackCoolDown()) )
+			{
+				setPlayerState(EntityState.SPECIALATTACK);	
+			}
 			
 		} else if (getMovementX() != 0 && getMovementY() != 0) {
 			setPlayerState(EntityState.MOVING);
