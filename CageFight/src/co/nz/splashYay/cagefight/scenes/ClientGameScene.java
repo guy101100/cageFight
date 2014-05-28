@@ -26,6 +26,7 @@ import org.andengine.util.math.MathUtils;
 import co.nz.splashYay.cagefight.CustomSprite;
 import co.nz.splashYay.cagefight.EntityState;
 import co.nz.splashYay.cagefight.GameData;
+import co.nz.splashYay.cagefight.GameState;
 import co.nz.splashYay.cagefight.SceneManager;
 import co.nz.splashYay.cagefight.Team;
 import co.nz.splashYay.cagefight.Team.ALL_TEAMS;
@@ -51,6 +52,7 @@ public class ClientGameScene extends GameScene {
 	//private ClientInNetCom iNC;
 	private String ipAddress;
 	UDPReciver udpr;
+	private boolean statsUp;
 	
 
 	public ClientGameScene(BaseGameActivity act, Engine eng, Camera cam, String ipAddress, SceneManager sceneManager) {
@@ -92,7 +94,7 @@ public class ClientGameScene extends GameScene {
 			public void onUpdate(float pSecondsElapsed) {
 				if (sceneManager.isGameStarted() &&	gameData.getEntityWithId(player.getId()) != null) {					
 					
-					checkVictory();
+					checkGameState();
 					processEntities();
 					updateTargetMarker();	
 					updateHUD();
@@ -112,6 +114,18 @@ public class ClientGameScene extends GameScene {
 
 		return this;
 
+	}
+	
+	private void checkGameState() {
+		if (gameData.getGameState() == GameState.FINISHED && !statsUp) {
+			StatsScene stats = new StatsScene(activity, engine, camera, gameData);
+			stats.loadResources();
+			stats.createScene();
+			this.setChildScene(stats);
+			this.hud.setVisible(false);
+			statsUp = true;
+
+		}
 	}
 	
 	
