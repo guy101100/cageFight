@@ -23,6 +23,8 @@ public class GameData implements Serializable{
 	private transient Tower evilTower;
 	private transient Tower goodTower;
 	
+	private transient ALL_TEAMS lastPlayerAddedTo;
+	
 	private static final long serialVersionUID = 1L;
 	
 	private HashMap<Integer, Entity> entities = new HashMap<Integer, Entity>();
@@ -177,6 +179,16 @@ public class GameData implements Serializable{
 	{
 		this.gameState = gameState;
 	}
+
+	public ALL_TEAMS getLastPlayerAddedTo() {
+		return lastPlayerAddedTo;
+	}
+
+	public void setLastPlayerAddedTo(ALL_TEAMS lastPlayerAddedTo) {
+		this.lastPlayerAddedTo = lastPlayerAddedTo;
+	}
+	
+	
 	
 	
 	
