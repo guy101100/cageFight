@@ -45,6 +45,10 @@ public class ShopMenuScene extends MenuScene implements IOnMenuItemClickListener
 	private final int ITEM2 = 2;
 	private final int ITEM3 = 3;
 	private final int ITEM4 = 4;
+	private final int ITEM5 = 5;
+	private final int ITEM6 = 6;
+	private final int ITEM7 = 7;
+	private final int ITEM8 = 8;
 	
 	private final int CLOSE = 99;
 	
@@ -75,12 +79,14 @@ public class ShopMenuScene extends MenuScene implements IOnMenuItemClickListener
 		
 		xPositions[0] = (int) (camera.getWidth() /5) - (size/2);
 		yPositions[0] = 100;
-		for (int i = 1; i < AllItems.values().length; i++) {
-			xPositions[i] = (float) (xPositions[i-1] + (size*1.25));
+		
+		for (int i = 1; i < AllItems.values().length; i++) {		
 			if (i < 5) {
 				yPositions[i] = 100;
+				xPositions[i] = (float) (xPositions[i-1] + (size*1.25));
 			} else {
 				yPositions[i] = (float) (yPositions[0] + (size*1.25));
+				xPositions[i] = (float) (xPositions[i-5]);
 			}
 		}
 		
@@ -159,6 +165,22 @@ public class ShopMenuScene extends MenuScene implements IOnMenuItemClickListener
 			this.setChildScene(itemMenu);
 			return true;
 		case ITEM4:
+			itemMenu = new ShopMenuItemMenu(activity, engine, camera, this, items.getItem(AllItems.SWIFTBLADE));				
+			this.setChildScene(itemMenu);
+			return true;
+		case ITEM5:
+			itemMenu = new ShopMenuItemMenu(activity, engine, camera, this, items.getItem(AllItems.CREEP_SPEED));				
+			this.setChildScene(itemMenu);
+			return true;
+		case ITEM6:
+			itemMenu = new ShopMenuItemMenu(activity, engine, camera, this, items.getItem(AllItems.CREEP_HP));				
+			this.setChildScene(itemMenu);
+			return true;
+		case ITEM7:
+			itemMenu = new ShopMenuItemMenu(activity, engine, camera, this, items.getItem(AllItems.CREEP_DAMAGE));				
+			this.setChildScene(itemMenu);
+			return true;
+		case ITEM8:
 			itemMenu = new ShopMenuItemMenu(activity, engine, camera, this, items.getItem(AllItems.SWIFTBLADE));				
 			this.setChildScene(itemMenu);
 			return true;

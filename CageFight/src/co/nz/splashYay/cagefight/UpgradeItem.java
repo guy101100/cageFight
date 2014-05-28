@@ -300,14 +300,14 @@ public class UpgradeItem {
 	public void upgradeEntity(Entity entity) {
 		if (entity instanceof Player) {
 			entity.setMaxDamage(entity.getMaxDamage() + damage);
-			entity.setDamage(entity.getDamage() + damage);
+			//entity.setDamage(entity.getDamage() + damage);
 			entity.setMaxhealth((int) (entity.getMaxhealth() + health));
 			entity.setMaxSpeed((int) (entity.getMaxSpeed() + speed));
 			entity.setAttackCoolDown(entity.getAttackCoolDown() - cooldown);
 			
 		} else if (entity instanceof Creep) {
 			entity.setMaxDamage(entity.getMaxDamage() + creepDamage);
-			entity.setDamage(entity.getDamage() + creepDamage);
+			//entity.setDamage(entity.getDamage() + creepDamage);
 			entity.setMaxhealth((int) (entity.getMaxhealth() + creepHealth));
 			entity.setMaxSpeed((int) (entity.getMaxSpeed() + creepSpeed));
 			entity.setAttackCoolDown(entity.getAttackCoolDown() - creepCooldown);
@@ -320,7 +320,7 @@ public class UpgradeItem {
 			
 		} else if (entity instanceof Base) {
 			entity.setMaxDamage(entity.getMaxDamage() + baseDamage);
-			entity.setDamage(entity.getDamage() + baseDamage);
+			//entity.setDamage(entity.getDamage() + baseDamage);
 			entity.setMaxhealth((int) (entity.getMaxhealth() + baseHealth));			
 			entity.setAttackCoolDown(entity.getAttackCoolDown() - baseCooldown);
 			
