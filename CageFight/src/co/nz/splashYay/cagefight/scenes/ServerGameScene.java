@@ -137,6 +137,8 @@ public class ServerGameScene extends GameScene {
 		tempPlayer.setAttackCommand(playerCommands.isAttackCommand());
 		tempPlayer.setTarget(gameData.getEntityWithId(playerCommands.getTargetID()));
 		
+		tempPlayer.setAttackState(playerCommands.getAttackState());
+		
 		tempPlayer.setWantsToPurchase(playerCommands.getPurchaseItem());
 		playerCommands.setPurchaseItem(null);
 		
@@ -349,6 +351,10 @@ public class ServerGameScene extends GameScene {
 			else if(player.getPlayerState() == EntityState.SPECIALATTACKING)
 			{
 				//Perform Special Attack
+				player.setLastSpecialAttackTime(System.currentTimeMillis());
+				player.specialAttack(gameData.getEntitiesOnTeam(player.getEnemyTeam()));				
+				makeSingleCycleAnnimation(player.getXPos(), player.getYPos(), towerAttackTextureRegion, 38, 30); 
+				sceneManager.getSoundManager().playTowerAttackSound(this.player, this.player);
 				
 			}
 			else if (player.getPlayerState() == EntityState.IDLE) {
