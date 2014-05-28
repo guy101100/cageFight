@@ -13,7 +13,7 @@ public class ItemManager {
 		items = new HashMap<AllItems, UpgradeItem>();
 		int id = 1;
 		
-		//activity, id, String name, String description, int cost,int damage, int health, int speed, int cooldown, int creepDamage, int creepHealth, int creepSpeed, int creepCooldown, int amountOfCreeps, int baseDamage, int baseHealth, int baseCooldown, int towerDamage, int towerHealth, int towerCooldown, String imageString
+		//activity, id, String name, String description, int cost,int damage, int health, int speed, int cooldown, int creepDamage, int creepHealth, int creepSpeed, int creepCooldown, int amountOfCreeps, int baseDamage, int baseHealth, int baseCooldown, int towerDamage, int towerHealth, int towerCooldown, String imageString 
 		
 		items.put(AllItems.AXE, new UpgradeItem(activity, id++ , "Power Axe", "Can I axe you a question?", 300, 500, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,"axe.png", AllItems.AXE));
 		items.put(AllItems.SHIELD, new UpgradeItem(activity,id++ , "Basic Shield", "A tiny Shield", 50, 0, 25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,"shield.png", AllItems.SHIELD));
