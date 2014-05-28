@@ -20,8 +20,10 @@ public class Tower extends Building{
 	public void destroyTower(){
 		setAlive(false);
 		if (getLastEntityThatAttackedMe() instanceof Player) {
-			//give gold
-			//give xp			
+			if (lastEntityThatAttackedMe instanceof Player) {
+				((Player) lastEntityThatAttackedMe).addExperience(150);	
+				((Player) lastEntityThatAttackedMe).addGold(50);
+			}		
 		}
 		getBody().setActive(false);
 		

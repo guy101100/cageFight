@@ -35,11 +35,12 @@ public class Player extends Entity implements Serializable{
 	//Player Stats
 	private int experience;
 	private int level;	
-	private int LevelExp;
-	private int gold;
-	private Timer goldTimer;
+	
+	private int gold;	
 	private int killCount = 0;
 	private int deathCount = 0;
+	
+	private int expToLevel = 120;
 	
 	private boolean atShop;
 	private AllItems wantsToPurchase;
@@ -145,17 +146,17 @@ public class Player extends Entity implements Serializable{
 		{
 			Player killer = (Player) this.getLastEntityThatAttackedMe();
 			killer.setKillCount(killer.getKillCount() + 1);
+			killer.addGold(this.getLevel() * 75 );
 		}
 		
 		//Add 1 to this players death count
 		this.setDeathCount(getDeathCount() + 1);
 		
 		//Remove gold on death
-		this.setGold(this.getGold() - this.getLevel() * 10);
-		if (this.getGold() < 0)
-		{
+		if (!this.spendGold(this.getLevel() * 10)) {
 			this.setGold(0);
 		}
+		
 	}
 	
 	/**
@@ -189,18 +190,46 @@ public class Player extends Entity implements Serializable{
 		
 	}
 	
-	public void levelUp()
-	{
-		if (this.getLevel() < MAXLEVEL)
-		{
+	public void levelUp() {
+		if (this.getLevel() < MAXLEVEL) {
 			this.level++;
 			System.out.println("Player : " + this.getId() + " has leveled up to level " + this.getLevel() + "!");
 			
 			int extraExp = this.getExperience() - this.getLevelExp();
+			this.setNextLevelExp(calcNextLevelExp());			
+			this.resetExperience();
+			this.addExperience(extraExp);
 			
-			this.setExperience(0 + extraExp);
-			
+			System.out.println("Current " + getExperience());
 			this.setAbilityPoints(this.getAbilityPoints() + 1);
+		}
+	}
+	
+	
+	
+	private int calcNextLevelExp() {
+		return (int) (this.getLevelExp()*1.5);
+	}
+
+
+
+	public void addExperience(int experience) {
+		if (experience >= 0) {
+			this.experience += experience;
+		}
+		checkForLevel();
+	}
+	
+	public void resetExperience() {
+		this.experience = 0;
+	}
+
+
+	public void checkForLevel()
+	{
+		if (this.getExperience() >= this.expToLevel)
+		{
+			this.levelUp();
 		}
 	}
 	
@@ -258,6 +287,10 @@ public class Player extends Entity implements Serializable{
 		
 	}
 	
+	public void addGold(int amount){
+		this.gold += amount;
+	}
+	
 	///////////////////////////////////////////////////////////////////////
 	//                        Getters and setters
 	///////////////////////////////////////////////////////////////////////
@@ -280,12 +313,12 @@ public class Player extends Entity implements Serializable{
 	
 	public int getLevelExp()
 	{
-		return LevelExp;
+		return expToLevel;
 	}
 	
 	public void setNextLevelExp(int LevelExp)
 	{
-		this.LevelExp = LevelExp;
+		this.expToLevel = LevelExp;
 	}
 	
 	public int getId() {
@@ -352,16 +385,6 @@ public class Player extends Entity implements Serializable{
 	}
 
 
-	public void initialiseGoldTimer()
-	{
-		try {
-			goldTimer.wait(1000);
-			this.setGold(this.getGold() + 1);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 	
 	
 	/**
