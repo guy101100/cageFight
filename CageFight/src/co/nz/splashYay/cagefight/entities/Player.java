@@ -90,6 +90,7 @@ public class Player extends Entity implements Serializable{
 		this.target = player.getTarget();
 		
 		this.experience = player.getExperience();
+		this.expToLevel = player.getLevelExp();
 		this.level = player.getLevel();
 		this.movementX = player.getMovementX();
 		this.movementY = player.getMovementY();

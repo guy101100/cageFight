@@ -102,8 +102,8 @@ public class ServerGameScene extends GameScene {
 		slowLoop = new SlowRepeatingTask(mTMXTiledMap, gameData, this);
 		slowLoop.start();
 		
-		player = new Player("", gameData.getUnusedID(), 500, 250, gameData.getTeam(ALL_TEAMS.BAD).getSpawnXpos(), gameData.getTeam(ALL_TEAMS.BAD).getSpawnYpos(), ALL_TEAMS.BAD);
-		player.setGold(1000);
+		player = new Player("", gameData.getUnusedID(), 500, 250,0, 0, ALL_TEAMS.BAD);
+		player.setGold(100);
 		addEntityToGameDataObj(player);
 		
 		//game loop
@@ -458,6 +458,17 @@ public class ServerGameScene extends GameScene {
 			
 			if (newEntity instanceof Player) {
 				temp = playerTextureRegion;
+				if (gameData.getLastPlayerAddedTo() == null || gameData.getLastPlayerAddedTo() == ALL_TEAMS.GOOD) {
+					newEntity.setTeam(ALL_TEAMS.BAD);
+					gameData.setLastPlayerAddedTo(ALL_TEAMS.BAD);
+					newEntity.setXPos(gameData.getTeam(ALL_TEAMS.BAD).getSpawnXpos()); 
+					newEntity.setYPos(gameData.getTeam(ALL_TEAMS.BAD).getSpawnYpos());
+				} else {
+					newEntity.setTeam(ALL_TEAMS.GOOD);
+					gameData.setLastPlayerAddedTo(ALL_TEAMS.GOOD);
+					newEntity.setXPos(gameData.getTeam(ALL_TEAMS.GOOD).getSpawnXpos()); 
+					newEntity.setYPos(gameData.getTeam(ALL_TEAMS.GOOD).getSpawnYpos());
+				}
 			} else if (newEntity instanceof Creep) {
 				temp = AITextureRegion;
 			} else if (newEntity instanceof Tower) {
@@ -469,7 +480,7 @@ public class ServerGameScene extends GameScene {
 			}
 			
 			
-			gameData.addEntity(newEntity);
+			
 			AnimatedSprite tempS = new AnimatedSprite(0, 0, temp, this.engine.getVertexBufferObjectManager()) {
 				@Override
 				public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -507,6 +518,8 @@ public class ServerGameScene extends GameScene {
 			if (player != null && newEntity.getId() == player.getId()) {
 				camera.setChaseEntity(cust);
 			}		
+			
+			gameData.addEntity(newEntity);
 			
 		}
 		
