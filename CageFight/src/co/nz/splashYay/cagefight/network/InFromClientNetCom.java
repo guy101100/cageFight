@@ -65,6 +65,7 @@ public class InFromClientNetCom extends Thread {
 					tempPlayer.setAttackCommand(receivedCommands.isAttackCommand());
 					tempPlayer.setTarget((Entity) gameData.getEntityWithId(receivedCommands.getTargetID()));
 					tempPlayer.setWantsToPurchase(receivedCommands.getPurchaseItem());
+					tempPlayer.setAttackState(receivedCommands.getAttackState());
 					
 
 				} else {

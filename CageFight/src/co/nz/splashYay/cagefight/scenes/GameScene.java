@@ -138,6 +138,7 @@ public abstract class GameScene extends Scene {
 	protected ItemManager itemManager;
 	private BuildableBitmapTextureAtlas mBuildBitmapTextureAtlas2;
 	private TiledTextureRegion shopRegion;
+	private ButtonSprite special;
 	
 	public void loadRes() {
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
@@ -372,6 +373,33 @@ public abstract class GameScene extends Scene {
 	    
 	    this.hud.attachChild(attack);
 	    this.hud.registerTouchArea(attack);
+	    
+	    //special
+	    special = new ButtonSprite(camera.getWidth() - 100, attack.getY() -attack.getHeight() - 25, mOnScreenControlKnobTextureRegion, this.activity.getVertexBufferObjectManager())
+	    {
+	        public boolean onAreaTouched(TouchEvent touchEvent, float X, float Y)
+	        {	        	
+	        	if (touchEvent.isActionDown())
+	            {
+	        		special.setColor(Color.RED);	                
+	                	                
+	                playerCommands.setAttackCommand(true);
+	                playerCommands.setAttackState(1);
+	            }
+	        	else if (touchEvent.isActionUp())
+	            {
+	        		special.setColor(Color.WHITE);
+	                playerCommands.setAttackCommand(false);
+	                playerCommands.setAttackState(0);
+	            }
+	            return true;
+	        };
+	    };
+	    
+	    special.setScale(1.5f);
+	    this.hud.attachChild(special);
+	    this.hud.registerTouchArea(special);
+	    
 	    
 	    
 	    //shop button

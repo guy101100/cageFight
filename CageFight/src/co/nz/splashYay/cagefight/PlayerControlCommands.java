@@ -117,6 +117,24 @@ public class PlayerControlCommands implements Serializable {
 	public void setTargetID(int target) {
 		this.targetID = target;
 	}
+
+
+
+
+
+	public int getAttackState() {
+		return attackState;
+	}
+
+
+
+
+
+	public void setAttackState(int attackState) {
+		this.attackState = attackState;
+	}
+	
+	
 	
 	
 	

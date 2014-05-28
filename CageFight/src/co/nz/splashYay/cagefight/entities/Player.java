@@ -1,6 +1,7 @@
 package co.nz.splashYay.cagefight.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Timer;
 
 import org.andengine.extension.physics.box2d.util.Vector2Pool;
@@ -112,7 +113,20 @@ public class Player extends Entity implements Serializable{
 	//                         sever only methods
 	///////////////////////////////////////////////////////////////////////
 	
+	public void specialAttack(ArrayList<Entity> entities) {
+		int specialAttackRange = 200;
+		int damage = 75;
+		System.out.println("SPECIAL");
+		for (Entity ent : entities) {
+			if (ent.getState() != EntityState.DEAD && getDistanceToTarget(ent) < specialAttackRange) {
 
+				ent.damageEntity(damage);
+
+			}
+		}
+		
+
+	}
 	
 	
 	/**
@@ -208,6 +222,8 @@ public class Player extends Entity implements Serializable{
 			else if(attackState == 1 && System.currentTimeMillis() >= (getLastSpecialAttackTime() + getSpecialAttackCooldown()) )
 			{
 				setPlayerState(EntityState.SPECIALATTACKING);	
+			} else {
+				setPlayerState(EntityState.IDLE);
 			}
 			
 		} else if (getMovementX() != 0 && getMovementY() != 0) {
@@ -446,6 +462,19 @@ public class Player extends Entity implements Serializable{
 	public void setLastSpecialAttackTime(long lastSpecialAttackTime) {
 		this.lastSpecialAttackTime = lastSpecialAttackTime;
 	}
+
+
+
+	public int getAttackState() {
+		return attackState;
+	}
+
+
+
+	public void setAttackState(int attackState) {
+		this.attackState = attackState;
+	}
+	
 	
 	
 	
