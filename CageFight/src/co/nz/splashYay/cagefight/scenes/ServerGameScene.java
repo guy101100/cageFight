@@ -262,7 +262,7 @@ public class ServerGameScene extends GameScene {
 		case DEAD:
 			if (base.isAlive()) {
 				base.destroyBase();
-				this.makeSingleCycleAnnimation(base.getCenterXpos(), base.getCenterYpos(), explosionTextureRegion, 9, 100 );
+				this.makeXCycleAnnimation(base.getCenterXpos(), base.getCenterYpos(), explosionTextureRegion, 9, 100, 1f, 1);
 				//play base destroy sound, change music				
 			}
 			break;
@@ -300,7 +300,7 @@ public class ServerGameScene extends GameScene {
 		case DEAD:
 			if (tower.isAlive()) {
 				tower.destroyTower();
-				this.makeSingleCycleAnnimation(tower.getXPos(), tower.getYPos(), explosionTextureRegion, 9, 100);
+				this.makeXCycleAnnimation(tower.getXPos(), tower.getYPos(), explosionTextureRegion, 9, 100, 1f, 1);
 				//play base destroy sound, change music
 			}
 			break;
@@ -353,7 +353,7 @@ public class ServerGameScene extends GameScene {
 				//Perform Special Attack
 				player.setLastSpecialAttackTime(System.currentTimeMillis());
 				player.specialAttack(gameData.getEntitiesOnTeam(player.getEnemyTeam()));				
-				makeSingleCycleAnnimation(player.getXPos(), player.getYPos(), towerAttackTextureRegion, 38, 30); 
+				makeXCycleAnnimation(player.getXPos(), player.getYPos(), specialAttackRegion, 24, 30, 3f, 2); 
 				sceneManager.getSoundManager().playTowerAttackSound(this.player, this.player);
 				
 			}

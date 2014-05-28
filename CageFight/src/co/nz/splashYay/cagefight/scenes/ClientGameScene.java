@@ -223,7 +223,7 @@ public class ClientGameScene extends GameScene {
 		case SPECIALATTACKING:
 			if (player.hasStateChanged()) {
 				sceneManager.getSoundManager().playTowerAttackSound(this.player, player);	
-				makeSingleCycleAnnimation(player.getXPos(), player.getYPos(), towerAttackTextureRegion, 38, 30); 
+				makeXCycleAnnimation(player.getXPos(), player.getYPos(), specialAttackRegion, 24, 30, 3f, 2); 
 			}
 			break;
 		case DEAD:

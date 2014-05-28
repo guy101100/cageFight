@@ -139,6 +139,7 @@ public abstract class GameScene extends Scene {
 	private BuildableBitmapTextureAtlas mBuildBitmapTextureAtlas2;
 	private TiledTextureRegion shopRegion;
 	private ButtonSprite special;
+	protected TiledTextureRegion specialAttackRegion;
 	
 	public void loadRes() {
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
@@ -184,7 +185,7 @@ public abstract class GameScene extends Scene {
 		
 		this.explosionTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBuildBitmapTextureAtlas2, this.activity, "explosion.png", 3, 4);
 		this.towerAttackTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBuildBitmapTextureAtlas2, this.activity, "explosion2.png", 8, 5);
-		
+		this.specialAttackRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBuildBitmapTextureAtlas2, this.activity, "fire-wheel.png", 5, 5);
 		
 		this.blankTexture = new BitmapTextureAtlas(this.activity.getTextureManager(), 128, 128, TextureOptions.BILINEAR);
 		this.blankTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.blankTexture, this.activity, "blank.png", 0, 0);
@@ -505,7 +506,7 @@ public abstract class GameScene extends Scene {
 	}
 	
 	public void towerAttackExplosion(Entity ent){
-		makeSingleCycleAnnimation(ent.getXPos(), ent.getYPos(), towerAttackTextureRegion, 38,30);		
+		makeXCycleAnnimation(ent.getXPos(), ent.getYPos(), towerAttackTextureRegion, 38,30, 1f, 1);		
 	}
 	
 	
@@ -517,20 +518,31 @@ public abstract class GameScene extends Scene {
 	 * @param lastFrame the amount of frames to animate though (GET THIS RIGHT OR RISK INFINITE LOOP)
 	 * @param speed speed in ms of animation
 	 */
-	public void makeSingleCycleAnnimation(float x, float y, TiledTextureRegion region, final int lastFrame, int speed){
-	    final AnimatedSprite explosion = new AnimatedSprite(x, y, region, this.engine.getVertexBufferObjectManager()); 
+	public void makeXCycleAnnimation(final float x, final float y, final TiledTextureRegion region, final int lastFrame, final int speed, final float scale, final int times){
+		
+		
+		final AnimatedSprite explosion = new AnimatedSprite(x, y, region, this.engine.getVertexBufferObjectManager()); 
+		//float calcX = x - (explosion.getWidth()/2);
+	    //float calcY = y - (explosion.getHeight()/2);
+	    //explosion.setPosition(calcX, calcY);
+	    
+	    
 	    explosion.animate(speed);
+	    explosion.setScale(scale);
 	    this.attachChild(explosion);
 	    explosion.registerUpdateHandler(new IUpdateHandler(){
 
 	        @Override
 	        public void onUpdate(float pSecondsElapsed) {
-	            if(explosion.getCurrentTileIndex() == lastFrame){
-	                activity.runOnUpdateThread(new Runnable() {
+	            if(explosion.getCurrentTileIndex() == lastFrame){	                
+	            	activity.runOnUpdateThread(new Runnable() {
 	                @Override                
 	                public void run() {
 	                  gS.detachChild(explosion);
-	                  
+	                  if (times > 1) {
+	                	  makeXCycleAnnimation(x, y, region, lastFrame, speed, scale, times-1);
+	                  }
+	                	  
 	                }
 	               });                
 	            }
